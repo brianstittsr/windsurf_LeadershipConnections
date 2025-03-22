@@ -1,34 +1,37 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Dancing_Script } from 'next/font/google';
-import './globals.css'
-import Navigation from './components/Navigation'
-import SplashScreenController from './components/SplashScreenController'
+"use client";
 
-const inter = Inter({ subsets: ['latin'] })
-const dancingScript = Dancing_Script({
-  subsets: ['latin'],
-  variable: '--font-dancing-script',
-})
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import ScrollToTop from "@/components/ScrollToTop";
+import { Inter } from "next/font/google";
+import "node_modules/react-modal-video/css/modal-video.css";
+import "../styles/index.css";
 
-export const metadata: Metadata = {
-  title: 'Leadership Connections NC',
-  description: 'Empowering young girls to become strong leaders',
-}
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dancingScript.variable}`}>
-      <body className={inter.className}>
-        <SplashScreenController>
-          <Navigation />
+    <html suppressHydrationWarning lang="en">
+      {/*
+        <head /> will contain the components returned by the nearest parent
+        head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
+      */}
+      <head />
+
+      <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
+        <Providers>
+          <Header />
           {children}
-        </SplashScreenController>
+          <Footer />
+          <ScrollToTop />
+        </Providers>
       </body>
     </html>
-  )
+  );
 }
+
+import { Providers } from "./providers";

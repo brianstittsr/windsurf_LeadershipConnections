@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import SplashScreen from '../components/SplashScreen';
+import SplashScreen from '@/components/SplashScreen';
 
 export default function SplashPage() {
   const router = useRouter();
@@ -24,11 +24,7 @@ export default function SplashPage() {
 
   return (
     <>
-      {showSplash && (
-        <SplashScreen 
-          onComplete={handleComplete} 
-        />
-      )}
+      {showSplash && <SplashScreen onComplete={handleComplete} />}
     </>
   );
 }

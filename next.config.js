@@ -1,18 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
   images: {
-    domains: ['leadershipconnectionsnc.weebly.com'],
+    domains: ["localhost", "leadershipconnectionsnc.weebly.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        port: "",
+      },
+    ],
   },
-  // Exclude the startup-nextjs-main directory from the build
+  // Ignore TypeScript errors during build
   typescript: {
-    // Ignore TypeScript errors in the startup-nextjs-main directory
     ignoreBuildErrors: true,
   },
+  // Ignore ESLint errors during build
   eslint: {
-    // Ignore ESLint errors in the startup-nextjs-main directory
     ignoreDuringBuilds: true,
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

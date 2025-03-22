@@ -1,57 +1,46 @@
-# Leadership Connections
+# Startup - Free Next.js Startup Website Template
 
-A Next.js web application for Leadership Connections NC, an organization dedicated to empowering young women to become leaders of tomorrow.
+Startup free, open-source, and premium-quality startup website template for Next.js comes with everything you need to launch a startup, business, or SaaS website, including all essential sections, components, and pages.
 
-## Project Overview
+If you're looking for a high-quality and visually appealing, feature-rich Next.js Template for your next startup, SaaS, or business website, this is the perfect choice and starting point for you!
 
-This project is built with:
-- Next.js
-- React
-- Tailwind CSS
+### ✨ Key Features
+- Crafted for Startup and SaaS Business
+- Next.js 13 and Tailwind CSS
+- All Essential Business Sections and Pages
+- High-quality and Clean Design
+- Dark and Light Version
+- TypeScript Support
+and Much More ...
 
-## Features
+### [🔥 Get Startup Pro](https://nextjstemplates.com/templates/saas-starter-startup)
 
-- Modern SaaS-inspired design
-- Responsive layout for all devices
-- Interactive UI components
-- Optimized image loading
+[![Startup Pro](https://cdn.nextjstemplates.com/Startup-Pro---Next.js-Starter-Template-for-SaaS-Startups-282e26f7-f543-4ae4-a777-ac306c08cce8.png)](https://nextjstemplates.com/templates/saas-starter-startup)
 
-## Getting Started
+Startup Pro - Expertly crafted for fully-functional, high-performing SaaS startup websites. Comes with with Authentication, Database, Blog, and all the essential integrations necessary for SaaS business sites.
 
-### Prerequisites
 
-- Node.js 14.6.0 or newer
-- npm or yarn
+### [🚀 View Free Demo](https://startup.nextjstemplates.com/)
 
-### Installation
+### [🚀 View Pro Demo](https://startup-pro.nextjstemplates.com/)
 
-1. Clone the repository
-```bash
-git clone [repository-url]
-```
+### [📦 Download](https://nextjstemplates.com/templates/startup)
 
-2. Install dependencies
-```bash
-npm install
-# or
-yarn install
-```
+### [🔥 Get Pro](https://nextjstemplates.com/templates/saas-starter-startup)
 
-3. Run the development server
-```bash
-npm run dev
-# or
-yarn dev
-```
+### [🔌 Documentation](https://nextjstemplates.com/docs)
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+### ⚡ Deploy Now
 
-## Project Structure
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNextJSTemplates%2Fstartup-nextjs)
 
-- `/app` - Contains the main application pages and components
-- `/public` - Static assets like images and icons
-- `/components` - Reusable UI components
+[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/NextJSTemplates/startup-nextjs)
 
-## License
 
-This project is licensed under the MIT License.
+### 📄 License
+Startup is 100% free and open-source, feel free to use with your personal and commercial projects.
+
+### 💜 Support
+If you like the template, please star this repository to inspire the team to create more stuff like this and reach more users like you!
+
+### ✨ Explore and Download - Free [Next.js Templates](https://nextjstemplates.com)
