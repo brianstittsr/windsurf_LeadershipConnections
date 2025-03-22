@@ -59,15 +59,15 @@ const Header = () => {
                 <Image
                   src="/images/logo/LeadershipConnectionsLogo.png"
                   alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                  width={105}
-                  height={23}
+                  width={147}
+                  height={32}
                   className="w-full h-[30px] object-contain dark:hidden"
                 />
                 <Image
                   src="/images/logo/LeadershipConnectionsLogo.png"
                   alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                  width={105}
-                  height={23}
+                  width={147}
+                  height={32}
                   className="hidden w-full h-[30px] object-contain dark:block"
                 />
               </Link>

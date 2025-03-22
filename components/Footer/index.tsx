@@ -18,15 +18,15 @@ const Footer = () => {
                     src="/images/logo/LeadershipConnectionsLogo.png"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
                     className="w-full h-[30px] object-contain dark:hidden"
-                    width={105}
-                    height={23}
+                    width={147}
+                    height={32}
                   />
                   <Image
                     src="/images/logo/LeadershipConnectionsLogo.png"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
                     className="hidden w-full h-[30px] object-contain dark:block"
-                    width={105}
-                    height={23}
+                    width={147}
+                    height={32}
                   />
                 </Link>
                 <p className="dark:text-body-color-dark mb-9 text-base leading-relaxed text-body-color">

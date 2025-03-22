@@ -30,9 +30,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
 
   useEffect(() => {
     const countdownTimer = () => {
-      // Set days to 0 and hours to 8 statically
+      // Set days to 0 and hours to 4 statically
       setDays(0);
-      setHours(8);
+      setHours(4);
       
       // Only calculate minutes and seconds dynamically
       const now = new Date();
