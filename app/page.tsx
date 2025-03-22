@@ -1,6 +1,3 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import AboutSectionOne from "@/components/About/AboutSectionOne";
 import AboutSectionTwo from "@/components/About/AboutSectionTwo";
 import Blog from "@/components/Blog";
@@ -12,50 +9,15 @@ import Hero from "@/components/Hero";
 import Pricing from "@/components/Pricing";
 import Testimonials from "@/components/Testimonials";
 import Video from "@/components/Video";
-import SplashScreen from "@/components/SplashScreen";
 import { Metadata } from "next";
+import HomeClient from "@/components/HomeClient";
 
 export const metadata: Metadata = {
-  title: "Free Next.js Template for Startup and SaaS",
-  description: "This is Home for Startup Nextjs Template",
+  title: "Leadership C.O.N.N.E.C.T.I.O.N.S.",
+  description: "Leadership C.O.N.N.E.C.T.I.O.N.S. is dedicated to fostering leadership skills and building meaningful connections in communities.",
   // other metadata
 };
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  const handleSplashComplete = () => {
-    setShowSplash(false);
-  };
-
-  // Automatically hide splash screen after 8 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 8000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return (
-    <>
-      {showSplash ? (
-        <SplashScreen onComplete={handleSplashComplete} />
-      ) : (
-        <>
-          <ScrollUp />
-          <Hero />
-          <Features />
-          <Video />
-          <Brands />
-          <AboutSectionOne />
-          <AboutSectionTwo />
-          <Testimonials />
-          <Pricing />
-          <Blog />
-          <Contact />
-        </>
-      )}
-    </>
-  );
+  return <HomeClient />;
 }
