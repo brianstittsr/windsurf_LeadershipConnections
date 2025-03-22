@@ -85,6 +85,18 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
             <div className="col-xl-7 col-lg-6 col-md-6 odd-col">
               {/* Content wrapper */}
               <div className="content-wrapper">
+                {/* Logo container */}
+                <div className="logo-container wow fadeInDown" data-wow-delay=".1s" style={{ marginBottom: '20px', textAlign: 'center' }}>
+                  <Image 
+                    src="/images/logo/LeadershipConnectionsLogo.png" 
+                    alt="Leadership Connections Logo" 
+                    width={200} 
+                    height={100} 
+                    className="logo-image"
+                    style={{ objectFit: 'contain' }}
+                    priority
+                  />
+                </div>
                 <h1 className="wow fadeInDown" data-wow-delay=".2s">Coming Soon</h1>
                 <p className="wow fadeInUp" data-wow-delay=".4s">
                   Leadership Connections is launching soon. Join our waiting list to be the first to know when we go live.
