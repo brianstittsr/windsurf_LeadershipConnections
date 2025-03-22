@@ -21,6 +21,10 @@
 /new-project/
 /temp/
 
+# large image files
+/LeadershipConnections_images/
+/LeadershipConnections_images.zip
+
 # misc
 .DS_Store
 *.pem
