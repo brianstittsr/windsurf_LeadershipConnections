@@ -1,4 +1,7 @@
-import { Heading, Text, Img, Button } from "../../components copy";
+import { Heading } from "../Heading";
+import { Text } from "../Text";
+import { Img } from "../Img";
+import { Button } from "../Button";
 import Link from "next/link";
 import React from "react";
 

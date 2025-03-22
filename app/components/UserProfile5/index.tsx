@@ -1,4 +1,6 @@
-import { Button, Heading, Img } from "../../components copy";
+import { Button } from "../Button";
+import { Heading } from "../Heading";
+import { Img } from "../Img";
 import React from "react";
 
 interface Props {

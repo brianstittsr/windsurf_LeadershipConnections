@@ -1,4 +1,4 @@
-import { Heading } from "../../components copy";
+import { Heading } from "../Heading";
 import React from "react";
 
 interface Props {
