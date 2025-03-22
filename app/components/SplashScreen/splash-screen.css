@@ -1,0 +1,267 @@
+/* SplashScreen Component Styles */
+.splash-screen-main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9ff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.splash-screen-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Shapes */
+.splash-screen-shapes .shape {
+  position: absolute;
+  z-index: -1;
+}
+
+.shape.shape-1 {
+  top: 20%;
+  left: 10%;
+  animation: moveUpDown 5s infinite alternate;
+}
+
+.shape.shape-2 {
+  top: 60%;
+  left: 20%;
+  animation: moveLeftRight 7s infinite alternate;
+}
+
+.shape.shape-3 {
+  top: 30%;
+  right: 30%;
+  animation: rotate 10s infinite linear;
+}
+
+.shape.shape-4 {
+  bottom: 20%;
+  left: 30%;
+  animation: moveUpDown 6s infinite alternate;
+}
+
+.shape.shape-5 {
+  top: 10%;
+  right: 10%;
+  animation: moveLeftRight 8s infinite alternate;
+}
+
+.shape.shape-6 {
+  bottom: 10%;
+  right: 20%;
+  animation: rotate 12s infinite linear;
+}
+
+/* Content Styles */
+.content-wrapper {
+  max-width: 600px;
+}
+
+.content-wrapper h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2b2f4c;
+  margin-bottom: 20px;
+}
+
+.content-wrapper p {
+  font-size: 18px;
+  color: #6c6c8b;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+/* Countdown Styles */
+.countdown-wrapper {
+  display: flex;
+  margin-bottom: 40px;
+  gap: 20px;
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.countdown-item .number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #4743db;
+}
+
+.countdown-item .text {
+  font-size: 14px;
+  color: #6c6c8b;
+  margin-top: 5px;
+}
+
+/* Form Styles */
+.subscribe-form {
+  display: flex;
+  position: relative;
+  max-width: 500px;
+  margin-bottom: 30px;
+}
+
+.subscribe-form input {
+  width: 100%;
+  height: 60px;
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+  padding: 0 160px 0 30px;
+  font-size: 16px;
+  color: #6c6c8b;
+  background-color: white;
+}
+
+.subscribe-form input:focus {
+  outline: none;
+  border-color: #4743db;
+}
+
+.subscribe-form .sub_btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 30px;
+  background-color: #4743db;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subscribe-form .sub_btn:hover {
+  background-color: #3835b0;
+}
+
+/* Skip Button */
+.skip-button-wrapper {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.skip-button {
+  background: none;
+  border: none;
+  color: #4743db;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: all 0.3s ease;
+}
+
+.skip-button:hover {
+  color: #3835b0;
+}
+
+/* Animations */
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes moveLeftRight {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(20px);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 991px) {
+  .content-wrapper h1 {
+    font-size: 36px;
+  }
+  
+  .countdown-item {
+    min-width: 60px;
+  }
+  
+  .countdown-item .number {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .content-wrapper {
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  .countdown-wrapper {
+    justify-content: center;
+  }
+  
+  .subscribe-form {
+    margin: 0 auto 30px;
+  }
+  
+  .img-wrapper {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 575px) {
+  .content-wrapper h1 {
+    font-size: 28px;
+  }
+  
+  .countdown-item {
+    min-width: 50px;
+  }
+  
+  .countdown-item .number {
+    font-size: 24px;
+  }
+  
+  .subscribe-form {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .subscribe-form input {
+    padding: 0 30px;
+    text-align: center;
+  }
+  
+  .subscribe-form .sub_btn {
+    position: static;
+    width: 100%;
+  }
+}

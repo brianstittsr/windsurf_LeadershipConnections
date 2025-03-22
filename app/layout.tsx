@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { Dancing_Script } from 'next/font/google';
 import './globals.css'
 import Navigation from './components/Navigation'
+import SplashScreenController from './components/SplashScreenController'
 
 const inter = Inter({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({
@@ -23,8 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dancingScript.variable}`}>
       <body className={inter.className}>
-        <Navigation />
-        {children}
+        <SplashScreenController>
+          <Navigation />
+          {children}
+        </SplashScreenController>
       </body>
     </html>
   )
