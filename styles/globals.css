@@ -1,0 +1,43 @@
+/* Additional global styles for transparent sliders */
+.transparent-slider {
+  background: transparent !important;
+}
+
+.transparent-slider .slick-track,
+.transparent-slider .slick-slide,
+.transparent-slider .slick-slide > div {
+  background: transparent !important;
+}
+
+/* Ensure slide content doesn't have a background unless explicitly set */
+.transparent-slider .slick-slide > div > div {
+  background: transparent !important;
+}
+
+/* Custom fade transition - but keep images visible */
+.transparent-slider .slick-slide {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.transparent-slider .slick-slide.slick-active {
+  opacity: 1;
+}
+
+/* Fix for image visibility */
+.transparent-slider img,
+.slick-slide img {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  z-index: 10 !important;
+}
+
+/* Ensure image containers are visible */
+.transparent-slider .relative,
+.slick-slide .relative {
+  z-index: 10 !important;
+  position: relative !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

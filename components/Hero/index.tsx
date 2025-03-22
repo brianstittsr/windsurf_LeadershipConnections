@@ -1,43 +1,182 @@
+'use client';
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "@/styles/hero-slider.css";
+import "@/styles/hero-background.css";
+import "@/styles/hero-animations.css";
+import Image from "next/image";
+
+interface SlideProps {
+  title: string;
+  subtitle: string;
+  description: string;
+  primaryButtonText: string;
+  primaryButtonLink: string;
+  secondaryButtonText: string;
+  secondaryButtonLink: string;
+  bgColor: string;
+  imageUrl?: string;
+}
+
+const slides: SlideProps[] = [
+  {
+    title: "Leadership C.O.N.N.E.C.T.I.O.N.S.",
+    subtitle: "Building Leaders for Tomorrow",
+    description: "Leadership C.O.N.N.E.C.T.I.O.N.S. is dedicated to fostering leadership skills and building meaningful connections in communities. We provide resources, training, and networking opportunities to help you grow as a leader.",
+    primaryButtonText: "Contact Us",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Learn More",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-blue-500 to-purple-600",
+    imageUrl: "/images/Leadership.png"
+  },
+  {
+    title: "Community Outreach",
+    subtitle: "Making a Difference Together",
+    description: "Our community outreach programs connect leaders with local organizations to create meaningful impact. Join us in making a difference in your community through collaborative initiatives and volunteer opportunities.",
+    primaryButtonText: "Join Now",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Programs",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-green-500 to-teal-600",
+    imageUrl: "/images/CoachKWelborn.png"
+  },
+  {
+    title: "Professional Development",
+    subtitle: "Grow Your Leadership Skills",
+    description: "Enhance your professional capabilities with our specialized leadership development programs. From executive coaching to team-building workshops, we offer resources to help you reach your full potential.",
+    primaryButtonText: "Explore Courses",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Testimonials",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-orange-500 to-red-600",
+    imageUrl: "/images/Leadership.png"
+  },
+  {
+    title: "Networking Events",
+    subtitle: "Connect with Like-minded Leaders",
+    description: "Expand your professional network at our exclusive networking events. Meet industry leaders, potential mentors, and peers who share your passion for leadership and community development.",
+    primaryButtonText: "Upcoming Events",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Past Events",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-purple-500 to-indigo-600",
+    imageUrl: "/images/RoboDogWelborn.png"
+  },
+  {
+    title: "Mentorship Programs",
+    subtitle: "Learn from the Best",
+    description: "Our mentorship programs pair emerging leaders with experienced professionals. Gain valuable insights, personalized guidance, and support as you navigate your leadership journey.",
+    primaryButtonText: "Find a Mentor",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Become a Mentor",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-yellow-500 to-amber-600",
+    imageUrl: "/images/MentorShip.jpg"
+  },
+  {
+    title: "Leadership Resources",
+    subtitle: "Tools for Success",
+    description: "Access our comprehensive library of leadership resources, including articles, videos, podcasts, and research papers. Stay informed about the latest trends and best practices in leadership development.",
+    primaryButtonText: "Browse Resources",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "Subscribe",
+    secondaryButtonLink: "/about",
+    bgColor: "bg-gradient-to-r from-cyan-500 to-blue-600",
+    imageUrl: "/images/Leadership.png"
+  }
+];
+
+const HeroSlide = ({ slide, index }: { slide: SlideProps; index: number }) => {
+  return (
+    <div className={`py-16 px-4 md:py-24 min-h-[600px] flex items-center bg-gradient-to-r animated-gradient ${index % 3 === 0 ? 'animated-gradient-fast' : index % 3 === 1 ? 'animated-gradient-slow' : 'animated-gradient'} ${slide.bgColor}`}>
+      <div className="container mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="w-full md:w-1/2 text-white">
+            <h2 className="text-xl md:text-2xl font-semibold mb-2">{slide.subtitle}</h2>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">{slide.title}</h1>
+            <p className="text-base md:text-lg mb-8 opacity-90">{slide.description}</p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                href={slide.primaryButtonLink}
+                className="rounded-md bg-white text-primary px-6 py-3 text-base font-semibold duration-300 ease-in-out hover:bg-opacity-90 text-center"
+              >
+                {slide.primaryButtonText}
+              </Link>
+              <Link
+                href={slide.secondaryButtonLink}
+                className="rounded-md bg-transparent border-2 border-white px-6 py-3 text-base font-semibold text-white duration-300 ease-in-out hover:bg-white hover:text-primary text-center"
+              >
+                {slide.secondaryButtonText}
+              </Link>
+            </div>
+          </div>
+          {slide.imageUrl ? (
+            <div className="w-full md:w-1/2 mt-8 md:mt-0">
+              <div className="h-[300px] md:h-[400px] rounded-lg overflow-hidden shadow-xl subtle-pulse">
+                <img 
+                  src={slide.imageUrl} 
+                  alt={slide.title} 
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Hero = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+    arrows: true,
+    fade: true,
+    cssEase: 'linear',
+    className: 'transparent-slider',
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          arrows: false
+        }
+      }
+    ]
+  };
+
   return (
     <>
       <section
         id="home"
-        className="dark:bg-gray-dark relative z-10 overflow-hidden bg-white pb-16 pt-[120px] md:pb-[120px] md:pt-[150px] xl:pb-[160px] xl:pt-[180px] 2xl:pb-[200px] 2xl:pt-[210px]"
+        className="dark:bg-gray-dark relative z-10 overflow-hidden bg-transparent"
       >
-        <div className="container">
-          <div className="-mx-4 flex flex-wrap">
-            <div className="w-full px-4">
-              <div
-                className="wow fadeInUp mx-auto max-w-[800px] text-center"
-                data-wow-delay=".2s"
-              >
-                <h1 className="mb-5 text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-                  Leadership C.O.N.N.E.C.T.I.O.N.S.
-                </h1>
-                <p className="dark:text-body-color-dark mb-12 text-base !leading-relaxed text-body-color sm:text-lg md:text-xl">
-                  Leadership C.O.N.N.E.C.T.I.O.N.S. is dedicated to fostering leadership skills and building meaningful connections in communities. We provide resources, training, and networking opportunities to help you grow as a leader.
-                </p>
-                <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                  <Link
-                    href="/contact"
-                    className="rounded-sm bg-primary px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80"
-                  >
-                    Contact Us
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="inline-block rounded-sm bg-black px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/90 dark:bg-white/10 dark:text-white dark:hover:bg-white/5"
-                  >
-                    Learn More
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {isClient ? (
+          <Slider {...settings} className="hero-slider">
+            {slides.map((slide, index) => (
+              <HeroSlide key={index} slide={slide} index={index} />
+            ))}
+          </Slider>
+        ) : (
+          <HeroSlide slide={slides[0]} index={0} />
+        )}
         <div className="absolute right-0 top-0 z-[-1] opacity-30 lg:opacity-100">
           <svg
             width="450"

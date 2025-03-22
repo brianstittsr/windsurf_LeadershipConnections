@@ -1,0 +1,66 @@
+/* Hero Background Animations */
+
+/* Semi-transparent overlay for backgrounds */
+.hero-slide-overlay {
+  position: relative;
+}
+
+.hero-slide-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.95); /* Black overlay with 95% opacity (background at 5% opacity) */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-slide-overlay > * {
+  position: relative;
+  z-index: 2;
+}
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background-size: 200% 200% !important;
+  animation: gradientShift 15s ease infinite;
+}
+
+.animated-gradient-fast {
+  background-size: 200% 200% !important;
+  animation: gradientShift 10s ease infinite;
+}
+
+.animated-gradient-slow {
+  background-size: 200% 200% !important;
+  animation: gradientShift 20s ease infinite;
+}
+
+/* Subtle pulse animation for additional effect */
+@keyframes subtlePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.subtle-pulse {
+  animation: subtlePulse 8s ease-in-out infinite;
+}

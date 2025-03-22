@@ -1,0 +1,92 @@
+/* Hero Slider Custom Styles */
+/* Make slick-carousel background transparent */
+.slick-slider, 
+.slick-list, 
+.slick-track, 
+.slick-slide, 
+.slick-slide > div,
+.slide-container {
+  background-color: transparent !important;
+}
+
+/* Ensure the slide container is positioned correctly */
+.slide-container {
+  position: relative;
+  background: none !important;
+}
+
+/* Ensure images are visible */
+.slide-container img {
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 10 !important;
+}
+
+/* Fix for image container */
+.slide-container .relative {
+  position: relative;
+  z-index: 10;
+}
+
+.hero-slider .slick-dots {
+  bottom: 25px;
+  z-index: 10;
+}
+
+.hero-slider .slick-dots li button:before {
+  color: white;
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.hero-slider .slick-dots li.slick-active button:before {
+  color: white;
+  opacity: 1;
+}
+
+.hero-slider .slick-prev,
+.hero-slider .slick-next {
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  background-color: transparent !important;
+}
+
+.hero-slider .slick-prev {
+  left: 20px;
+}
+
+.hero-slider .slick-next {
+  right: 20px;
+}
+
+.hero-slider .slick-prev:before,
+.hero-slider .slick-next:before {
+  font-size: 40px;
+  opacity: 0.75;
+}
+
+.hero-slider .slick-slide {
+  transition: all 0.3s ease;
+  background-color: transparent !important;
+}
+
+/* Remove any default backgrounds */
+.slick-slider {
+  background: none !important;
+}
+
+.slick-list {
+  background: none !important;
+}
+
+@media (max-width: 768px) {
+  .hero-slider .slick-prev,
+  .hero-slider .slick-next {
+    display: none !important;
+  }
+  
+  .hero-slider .slick-dots {
+    bottom: 15px;
+  }
+}

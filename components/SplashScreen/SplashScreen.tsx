@@ -142,10 +142,14 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
                   </button>
                 </form>
 
-                {/* Hidden skip button - functionality remains but text is hidden */}
+                {/* Skip button to go to the main site */}
                 {onComplete && (
-                  <div className="skip-button-wrapper" style={{ display: 'none' }}>
-                    <button onClick={onComplete} className="skip-button">
+                  <div className="skip-button-wrapper" style={{ marginTop: '20px', textAlign: 'center' }}>
+                    <button 
+                      onClick={onComplete} 
+                      className="skip-button common-btn"
+                      style={{ padding: '10px 20px', cursor: 'pointer' }}
+                    >
                       Skip to Website
                     </button>
                   </div>

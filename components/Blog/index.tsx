@@ -1,8 +1,19 @@
+"use client";
+
 import SectionTitle from "../Common/SectionTitle";
 import SingleBlog from "./SingleBlog";
-import blogData from "./blogData";
+import { useEffect, useState } from "react";
+import { getRecentBlogs } from "@/lib/blogUtils";
 
 const Blog = () => {
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    // Get recent blogs when component mounts
+    const recentBlogs = getRecentBlogs(3);
+    setBlogs(recentBlogs);
+  }, []);
+
   return (
     <section
       id="blog"
@@ -10,13 +21,13 @@ const Blog = () => {
     >
       <div className="container">
         <SectionTitle
-          title="Our Latest Blogs"
-          paragraph="There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form."
+          title="LC Blogs"
+          paragraph="Stay updated with the latest news, stories, and insights from the Leadership C.O.N.N.E.C.T.I.O.N.S. Program."
           center
         />
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 md:gap-x-6 lg:gap-x-8 xl:grid-cols-3">
-          {blogData.map((blog) => (
+          {blogs.map((blog) => (
             <div key={blog.id} className="w-full">
               <SingleBlog blog={blog} />
             </div>

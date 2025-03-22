@@ -107,14 +107,7 @@ const Footer = () => {
                       Blog
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="/pricing"
-                      className="dark:text-body-color-dark mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:hover:text-primary"
-                    >
-                      Pricing
-                    </a>
-                  </li>
+                  {/* Pricing link removed per request */}
                   <li>
                     <a
                       href="/about"
@@ -149,14 +142,7 @@ const Footer = () => {
                       Privacy Policy
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="/"
-                      className="dark:text-body-color-dark mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:hover:text-primary"
-                    >
-                      Refund Policy
-                    </a>
-                  </li>
+                  {/* Refund Policy link removed per request */}
                 </ul>
               </div>
             </div>
@@ -172,7 +158,7 @@ const Footer = () => {
                       href="/contact"
                       className="dark:text-body-color-dark mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:hover:text-primary"
                     >
-                      Open Support Ticket
+                      Contact
                     </a>
                   </li>
                   <li>
