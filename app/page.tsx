@@ -1,10 +1,13 @@
 'use client';
 
-import LC_Navigation from './components/LC_Navigation';
-import LC_Hero from './components/LC_Hero';
-import LC_Home_WhyJoin_LC from './components/LC_Home_WhyJoin_LC';
-import LC_Home_WhoShouldApply_LC from './components/LC_Home_WhoShouldApply_LC';
-import LC_Footer from './components/LC_Footer';
+import dynamic from 'next/dynamic';
+
+// Use dynamic imports with SSR disabled to prevent build errors
+const LC_Navigation = dynamic(() => import('./components/LC_Navigation'), { ssr: false });
+const LC_Hero = dynamic(() => import('./components/LC_Hero'), { ssr: false });
+const LC_Home_WhyJoin_LC = dynamic(() => import('./components/LC_Home_WhyJoin_LC'), { ssr: false });
+const LC_Home_WhoShouldApply_LC = dynamic(() => import('./components/LC_Home_WhoShouldApply_LC'), { ssr: false });
+const LC_Footer = dynamic(() => import('./components/LC_Footer'), { ssr: false });
 
 export default function Home() {
   return (
