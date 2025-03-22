@@ -1,6 +1,9 @@
 "use client";
 
-import { Heading, Text, ChipView, Img } from "../../components copy";
+import { Heading } from "../Heading";
+import { Text } from "../Text";
+import { ChipView } from "../ChipView";
+import { Img } from "../Img";
 import Link from "next/link";
 import React from "react";
 
