@@ -3,6 +3,10 @@
 /.pnp
 .pnp.js
 
+# large files
+*.zip
+SaaS Webflow Website Template (Community) (Copy).zip
+
 # testing
 /coverage
 
