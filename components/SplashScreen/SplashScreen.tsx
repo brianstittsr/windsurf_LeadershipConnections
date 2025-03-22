@@ -75,7 +75,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
               <div className="img-wrapper wow fadeInLeft" data-wow-delay=".2s">
                 <Image 
                   src={img1} 
-                  alt="Leadership Connections Coming Soon" 
+                  alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Coming Soon" 
                   width={500} 
                   height={500} 
                   priority
@@ -89,9 +89,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
                 <div className="logo-container wow fadeInDown" data-wow-delay=".1s" style={{ marginBottom: '20px', textAlign: 'center' }}>
                   <Image 
                     src="/images/logo/LeadershipConnectionsLogo.png" 
-                    alt="Leadership Connections Logo" 
-                    width={200} 
-                    height={100} 
+                    alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo" 
+                    width={150} 
+                    height={75} 
                     className="logo-image"
                     style={{ objectFit: 'contain' }}
                     priority
@@ -99,7 +99,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
                 </div>
                 <h1 className="wow fadeInDown" data-wow-delay=".2s">Coming Soon</h1>
                 <p className="wow fadeInUp" data-wow-delay=".4s">
-                  Leadership Connections is launching soon. Join our waiting list to be the first to know when we go live.
+                  Leadership C.O.N.N.E.C.T.I.O.N.S. is launching soon. Join our waiting list to be the first to know when we go live.
                 </p>
 
                 {/* Countdown */}
