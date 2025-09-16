@@ -8,7 +8,7 @@ const TestImage = () => {
       <h2 className="text-2xl font-bold mb-4">Test Image Component</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="border p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">Regular IMG tag (leadersoftomorrow.jpg)</h3>
+          <h3 className="text-lg font-semibold mb-2">Regular IMG tag (meg-sternerg.jpg)</h3>
           <div className="h-[300px] rounded-lg overflow-hidden">
             <img 
               src="/public/images/meg-sternerg.jpg" 
