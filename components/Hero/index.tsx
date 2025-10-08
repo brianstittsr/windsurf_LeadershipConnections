@@ -24,6 +24,17 @@ interface SlideProps {
 
 const slides: SlideProps[] = [
   {
+    title: "2023-2024 Class Photo",
+    subtitle: "Our Leadership Community",
+    description: "Celebrating the achievements and growth of our 2023-2024 leadership class. Together, we've built connections, developed skills, and made a lasting impact in our communities.",
+    primaryButtonText: "Join Our Community",
+    primaryButtonLink: "/contact",
+    secondaryButtonText: "View Programs",
+    secondaryButtonLink: "/lc-programs",
+    bgColor: "bg-gradient-to-r from-emerald-500 to-green-600",
+    imageUrl: "/images/2023-2024ClassPhoto.jpg"
+  },
+  {
     title: "Leadership C.O.N.N.E.C.T.I.O.N.S.",
     subtitle: "Building Leaders for Tomorrow",
     description: "Leadership C.O.N.N.E.C.T.I.O.N.S. is dedicated to fostering leadership skills and building meaningful connections in communities. We provide resources, training, and networking opportunities to help you grow as a leader.",
@@ -118,10 +129,13 @@ const HeroSlide = ({ slide, index }: { slide: SlideProps; index: number }) => {
           {slide.imageUrl ? (
             <div className="w-full md:w-1/2 mt-8 md:mt-0">
               <div className="h-[300px] md:h-[400px] rounded-lg overflow-hidden shadow-xl subtle-pulse">
-                <img 
+                <Image 
                   src={slide.imageUrl} 
                   alt={slide.title} 
+                  width={500}
+                  height={400}
                   className="w-full h-full object-cover rounded-lg"
+                  priority={true}
                 />
               </div>
             </div>
