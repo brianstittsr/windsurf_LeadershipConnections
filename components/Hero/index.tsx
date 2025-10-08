@@ -129,13 +129,10 @@ const HeroSlide = ({ slide, index }: { slide: SlideProps; index: number }) => {
           {slide.imageUrl ? (
             <div className="w-full md:w-1/2 mt-8 md:mt-0">
               <div className="h-[300px] md:h-[400px] rounded-lg overflow-hidden shadow-xl subtle-pulse">
-                <Image 
+                <img 
                   src={slide.imageUrl} 
                   alt={slide.title} 
-                  width={500}
-                  height={400}
                   className="w-full h-full object-cover rounded-lg"
-                  priority={true}
                 />
               </div>
             </div>
