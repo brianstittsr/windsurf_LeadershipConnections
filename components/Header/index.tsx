@@ -57,18 +57,18 @@ const Header = () => {
                 } `}
               >
                 <Image
-                  src="/images/logo/LeadershipConnectionsLogo.png"
+                  src="/images/logo/logo.svg"
                   alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                  width={147}
-                  height={32}
-                  className="w-full h-[30px] object-contain dark:hidden"
+                  width={138}
+                  height={27}
+                  className="w-full h-[27px] object-contain dark:hidden"
                 />
                 <Image
-                  src="/images/logo/LeadershipConnectionsLogo.png"
+                  src="/images/logo/logo.svg"
                   alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                  width={147}
-                  height={32}
-                  className="hidden w-full h-[30px] object-contain dark:block"
+                  width={138}
+                  height={27}
+                  className="hidden w-full h-[27px] object-contain dark:block"
                 />
               </Link>
             </div>

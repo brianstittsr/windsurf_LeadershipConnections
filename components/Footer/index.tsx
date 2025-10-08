@@ -15,18 +15,18 @@ const Footer = () => {
               <div className="mb-12 max-w-[360px] lg:mb-16">
                 <Link href="/" className="mb-8 inline-block">
                   <Image
-                    src="/images/logo/LeadershipConnectionsLogo.png"
+                    src="/images/logo/logo.svg"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    className="w-full h-[30px] object-contain dark:hidden"
-                    width={147}
-                    height={32}
+                    className="w-full h-[27px] object-contain dark:hidden"
+                    width={138}
+                    height={27}
                   />
                   <Image
-                    src="/images/logo/LeadershipConnectionsLogo.png"
+                    src="/images/logo/logo.svg"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    className="hidden w-full h-[30px] object-contain dark:block"
-                    width={147}
-                    height={32}
+                    className="hidden w-full h-[27px] object-contain dark:block"
+                    width={138}
+                    height={27}
                   />
                 </Link>
                 <p className="dark:text-body-color-dark mb-9 text-base leading-relaxed text-body-color">
