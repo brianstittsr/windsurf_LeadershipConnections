@@ -1,4 +1,5 @@
 import NewsLatterBox from "./NewsLatterBox";
+import DonationForm from "@/components/DonationForm";
 
 const Contact = () => {
   return (
@@ -76,6 +77,23 @@ const Contact = () => {
           </div>
           <div className="w-full px-4 lg:w-5/12 xl:w-4/12">
             <NewsLatterBox />
+          </div>
+        </div>
+        
+        {/* Donation Section */}
+        <div className="mt-16">
+          <div className="text-center mb-12">
+            <h2 className="mb-4 text-3xl font-bold !leading-tight text-black dark:text-white sm:text-4xl md:text-[45px]">
+              Support Our Mission
+            </h2>
+            <p className="text-base !leading-relaxed text-body-color md:text-lg">
+              Help us empower the next generation of women leaders through your generous donation.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="w-full max-w-2xl">
+              <DonationForm />
+            </div>
           </div>
         </div>
       </div>
