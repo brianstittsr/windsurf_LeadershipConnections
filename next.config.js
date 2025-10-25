@@ -1,12 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost", "leadershipconnectionsnc.weebly.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.sanity.io",
         port: "",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "leadershipconnectionsnc.weebly.com",
       },
     ],
   },
