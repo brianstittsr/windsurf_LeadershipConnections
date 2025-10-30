@@ -4,17 +4,16 @@ import Contact from "@/components/Contact";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact & Support | Leadership C.O.N.N.E.C.T.I.O.N.S.",
-  description: "Get in touch with Leadership C.O.N.N.E.C.T.I.O.N.S. and support our mission to empower young women leaders through donations.",
-  // other metadata
+  title: "Get Involved | Leadership C.O.N.N.E.C.T.I.O.N.S.",
+  description: "Get involved with Leadership C.O.N.N.E.C.T.I.O.N.S. and help us empower the next generation of leaders.",
 };
 
 const ContactPage = () => {
   return (
     <>
       <Breadcrumb
-        pageName="Contact & Support"
-        description="Get in touch with us or support our mission to empower young women leaders through your generous donation."
+        pageName="Get Involved"
+        description="Are you passionate about making a difference? Join the Leadership Connections community!"
       />
 
       <Contact />

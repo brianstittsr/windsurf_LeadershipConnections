@@ -1,5 +1,4 @@
-import AboutSectionOne from "@/components/About/AboutSectionOne";
-import AboutSectionTwo from "@/components/About/AboutSectionTwo";
+import About from "@/components/About";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 
 import { Metadata } from "next";
@@ -14,10 +13,9 @@ const AboutPage = () => {
     <>
       <Breadcrumb
         pageName="About Leadership C.O.N.N.E.C.T.I.O.N.S."
-        description="A brief history about Leadership C.O.N.N.E.C.T.I.O.N.S."
+        description="Learn about our mission, vision, and history at Leadership C.O.N.N.E.C.T.I.O.N.S."
       />
-      <AboutSectionOne />
-      <AboutSectionTwo />
+      <About />
     </>
   );
 };
