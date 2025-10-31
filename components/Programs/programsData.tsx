@@ -55,6 +55,11 @@ const programsData: Program[] = [
           The academy welcomes young people aged 12-18 from diverse backgrounds, particularly those in underrepresented communities. We provide transportation assistance and flexible scheduling to remove barriers to participation.
         </p>
 
+        <h4 class="text-xl font-semibold mb-4 text-black dark:text-white">Program Impact</h4>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          Since its inception, the Michelle Obama Empowerment Academy has transformed the lives of countless young people, providing them with the confidence, skills, and networks necessary to pursue higher education, meaningful careers, and active community involvement. Our participants consistently demonstrate improved academic performance, enhanced leadership capabilities, and stronger commitment to healthy lifestyle choices.
+        </p>
+
         <div class="mt-8 p-6 bg-primary bg-opacity-10 rounded-lg">
           <p class="text-base font-medium text-primary mb-2">Join Our Program</p>
           <p class="text-base text-body-color">
