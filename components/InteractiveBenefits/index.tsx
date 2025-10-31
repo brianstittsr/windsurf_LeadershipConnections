@@ -9,25 +9,25 @@ const benefits = [
     icon: <FaUniversity className="text-4xl text-primary" />,
     title: 'College and University Visits',
     description: 'Explore campuses and get inspired by what your future could hold!',
-    imageUrl: '/images/hero/pexels-vanessa-loring-7869077.jpg',
+    imageUrl: '/images/programs/HighPoint_University/HPU 2022.jpg',
   },
   {
     icon: <FaLaptopCode className="text-4xl text-primary" />,
     title: 'High Technology Learning',
     description: 'Engage in cutting-edge workshops that enhance your technological skills.',
-    imageUrl: '/images/hero/pexels-mikhail-nilov-9242856.jpg',
+    imageUrl: '/images/programs/Welborn/Robo Dog - Welborn.jpg',
   },
   {
     icon: <FaBuilding className="text-4xl text-primary" />,
     title: 'Corporate Visits',
     description: 'Experience the inner workings of large corporations and see what it takes to succeed in various careers.',
-    imageUrl: '/images/hero/pexels-pixabay-315934.jpg',
+    imageUrl: '/images/programs/Welborn/Simulation Academy - Welborn.jpg',
   },
   {
     icon: <FaHeartbeat className="text-4xl text-primary" />,
     title: 'Fitness and Wellness Activities',
     description: 'From dance classes to fitness challenges, discover how to maintain a healthy lifestyle while having fun with your peers!',
-    imageUrl: '/images/hero/pexels-pixabay-533630.jpg',
+    imageUrl: '/images/programs/Welborn/CoachKWelborn.jpg',
   },
 ];
 

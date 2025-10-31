@@ -9,7 +9,7 @@ const testimonialData: Testimonial[] = [
     designation: "Former Participant",
     content:
       "Leadership Connections gave me the confidence to pursue my dreams. The mentorship I received was invaluable.",
-    image: "/images/hero/pexels-mikhail-nilov-9242836.jpg",
+    image: "/images/blog/author-01.png",
     star: 5,
   },
   {
@@ -18,7 +18,7 @@ const testimonialData: Testimonial[] = [
     designation: "Alumnus",
     content:
       "The hands-on experience and corporate visits opened my eyes to a world of possibilities. I'm now in a career I love, thanks to this program.",
-    image: "/images/hero/pexels-mikhail-nilov-9242856.jpg",
+    image: "/images/blog/author-02.png",
     star: 5,
   },
   {
@@ -27,7 +27,7 @@ const testimonialData: Testimonial[] = [
     designation: "Graduate",
     content:
       "I learned so much about myself and my leadership potential. I'm forever grateful for the opportunities and support from Leadership Connections.",
-    image: "/images/hero/pexels-pixabay-315934.jpg",
+    image: "/images/blog/author-03.png",
     star: 5,
   },
 ];
