@@ -6,6 +6,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import ContactInfo from './ContactInfo';
 import ProgramInterests from './ProgramInterests';
+import ProgressBar from './ProgressBar';
 
 const Wizard = () => {
   const [step, setStep] = useState(1);
@@ -44,14 +45,42 @@ const Wizard = () => {
     }
   };
 
-  switch (step) {
-    case 1:
-      return <ContactInfo nextStep={nextStep} handleChange={handleChange} values={formData} />;
-    case 2:
-      return <ProgramInterests nextStep={handleSubmit} prevStep={prevStep} handleChange={handleChange} values={formData} />;
-    default:
-      return <div>Thank you for signing up!</div>;
-  }
+  const totalSteps = 2;
+
+  return (
+    <div className="mx-auto max-w-2xl p-8 bg-white rounded-lg shadow-lg">
+      <ProgressBar step={step} totalSteps={totalSteps} />
+      {
+        {
+          1: <ContactInfo handleChange={handleChange} values={formData} />,
+          2: <ProgramInterests handleChange={handleChange} values={formData} />,
+        }[step]
+      }
+      <div className="flex justify-between mt-8">
+        {step > 1 && (
+          <button onClick={prevStep} className="rounded-md bg-gray-300 px-8 py-3 text-base font-semibold text-gray-700 duration-300 ease-in-out hover:bg-gray-400">
+            Back
+          </button>
+        )}
+        {step < totalSteps && (
+          <button onClick={nextStep} className="rounded-md bg-primary px-8 py-3 text-base font-semibold text-white duration-300 ease-in-out hover:bg-opacity-90 ml-auto">
+            Next
+          </button>
+        )}
+        {step === totalSteps && (
+          <button onClick={handleSubmit} className="rounded-md bg-primary px-8 py-3 text-base font-semibold text-white duration-300 ease-in-out hover:bg-opacity-90 ml-auto">
+            Sign Up
+          </button>
+        )}
+      </div>
+      {step > totalSteps && (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Thank you for signing up!</h2>
+          <p>A welcome email has been sent to your address.</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Wizard;

@@ -1,10 +1,6 @@
 import React from 'react';
 
-const ContactInfo = ({ nextStep, handleChange, values }: { nextStep: () => void, handleChange: (input: any) => (e: any) => void, values: any }) => {
-  const continueStep = (e: any) => {
-    e.preventDefault();
-    nextStep();
-  };
+const ContactInfo = ({ handleChange, values }: { handleChange: (input: any) => (e: any) => void, values: any }) => {
 
   return (
     <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
@@ -41,9 +37,6 @@ const ContactInfo = ({ nextStep, handleChange, values }: { nextStep: () => void,
         <div className="mb-8">
           <label htmlFor="password" className="mb-3 block text-sm text-dark dark:text-white">Password</label>
           <input type="password" name="password" placeholder="Enter your password" onChange={handleChange('password')} defaultValue={values.password} className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none" />
-        </div>
-        <div className="mb-6">
-          <button onClick={continueStep} className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90">Next</button>
         </div>
       </form>
     </div>

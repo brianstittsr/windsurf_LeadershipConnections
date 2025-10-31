@@ -1,15 +1,6 @@
 import React from 'react';
 
-const ProgramInterests = ({ nextStep, prevStep, handleChange, values }: { nextStep: () => void, prevStep: () => void, handleChange: (input: any) => (e: any) => void, values: any }) => {
-  const continueStep = (e: any) => {
-    e.preventDefault();
-    nextStep();
-  };
-
-  const backStep = (e: any) => {
-    e.preventDefault();
-    prevStep();
-  };
+const ProgramInterests = ({ handleChange, values }: { handleChange: (input: any) => (e: any) => void, values: any }) => {
 
   return (
     <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
@@ -85,10 +76,6 @@ const ProgramInterests = ({ nextStep, prevStep, handleChange, values }: { nextSt
           </div>
         </div>
 
-        <div className="mb-6 flex justify-between">
-          <button onClick={backStep} className="shadow-submit dark:shadow-submit-dark flex w-1/3 items-center justify-center rounded-sm bg-secondary px-9 py-4 text-base font-medium text-body-color duration-300 hover:bg-primary/90 hover:text-white">Back</button>
-          <button onClick={continueStep} className="shadow-submit dark:shadow-submit-dark flex w-1/3 items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90">Submit</button>
-        </div>
       </form>
     </div>
   );
