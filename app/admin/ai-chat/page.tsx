@@ -11,7 +11,25 @@ const AiChatPage = () => {
   const handleGenerate = async () => {
     setLoading(true);
     setArticle('');
-    // API call to generate article will be added here
+    try {
+      const response = await fetch('/api/generate-blog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ topic, tags }),
+      });
+
+      const data = await response.json();
+
+      if (data.article) {
+        setArticle(data.article);
+      } else {
+        console.error('Failed to generate article:', data.error);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
     setLoading(false);
   };
 
