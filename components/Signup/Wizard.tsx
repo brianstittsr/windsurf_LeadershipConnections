@@ -48,7 +48,7 @@ const Wizard = () => {
   const totalSteps = 2;
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="w-full">
       <ProgressBar step={step} totalSteps={totalSteps} />
       {
         {

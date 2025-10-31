@@ -3,8 +3,8 @@ import React from 'react';
 const ProgramInterests = ({ handleChange, values }: { handleChange: (input: any) => (e: any) => void, values: any }) => {
 
   return (
-    <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
-      <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">Program Interests</h3>
+    <div className="shadow-three w-full rounded bg-white px-4 py-6 dark:bg-dark sm:px-6 sm:py-8">
+      <h3 className="mb-4 text-center text-xl font-bold text-black dark:text-white sm:text-2xl">Program Interests</h3>
       <form>
         <div className="mb-8">
           <h4 className="mb-3 text-lg font-semibold text-dark dark:text-white">Fitness and Arts Experience (Red Carpet Kids, USA)</h4>
