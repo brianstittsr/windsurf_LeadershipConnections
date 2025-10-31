@@ -80,6 +80,33 @@ const programsData: Program[] = [
           Whether you're a young person ready to unlock your potential or a community member interested in supporting our mission, there are multiple ways to engage with the Michelle Obama Empowerment Academy. Contact us to learn about upcoming sessions, volunteer opportunities, or partnership possibilities.
         </p>
 
+        <h4 class="text-xl font-semibold mb-4 text-black dark:text-white">Funding Our Mission</h4>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          The Michelle Obama Leadership Academy seeks funding to expand its programs aimed at empowering young leaders in our community. Our initiative aligns with the goals of fostering educational equity and enhancing leadership skills among underrepresented youth.
+        </p>
+
+        <h5 class="text-lg font-medium mb-3 text-black dark:text-white">Objectives:</h5>
+        <ul class="mb-6 list-disc list-inside text-base leading-relaxed text-body-color space-y-2">
+          <li>To increase participation in our leadership development workshops by 50% over the next year.</li>
+          <li>To establish a mentorship program connecting at least 100 students with professionals in their fields of interest.</li>
+          <li>To implement three new community service projects that address local needs and promote civic engagement.</li>
+        </ul>
+
+        <h5 class="text-lg font-medium mb-3 text-black dark:text-white">Target Population:</h5>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          Our programs primarily serve high school students from diverse backgrounds, particularly those in underserved communities. We aim to provide them with the tools and resources necessary to thrive academically and socially.
+        </p>
+
+        <h5 class="text-lg font-medium mb-3 text-black dark:text-white">Budget:</h5>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          We are seeking funding to support our programs, which will cover workshop materials, mentor training sessions, community project supplies, and scholarship funds for students.
+        </p>
+
+        <h5 class="text-lg font-medium mb-3 text-black dark:text-white">Conclusion:</h5>
+        <p class="mb-8 text-base leading-relaxed text-body-color">
+          With your support, the Michelle Obama Leadership Academy can continue to inspire and empower the next generation of leaders. Together, we can create a brighter future for our youth and our communities.
+        </p>
+
         <div class="mt-8 p-6 bg-primary bg-opacity-10 rounded-lg">
           <p class="text-base font-medium text-primary mb-2">Ready to Empower Your Future?</p>
           <p class="text-base text-body-color">
