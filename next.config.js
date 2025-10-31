@@ -31,13 +31,9 @@ if (process.env.VERCEL_URL) {
 const nextConfig = {
   images: {
     remotePatterns,
-    // Disable optimization for local images to handle large files
-    unoptimized: process.env.NODE_ENV === 'development',
-    // Increase image size limits
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Set format to handle various image types
-    formats: ['image/webp', 'image/avif'],
+    // Disable optimization to handle large local images (18-28MB files)
+    // This prevents 400 errors on both dev and production
+    unoptimized: true,
   },
   // Ignore TypeScript errors during build
   typescript: {
