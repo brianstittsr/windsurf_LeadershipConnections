@@ -73,7 +73,7 @@ const Hero = () => {
       description: "Engage in cutting-edge workshops that enhance your technological skills.",
       primaryButtonText: "Learn More",
       primaryButtonLink: "/lc-programs",
-      imageUrl: "/images/programs/Michelle-Obama-Empowerment-Academy/RCK_Firebirds_spring2024/Screenshot 2025-10-31 005307.png"
+      imageUrl: "/images/programs/Michelle-Obama-Empowerment-Academy/RCK_Firebirds_spring2024/Screenshot-2025-10-31-005307.png"
     },
     {
       title: "Explore the Arts, Fitness and Nutrition",
