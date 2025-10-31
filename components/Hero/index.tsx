@@ -65,7 +65,7 @@ const Hero = () => {
       description: "Explore campuses and get inspired by what your future could hold!",
       primaryButtonText: "Our Programs",
       primaryButtonLink: "/lc-programs",
-      imageUrl: "/images/programs/HighPoint_University/HPU 2022.jpg"
+      imageUrl: "/images/programs/HighPoint_University/HPU-2022.jpg"
     },
     {
       title: "Engage with Technology",
@@ -73,7 +73,7 @@ const Hero = () => {
       description: "Engage in cutting-edge workshops that enhance your technological skills.",
       primaryButtonText: "Learn More",
       primaryButtonLink: "/lc-programs",
-      imageUrl: "/images/programs/Michelle Obama Empowerment Academy/RCK_Firebirds_spring2024/Screenshot 2025-10-31 005307.png"
+      imageUrl: "/images/programs/Michelle-Obama-Empowerment-Academy/RCK_Firebirds_spring2024/Screenshot 2025-10-31 005307.png"
     },
     {
       title: "Explore the Arts, Fitness and Nutrition",
