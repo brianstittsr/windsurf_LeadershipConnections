@@ -133,15 +133,20 @@ async function processDirectory(dirPath) {
 }
 
 async function main() {
-  const programsDir = path.join(__dirname, '..', 'public', 'images', 'programs');
+  const imageDirs = [
+    path.join(__dirname, '..', 'public', 'images', 'programs'),
+    path.join(__dirname, '..', 'public', 'images', 'hero')
+  ];
   
   console.log('🚀 Starting image compression...');
-  console.log(`📁 Target directory: ${programsDir}`);
   console.log(`🎯 Target max size: ${MAX_SIZE_MB}MB`);
   console.log(`📏 Minimum size to compress: ${MIN_SIZE_TO_COMPRESS_MB}MB\n`);
 
   const startTime = Date.now();
-  await processDirectory(programsDir);
+  for (const dir of imageDirs) {
+    console.log(`\n📁 Processing directory: ${dir}`);
+    await processDirectory(dir);
+  }
   const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
   // Print statistics
