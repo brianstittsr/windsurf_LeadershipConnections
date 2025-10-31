@@ -57,7 +57,7 @@ const Hero = () => {
       description: "Empowering underexposed and disenfranchised youth by fostering self-esteem, creativity, and leadership skills through innovative educational programs.",
       primaryButtonText: "Get Involved",
       primaryButtonLink: "/contact",
-      imageUrl: "/images/programs/Welborn/Simulation Academy - Welborn.jpg"
+      imageUrl: "/images/programs/Welborn/Simulation-Academy-Welborn.jpg"
     },
     {
       title: "Explore Your Future",
@@ -65,7 +65,7 @@ const Hero = () => {
       description: "Explore campuses and get inspired by what your future could hold!",
       primaryButtonText: "Our Programs",
       primaryButtonLink: "/lc-programs",
-      imageUrl: "/images/programs/HighPoint_University/hpu2_orig.jpg"
+      imageUrl: "/images/programs/HighPoint_University/HPU 2022.jpg"
     },
     {
       title: "Engage with Technology",
