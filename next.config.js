@@ -30,11 +30,9 @@ if (process.env.VERCEL_URL) {
 
 const nextConfig = {
   images: {
-    remotePatterns,
-    // Image optimization enabled - all images compressed to <2MB
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    formats: ['image/webp', 'image/avif'],
+    // Forcefully disable Next.js Image Optimization in all environments.
+    // This should resolve the 400 errors on Vercel.
+    unoptimized: true,
   },
   // Ignore TypeScript errors during build
   typescript: {
