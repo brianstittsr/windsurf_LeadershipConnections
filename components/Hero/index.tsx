@@ -78,7 +78,7 @@ const Hero = () => {
     {
       title: "Explore the Arts, Fitness and Nutrition",
       subtitle: "Red Carpet Kids, USA",
-      description: "PLACEHOLDER: Please provide a description for this slide.",
+      description: "Unleash your creativity and embrace a healthy lifestyle with our arts, fitness, and nutrition programs.",
       primaryButtonText: "Learn More",
       primaryButtonLink: "/lc-programs",
       imageUrl: "/images/programs/Welborn/CoachKWelborn.jpg"
