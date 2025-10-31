@@ -31,6 +31,18 @@ const menuData: Menu[] = [
     path: "/contact",
     newTab: false,
   },
+  {
+    id: 4,
+    title: "Donate",
+    path: "/donate",
+    newTab: false,
+  },
+  {
+    id: 5,
+    title: "Services",
+    path: "/services",
+    newTab: false,
+  },
   // Pages menu item removed per request
 ];
 export default menuData;

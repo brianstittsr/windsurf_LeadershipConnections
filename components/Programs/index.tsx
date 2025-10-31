@@ -11,7 +11,7 @@ const Programs = () => {
   }, []);
 
   return (
-    <section className="pb-[120px] pt-[120px]">
+    <section className="py-16 md:py-20 lg:py-28 bg-white">
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-center">
           {programs.map((program) => (

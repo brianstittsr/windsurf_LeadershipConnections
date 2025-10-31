@@ -5,7 +5,6 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: "class",
   theme: {
     container: {
       center: true,
@@ -37,16 +36,10 @@ module.exports = {
         transparent: "transparent",
         white: "#FFFFFF",
         black: "#121723",
-        dark: "#1D2430",
-        primary: "#4A6CF7",
-        yellow: "#FBB040",
-        "body-color": "#788293",
-        "body-color-dark": "#959CB1",
-        "gray-dark": "#1E232E",
-        "gray-light": "#F0F2F9",
-        stroke: "#E3E8EF",
-        "stroke-dark": "#353943",
-        "bg-color-dark": "#171C28",
+        primary: "#6B21A8",      // Main brand color for CTAs and links
+        secondary: "#F8F9FA",    // Light gray for section backgrounds
+        "body-color": "#212529", // Dark gray for body text
+        stroke: "#E9ECEF",        // Light gray for borders and dividers
       },
 
       boxShadow: {
@@ -62,6 +55,10 @@ module.exports = {
         btn: "0px 1px 2px rgba(4, 10, 34, 0.15)",
         "btn-hover": "0px 1px 2px rgba(0, 0, 0, 0.15)",
         "btn-light": "0px 1px 2px rgba(0, 0, 0, 0.1)",
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],    // For body text
+        serif: ['Poppins', 'sans-serif'], // For headings
       },
       dropShadow: {
         three: "0px 5px 15px rgba(6, 8, 15, 0.05)",

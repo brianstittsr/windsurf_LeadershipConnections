@@ -7,7 +7,7 @@ const blogData: Blog[] = [
     title: "Why Health and Fitness Matter for Youth",
     paragraph:
       "Explore the role of health and fitness in building a strong foundation for youth. Learn how engaging in physical activity not only promotes well-being but also develops essential teamwork and leadership skills.",
-    image: "/images/blog/blog-01.jpg",
+    image: "/images/hero/pexels-vanessa-loring-7869077.jpg",
     author: {
       name: "Katherine Harreleson",
       image: "/images/blog/author-01.png",
@@ -22,7 +22,7 @@ const blogData: Blog[] = [
     title: "Introducing STEEM: Building Futures through Technology",
     paragraph:
       "Dive into how our STEEM workshops are shaping the next generation of innovators. Discover the exciting world of robotics, coding, and creative entrepreneurship, encouraging youth to explore their passion for technology.",
-    image: "/images/blog/blog-02.jpg",
+    image: "/images/hero/pexels-mikhail-nilov-9242856.jpg",
     author: {
       name: "Gloria Bass",
       image: "/images/blog/author-02.png",
@@ -37,7 +37,7 @@ const blogData: Blog[] = [
     title: "Crafting Skills in the Trades: Building, Designing, and Creating",
     paragraph:
       "Join us as we highlight the importance of trades education. Uncover how hands-on experience in construction, design, and craftsmanship can prepare youth for rewarding career paths.",
-    image: "/images/blog/blog-03.jpg",
+    image: "/images/hero/pexels-pixabay-315934.jpg",
     author: {
       name: "Katherine Harreleson",
       image: "/images/blog/author-03.png",
@@ -52,7 +52,7 @@ const blogData: Blog[] = [
     title: "Dance Your Way to Health: The Connection Between Dance and Well-being",
     paragraph:
       "Read about how dance, as a form of fitness, inspires creativity, builds confidence, and fosters strong community ties among young people.",
-    image: "/images/blog/blog-01.jpg",
+    image: "/images/hero/pexels-pixabay-533630.jpg",
     author: {
       name: "Katherine Harreleson",
       image: "/images/blog/author-01.png",

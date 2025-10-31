@@ -9,7 +9,7 @@ const testimonialData: Testimonial[] = [
     designation: "Former Participant",
     content:
       "Leadership Connections gave me the confidence to pursue my dreams. The mentorship I received was invaluable.",
-    image: "/images/testimonials/auth-01.png",
+    image: "/images/hero/pexels-mikhail-nilov-9242836.jpg",
     star: 5,
   },
   {
@@ -18,7 +18,7 @@ const testimonialData: Testimonial[] = [
     designation: "Alumnus",
     content:
       "The hands-on experience and corporate visits opened my eyes to a world of possibilities. I'm now in a career I love, thanks to this program.",
-    image: "/images/testimonials/auth-02.png",
+    image: "/images/hero/pexels-mikhail-nilov-9242856.jpg",
     star: 5,
   },
   {
@@ -27,14 +27,14 @@ const testimonialData: Testimonial[] = [
     designation: "Graduate",
     content:
       "I learned so much about myself and my leadership potential. I'm forever grateful for the opportunities and support from Leadership Connections.",
-    image: "/images/testimonials/auth-03.png",
+    image: "/images/hero/pexels-pixabay-315934.jpg",
     star: 5,
   },
 ];
 
 const Testimonials = () => {
   return (
-    <section className="bg-gray-light dark:bg-bg-color-dark relative z-10 py-16 md:py-20 lg:py-28">
+    <section className="bg-secondary relative z-10 py-16 md:py-20 lg:py-28">
       <div className="container">
         <SectionTitle
           title="What Our Alumni Say"

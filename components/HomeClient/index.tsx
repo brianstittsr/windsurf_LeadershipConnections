@@ -2,8 +2,7 @@
 
 import ScrollUp from "@/components/Common/ScrollUp";
 import Hero from "@/components/Hero";
-import Welcome from "@/components/Welcome";
-import Benefits from "@/components/Benefits";
+import InteractiveBenefits from "@/components/InteractiveBenefits";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 
@@ -12,8 +11,7 @@ const HomeClient = () => {
     <>
       <ScrollUp />
       <Hero />
-      <Welcome />
-      <Benefits />
+      <InteractiveBenefits />
       <Testimonials />
       <CTA />
     </>

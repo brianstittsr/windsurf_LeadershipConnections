@@ -15,6 +15,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "leadershipconnectionsnc.weebly.com",
       },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
     ],
   },
   // Ignore TypeScript errors during build
