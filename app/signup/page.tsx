@@ -14,14 +14,14 @@ const SignupPage = () => {
           {/* Left Column - Welcome/Info */}
           <div className="w-full px-4 lg:w-1/3">
             <div className="mb-12 lg:mb-0">
-              <h2 className="mb-6 text-3xl font-bold text-black dark:text-white sm:text-4xl">
-                Join Our Community
+              <h2 className="mb-6 text-3xl font-bold text-primary sm:text-4xl">
+                Our Community
               </h2>
               <p className="mb-6 text-base leading-relaxed text-body-color">
                 Start your leadership journey with Leadership C.O.N.N.E.C.T.I.O.N.S. and unlock your potential through our comprehensive programs and mentorship opportunities.
               </p>
               <div className="mb-6">
-                <h3 className="mb-4 text-xl font-semibold text-black dark:text-white">
+                <h3 className="mb-4 text-xl font-semibold text-black">
                   What You'll Get:
                 </h3>
                 <ul className="space-y-2 text-body-color">
@@ -54,34 +54,34 @@ const SignupPage = () => {
           {/* Right Column - Additional Info */}
           <div className="w-full px-4 lg:w-1/3">
             <div className="mb-12 lg:mb-0">
-              <div className="mb-8 rounded-lg bg-primary bg-opacity-10 p-6">
+              <div className="mb-8 rounded-lg bg-tertiary p-6">
                 <h3 className="mb-4 text-xl font-semibold text-primary">
                   Program Highlights
                 </h3>
                 <div className="space-y-4 text-sm text-body-color">
                   <div>
-                    <h4 className="font-semibold text-black dark:text-white">Red Carpet Kids USA</h4>
+                    <h4 className="font-semibold text-black">Red Carpet Kids USA</h4>
                     <p>Fitness, arts, and wellness programs</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-black dark:text-white">STEEM Academy</h4>
+                    <h4 className="font-semibold text-black">STEEM Academy</h4>
                     <p>Technology, robotics, and innovation</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-black dark:text-white">College Experiences</h4>
+                    <h4 className="font-semibold text-black">College Experiences</h4>
                     <p>Campus visits and preparation programs</p>
                   </div>
                 </div>
               </div>
               
-              <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-6">
-                <h3 className="mb-4 text-xl font-semibold text-black dark:text-white">
+              <div className="rounded-lg bg-black p-6">
+                <h3 className="mb-4 text-xl font-semibold text-white">
                   Need Help?
                 </h3>
-                <p className="mb-4 text-sm text-body-color">
+                <p className="mb-4 text-sm text-white">
                   Have questions about our programs or the registration process?
                 </p>
-                <div className="space-y-2 text-sm text-body-color">
+                <div className="space-y-2 text-sm text-white">
                   <p>📧 Email: info@ncleadconnect.org</p>
                   <p>📞 Phone: Contact us for more information</p>
                 </div>

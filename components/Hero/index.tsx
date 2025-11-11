@@ -26,7 +26,7 @@ const HeroSlide = ({ slide, index }: { slide: SlideProps; index: number }) => {
         src={slide.imageUrl}
         alt={slide.title}
         fill
-        className="object-cover w-full h-full"
+        className="object-cover object-top w-full h-full"
         priority={index === 0}
         sizes="100vw"
       />

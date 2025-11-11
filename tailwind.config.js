@@ -36,8 +36,10 @@ module.exports = {
         transparent: "transparent",
         white: "#FFFFFF",
         black: "#121723",
-        primary: "#6B21A8",      // Main brand color for CTAs and links
+        primary: "#6B21A8",      // Deep purple for buttons and accents
         secondary: "#F8F9FA",    // Light gray for section backgrounds
+        tertiary: "#F3E8FF",     // Light purple for section backgrounds
+        accent: "#9333EA",       // Medium purple for progress bar
         "body-color": "#212529", // Dark gray for body text
         stroke: "#E9ECEF",        // Light gray for borders and dividers
       },
