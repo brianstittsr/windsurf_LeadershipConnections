@@ -35,9 +35,18 @@ const Header = () => {
             <div className="w-60 max-w-full px-4 xl:mr-12">
               <Link
                 href="/"
-                className={`header-logo block w-full py-5 lg:py-2`} 
+                className={`header-logo block w-full py-2`} 
               >
-                <span className="text-xl font-bold text-black">Leadership C.O.N.N.E.C.T.I.O.N.S.</span>
+                <div className="flex flex-col items-center lg:items-start">
+                  <Image
+                    src="/images/logo/LeadershipConnectionsLogo.png"
+                    alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
+                    width={80}
+                    height={20}
+                    className="object-contain"
+                  />
+                  <span className="text-xs text-gray-600 mt-1">affiliated with Womens Foundation of North Carolina</span>
+                </div>
               </Link>
             </div>
             <div className="flex w-full items-center justify-between px-4">

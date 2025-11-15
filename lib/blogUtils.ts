@@ -11,7 +11,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     image: "/images/blog/blog-01.jpg",
     author: {
       name: "Katherine Harreleson",
-      image: "/images/blog/author-01.png",
+      image: "/images/history/Katherine_Harrelson.png",
       designation: "Program Director",
     },
     tags: ["leadership"],
@@ -94,7 +94,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     image: "/images/blog/blog-02.jpg",
     author: {
       name: "Gloria Bass",
-      image: "/images/blog/author-02.png",
+      image: "/images/logo/LeadershipConnectionsLogo.png",
       designation: "Leadership Coach",
     },
     tags: ["education"],
@@ -177,7 +177,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     image: "/images/blog/blog-03.jpg",
     author: {
       name: "Katherine Harreleson",
-      image: "/images/blog/author-03.png",
+      image: "/images/history/Katherine_Harrelson.png",
       designation: "Program Director",
     },
     tags: ["mentoring"],

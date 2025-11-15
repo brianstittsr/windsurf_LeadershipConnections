@@ -10,7 +10,7 @@ const blogData: Blog[] = [
     image: "/images/hero/pexels-vanessa-loring-7869077.jpg",
     author: {
       name: "Katherine Harreleson",
-      image: "/images/blog/author-01.png",
+      image: "/images/history/Katherine_Harrelson.png",
       designation: "Program Director",
     },
     tags: ["Health", "Fitness"],
@@ -25,7 +25,7 @@ const blogData: Blog[] = [
     image: "/images/hero/pexels-mikhail-nilov-9242856.jpg",
     author: {
       name: "Gloria Bass",
-      image: "/images/blog/author-02.png",
+      image: "/images/logo/LeadershipConnectionsLogo.png",
       designation: "Leadership Coach",
     },
     tags: ["STEEM", "Technology"],
@@ -40,7 +40,7 @@ const blogData: Blog[] = [
     image: "/images/hero/pexels-pixabay-315934.jpg",
     author: {
       name: "Katherine Harreleson",
-      image: "/images/blog/author-03.png",
+      image: "/images/history/Katherine_Harrelson.png",
       designation: "Program Director",
     },
     tags: ["Trades", "Education"],
@@ -55,7 +55,7 @@ const blogData: Blog[] = [
     image: "/images/hero/pexels-pixabay-533630.jpg",
     author: {
       name: "Katherine Harreleson",
-      image: "/images/blog/author-01.png",
+      image: "/images/history/Katherine_Harrelson.png",
       designation: "Program Director",
     },
     tags: ["Dance", "Health"],

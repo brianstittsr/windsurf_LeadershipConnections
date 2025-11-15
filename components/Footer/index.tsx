@@ -15,18 +15,11 @@ const Footer = () => {
               <div className="mb-12 max-w-[360px] lg:mb-16">
                 <Link href="/" className="mb-8 inline-block">
                   <Image
-                    src="/images/logo/logo.svg"
+                    src="/images/logo/LeadershipConnectionsLogo.png"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    className="w-full h-[27px] object-contain dark:hidden"
-                    width={138}
-                    height={27}
-                  />
-                  <Image
-                    src="/images/logo/logo.svg"
-                    alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    className="hidden w-full h-[27px] object-contain dark:block"
-                    width={138}
-                    height={27}
+                    width={100}
+                    height={25}
+                    className="object-contain"
                   />
                 </Link>
                 <p className="dark:text-body-color-dark mb-9 text-base leading-relaxed text-body-color">
@@ -34,8 +27,10 @@ const Footer = () => {
                 </p>
                 <div className="flex items-center">
                   <a
-                    href="/"
-                    aria-label="social-link"
+                    href="https://www.facebook.com/LeadershipCONNECTIONS"
+                    aria-label="Facebook"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="dark:text-body-color-dark mr-6 text-body-color duration-300 hover:text-primary dark:hover:text-primary"
                   >
                     <svg
@@ -155,10 +150,10 @@ const Footer = () => {
                 <ul>
                   <li>
                     <a
-                      href="/contact"
+                      href="/get-involved"
                       className="dark:text-body-color-dark mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:hover:text-primary"
                     >
-                      Contact
+                      Get Involved
                     </a>
                   </li>
                   <li>

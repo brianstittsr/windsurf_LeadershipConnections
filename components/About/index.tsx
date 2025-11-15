@@ -7,31 +7,100 @@ import { FaUserTie } from 'react-icons/fa';
 const teamMembers = [
   {
     name: 'Katherine L. Harrelson',
-    role: 'Co-Founder',
-    imageUrl: '/images/hero/pexels-mikhail-nilov-9242836.jpg',
+    role: 'Founder & Executive Director',
+    imageUrl: '/images/history/Katherine_Harrelson.png',
   },
-  // Add more team members here
+  {
+    name: 'Meg Stern',
+    role: 'Board Member',
+    imageUrl: '/images/history/meg-sternerg.jpg',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-11-29-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-13-50-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-14-50-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-15-29-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-16-25-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-33-07-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-38-22-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-38-45-pm_orig.png',
+  },
+  {
+    name: 'Board Member',
+    role: 'Advisory Board',
+    imageUrl: '/images/history/screen-shot-2017-08-10-at-2-39-58-pm_orig.png',
+  },
 ];
 
 const About = () => {
   return (
     <>
-      {/* Our Mission Section */}
+      {/* History of Leadership C.O.N.N.E.C.T.I.O.N.S. Section */}
       <section className="py-16 md:py-20 lg:py-28 bg-white">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-body-color mb-6">Our Mission</h2>
-              <p className="text-body-color mb-6 text-lg">
-                At Leadership Connections, headquartered in Greensboro, NC, we are a multicultural educational organization committed to uplifting young women and men aged 14 to 17. Our journey began in 1991 when founder Kathy L. Harrelson envisioned a program to connect young women with the resources and support they need for empowerment and growth.
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-6">History of Leadership C.O.N.N.E.C.T.I.O.N.S.</h2>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                Leadership Connections, Inc. was founded in 1991 by Kathy Harrelson, who envisioned a program dedicated to empowering young women, particularly those from historically marginalized backgrounds. The initiative aimed to recruit, mentor, and support girls aged 14-17, providing them with access to leadership development opportunities that had traditionally been unavailable to them.
+              </p>
+              <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Initial Funding and Development</h3>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                The program began with funding from the Women's Bureau of the U.S. Department of Labor, which recognized the need for targeted support for young women in North Carolina. This initial financial backing allowed Leadership Connections to establish itself as a pioneering model for comprehensive educational services.
+              </p>
+              <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Growth and Expansion</h3>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                Over the years, Leadership Connections has evolved into a statewide educational program that has successfully graduated over 5,486 young women. The program has adapted its curriculum to include a variety of innovative modules, including leadership training, civic responsibility, and career preparation, all aimed at fostering self-esteem, confidence, and community engagement.
+              </p>
+              <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Mentorship and Community Impact</h3>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                A key component of Leadership Connections is its three-tier mentoring system, which includes career mentoring from diverse professionals, peer mentoring from program alumni, and intergenerational mentoring that fosters dialogue between generations. This holistic approach has not only equipped participants with essential skills but has also created a supportive network that encourages ongoing personal and professional development.
+              </p>
+              <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Recognition and Legacy</h3>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                Leadership Connections has received accolades for its innovative approach to youth development and empowerment. The program's impact is evident in the high percentage of graduates who pursue higher education, with 82% of alumni obtaining college degrees. The establishment of the Katherine L. Harrelson Endowment Scholarship Fund further underscores the program's commitment to supporting future generations of young women.
+              </p>
+              <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Conclusion</h3>
+              <p className="text-body-color mb-4 text-base leading-relaxed">
+                Today, Leadership Connections continues to serve as a vital resource for young women in North Carolina, adapting to the changing needs of its participants while remaining true to its original mission of empowerment and leadership development. The program stands as a testament to the power of mentorship and community support in shaping the leaders of tomorrow.
               </p>
             </div>
-            <div className="relative h-80 w-full rounded-lg overflow-hidden">
+            <div className="relative h-[600px] w-full rounded-lg overflow-hidden">
               <Image
-                src="/images/hero/pexels-vanessa-loring-7869077.jpg"
-                alt="Our Mission"
+                src="/images/history/Katherine_Harrelson.png"
+                alt="Katherine Harrelson - Founder"
                 fill
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           </div>
@@ -57,23 +126,6 @@ const About = () => {
                 <p className="text-body-color">{member.role}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Leadership Connection History Section */}
-      <section className="py-16 md:py-20 lg:py-28 bg-white">
-        <div className="container">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-body-color mb-6 text-center">Our History</h2>
-            <div className="prose prose-lg max-w-none text-body-color">
-              <p>
-                Since its inception in 1991, Leadership Connections has continuously evolved to address the unique challenges faced by young women from disadvantaged backgrounds. Our pilot program, initially funded by the U.S. Department of Labor’s Women’s Bureau, has transformed the lives of over 5,486 graduates over the years[1].
-              </p>
-              <p>
-                Our philosophy centers on hands-on learning and civic engagement, tailor-made to foster leadership skills and a positive self-image. Participating students not only learn critical life skills but also experience the power of community and interconnectedness.
-              </p>
-            </div>
           </div>
         </div>
       </section>

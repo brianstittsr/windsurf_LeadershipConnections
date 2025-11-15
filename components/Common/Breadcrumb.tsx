@@ -9,7 +9,7 @@ const Breadcrumb = ({
 }) => {
   return (
     <>
-      <section className="relative z-10 bg-secondary py-20 lg:py-28">
+      <section className="relative z-10 bg-secondary pt-32 pb-20 lg:pt-40 lg:pb-28">
         <div className="container">
           <div className="text-center">
             <h1 className="mb-5 font-serif text-4xl font-bold text-body-color sm:text-5xl">

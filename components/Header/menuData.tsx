@@ -2,12 +2,6 @@ import { Menu } from "@/types/menu";
 
 const menuData: Menu[] = [
   {
-    id: 1,
-    title: "Home",
-    path: "/",
-    newTab: false,
-  },
-  {
     id: 2,
     title: "About",
     path: "/about",
@@ -26,21 +20,33 @@ const menuData: Menu[] = [
     newTab: false,
   },
   {
-    id: 3,
-    title: "Support",
-    path: "/contact",
+    id: 35,
+    title: "LC Past Events",
+    path: "/lc-past-events",
     newTab: false,
   },
   {
-    id: 4,
-    title: "Donate",
-    path: "/donate",
+    id: 36,
+    title: "LC Gallery",
+    path: "/lc-gallery",
+    newTab: false,
+  },
+  {
+    id: 37,
+    title: "LC Past Classes",
+    path: "/lc-past-classes",
     newTab: false,
   },
   {
     id: 5,
-    title: "Services",
+    title: "LC Services",
     path: "/services",
+    newTab: false,
+  },
+  {
+    id: 3,
+    title: "Get Involved",
+    path: "/get-involved",
     newTab: false,
   },
   // Pages menu item removed per request

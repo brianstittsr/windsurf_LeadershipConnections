@@ -6,8 +6,7 @@ const Contact = () => {
           <div className="w-full px-4">
             <div
               className="wow fadeInUp shadow-three dark:bg-gray-dark mb-12 rounded-sm bg-white px-8 py-11 sm:p-[55px] lg:mb-5 lg:px-8 xl:p-[55px]"
-              data-wow-delay=".15s
-              "
+              data-wow-delay=".15s"
             >
               <h2 className="mb-3 text-2xl font-bold text-black dark:text-white sm:text-3xl lg:text-2xl xl:text-3xl">
                 Get Involved
@@ -21,14 +20,14 @@ const Contact = () => {
                     <div className="mb-8">
                       <label
                         htmlFor="name"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                        className="mb-3 block text-sm font-medium text-body-color dark:text-white"
                       >
                         Your Name
                       </label>
                       <input
                         type="text"
                         placeholder="Enter your name"
-                        className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
+                        className="w-full rounded-sm border border-stroke bg-[#2C303B] px-6 py-3 text-base text-white placeholder:text-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:text-white dark:shadow-two dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:ring-0"
                       />
                     </div>
                   </div>
@@ -36,14 +35,14 @@ const Contact = () => {
                     <div className="mb-8">
                       <label
                         htmlFor="email"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                        className="mb-3 block text-sm font-medium text-body-color dark:text-white"
                       >
                         Your Email
                       </label>
                       <input
                         type="email"
                         placeholder="Enter your email"
-                        className="border-stroke dark:text-body-color-dark dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
+                        className="w-full rounded-sm border border-stroke bg-[#2C303B] px-6 py-3 text-base text-white placeholder:text-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:text-white dark:shadow-two dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:ring-0"
                       />
                     </div>
                   </div>
@@ -51,7 +50,7 @@ const Contact = () => {
                     <div className="mb-8">
                       <label
                         htmlFor="message"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
+                        className="mb-3 block text-sm font-medium text-body-color dark:text-white"
                       >
                         Your Message
                       </label>
@@ -59,12 +58,12 @@ const Contact = () => {
                         name="message"
                         rows={5}
                         placeholder="Enter your Message"
-                        className="border-stroke dark:text-body-color-dark dark:shadow-two w-full resize-none rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
+                        className="w-full resize-none rounded-sm border border-stroke bg-[#2C303B] px-6 py-3 text-base text-white placeholder:text-gray-400 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 dark:text-white dark:shadow-two dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:ring-0"
                       ></textarea>
                     </div>
                   </div>
                   <div className="w-full px-4">
-                    <button className="shadow-submit dark:shadow-submit-dark rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90">
+                    <button className="shadow-submit dark:shadow-submit-dark rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/30">
                       Send Message
                     </button>
                   </div>

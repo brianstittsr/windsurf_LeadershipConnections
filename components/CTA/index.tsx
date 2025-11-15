@@ -16,7 +16,7 @@ const CTA = () => {
             Join us and become part of a community dedicated to fostering the next generation of leaders, innovators, and changemakers.
           </p>
           <Link
-            href="/contact"
+            href="/get-involved"
             className="rounded-md bg-accent text-white px-8 py-3 text-base font-semibold duration-300 ease-in-out hover:bg-opacity-90"
           >
             Get Involved Today

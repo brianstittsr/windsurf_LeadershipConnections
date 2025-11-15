@@ -14,8 +14,8 @@ const Blog = () => {
   return (
     <>
       <Breadcrumb
-        pageName="Blog Grid"
-        description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In varius eros eget sapien consectetur ultrices. Ut quis dapibus libero."
+        pageName="C.O.N.N.E.C.T.I.O.N.S. Blog"
+        description="Discover stories, highlights, and reflections from Leadership Connections participants as they explore colleges, visit corporations, create technology projects, and engage in arts, fitness, and community service experiences."
       />
 
       <section className="py-16 md:py-20 lg:py-28 bg-white">

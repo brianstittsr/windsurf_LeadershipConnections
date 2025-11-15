@@ -21,6 +21,8 @@ const config: Config = {
           800: '#6b21a8',
           900: '#581c87',
         },
+        'body-color': '#1F2937',
+        'body-color-dark': '#F3F4F6',
       },
       fontFamily: {
         'dancing-script': ['var(--font-dancing-script)'],
