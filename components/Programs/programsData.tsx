@@ -29,8 +29,12 @@ const programsData: Program[] = [
         <h3 class="text-2xl font-bold mb-6 text-primary-600 dark:text-primary-400">Mission</h3>
         
         <p class="mb-6 text-base leading-relaxed text-body-color">
-          The mission of Red Carpet Kids is to equip young individuals with the knowledge, skills, and leadership abilities necessary to effect positive change in their communities. By focusing on physical fitness, nutritional education, and personal development, RCK strives to ensure that no child faces hunger or lacks the support needed to thrive.
+          To develop a world class Academy that will provide training and advocacy that propels youth to achieve the highest level of leadership.
         </p>
+
+        <div class="mb-10 w-full overflow-hidden rounded">
+          <img src="/images/programs/red-carpet-kids/healthy-eating.jpg" alt="Healthy eating and nutrition education" class="w-full h-auto rounded" />
+        </div>
 
         <h3 class="text-2xl font-bold mb-6 text-primary-600 dark:text-primary-400">Core Components</h3>
 

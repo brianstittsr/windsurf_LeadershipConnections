@@ -41,6 +41,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             <li><Link href="/admin/lc-past-events" className="block py-2 px-4 rounded hover:bg-gray-700">LC Past Events</Link></li>
             <li><Link href="/admin/lc-services" className="block py-2 px-4 rounded hover:bg-gray-700">LC Services</Link></li>
             <li><Link href="/admin/lc-gallery" className="block py-2 px-4 rounded hover:bg-gray-700">LC Gallery</Link></li>
+            <li><Link href="/admin/contact-submissions" className="block py-2 px-4 rounded hover:bg-gray-700">Contact Submissions</Link></li>
             <li><Link href="/admin/alumni-comments" className="block py-2 px-4 rounded hover:bg-gray-700">Alumni Comments</Link></li>
             <li><Link href="/admin/blog-entries" className="block py-2 px-4 rounded hover:bg-gray-700">Blog Entries</Link></li>
             <li><Link href="/admin/service-entries" className="block py-2 px-4 rounded hover:bg-gray-700">Service Entries</Link></li>
