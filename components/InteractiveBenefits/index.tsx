@@ -21,7 +21,7 @@ const benefits = [
     icon: <FaBuilding className="text-4xl text-primary" />,
     title: 'Corporate Visits',
     description: 'Experience the inner workings of large corporations and see what it takes to succeed in various careers.',
-    imageUrl: '/images/programs/Welborn/Simulation Academy - Welborn.jpg',
+    imageUrl: '/images/programs/Cisco/Cisco4.png',
   },
   {
     icon: <FaHeartbeat className="text-4xl text-primary" />,

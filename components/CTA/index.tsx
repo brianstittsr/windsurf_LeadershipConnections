@@ -36,7 +36,7 @@ const CTA = () => {
           </p>
           <Link
             href={content.cta.buttonLink}
-            className="rounded-md bg-accent text-white px-8 py-3 text-base font-semibold duration-300 ease-in-out hover:bg-opacity-90"
+            className="inline-block rounded-md bg-accent text-white px-8 py-3 text-base font-semibold duration-300 ease-in-out hover:bg-opacity-90 hover:shadow-lg transform hover:scale-105 cursor-pointer"
           >
             {content.cta.buttonText}
           </Link>
