@@ -3,7 +3,7 @@
 import ScrollUp from "@/components/Common/ScrollUp";
 import Hero from "@/components/Hero";
 import InteractiveBenefits from "@/components/InteractiveBenefits";
-import MemberExperiences from "@/components/MemberExperiences";
+import MissionVision from "@/components/MissionVision";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 
@@ -13,7 +13,7 @@ const HomeClient = () => {
       <ScrollUp />
       <Hero />
       <InteractiveBenefits />
-      <MemberExperiences />
+      <MissionVision />
       <Testimonials />
       <CTA />
     </>

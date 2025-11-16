@@ -45,12 +45,14 @@ const AboutSectionOne = () => {
                   src="/images/logo/LeadershipConnectionsLogo.png"
                   alt="Leadership Connections logo"
                   fill
+                  style={{ objectFit: 'contain' }}
                   className="drop-shadow-three mx-auto max-w-full dark:hidden dark:drop-shadow-none lg:mr-0"
                 />
                 <Image
                   src="/images/logo/LeadershipConnectionsLogo.png"
                   alt="Leadership Connections logo"
                   fill
+                  style={{ objectFit: 'contain' }}
                   className="drop-shadow-three mx-auto hidden max-w-full dark:block dark:drop-shadow-none lg:mr-0"
                 />
               </div>

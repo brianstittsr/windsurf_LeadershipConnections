@@ -28,7 +28,9 @@ export default function RootLayout({
         <AuthProvider>
           <Providers>
             <Header />
-            {children}
+            <main className="pt-20">
+              {children}
+            </main>
             <Footer />
             <ScrollToTop />
           </Providers>

@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        (request.auth.token.email == 'brianstittsr@gmail.com' ||
+         request.auth.token.email == 'kathy@ncleadconnect.org' ||
+         request.auth.token.email == 'gloria@ncleadconnect.org');
+    }
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Users collection - users can read their own data, admins can read all
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isAuthenticated();
+      allow list: if isAdmin();
+    }
+    
+    // Site content - public read, admin write
+    match /siteContent/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // LC Classes - public read, admin write
+    match /lcClasses/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // LC Past Events - public read, admin write
+    match /lcPastEvents/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // LC Services - public read, admin write
+    match /lcServices/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // LC Gallery - public read, admin write
+    match /lcGallery/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Alumni Comments - public read, admin write
+    match /alumniComments/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Blog Entries - public read, admin write
+    match /blogEntries/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Service Entries - public read, admin write
+    match /serviceEntries/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Program Entries - public read, admin write
+    match /programEntries/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Events - public read, admin write
+    match /events/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Forms - authenticated users can submit, admins can read all
+    match /forms/{document=**} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // Registrations - authenticated users can submit, admins can read all
+    match /registrations/{document=**} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // Grants - public read, admin write
+    match /grants/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

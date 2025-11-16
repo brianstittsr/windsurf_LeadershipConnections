@@ -4,7 +4,7 @@ import { getClassBySlug, getAllClasses } from "@/lib/classUtils";
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
@@ -15,7 +15,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const classItem = getClassBySlug(params.slug);
+  const { slug } = await params;
+  const classItem = getClassBySlug(slug);
 
   if (!classItem) {
     return {
@@ -29,8 +30,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ClassDetailPage({ params }: Props) {
-  const classItem = getClassBySlug(params.slug);
+export default async function ClassDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const classItem = getClassBySlug(slug);
 
   if (!classItem) {
     notFound();
@@ -56,7 +58,8 @@ export default function ClassDetailPage({ params }: Props) {
                           <Image
                             src="/images/logo/LeadershipConnectionsLogo.png"
                             alt="Leadership C.O.N.N.E.C.T.I.O.N.S."
-                            fill
+                            width={40}
+                            height={40}
                             className="object-cover"
                           />
                         </div>

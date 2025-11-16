@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import ContactInfo from './ContactInfo';
 import ProgramInterests from './ProgramInterests';
@@ -29,6 +29,7 @@ const Wizard = () => {
       await setDoc(doc(db, 'users', user.uid), {
         ...rest,
         email,
+        createdAt: Timestamp.now(),
       });
 
       await fetch('/api/auth/send-welcome-email', {

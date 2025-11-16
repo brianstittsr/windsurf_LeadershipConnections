@@ -7,9 +7,10 @@ import TagButton from "@/components/Blog/TagButton";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const event = getEventBySlug(params.slug);
+  const { slug } = await params;
+  const event = getEventBySlug(slug);
   
   if (!event) {
     return {
@@ -31,8 +32,9 @@ export async function generateStaticParams() {
   }));
 }
 
-const EventDetailsPage = ({ params }: { params: { slug: string } }) => {
-  const event = getEventBySlug(params.slug);
+const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const { slug } = await params;
+  const event = getEventBySlug(slug);
 
   if (!event) {
     notFound();

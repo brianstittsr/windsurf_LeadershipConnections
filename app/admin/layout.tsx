@@ -21,8 +21,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="flex">
-      <aside className="w-64 bg-gray-800 text-white p-4">
+    <div className="flex pt-20 min-h-screen">
+      <aside className="w-64 bg-gray-800 text-white p-4 fixed left-0 top-20 bottom-0 overflow-y-auto">
         <nav>
           <ul className="space-y-2">
             <li><Link href="/admin/dashboard" className="block py-2 px-4 rounded hover:bg-gray-700">Dashboard</Link></li>
@@ -36,6 +36,11 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             <li className="pt-4 border-t border-gray-600">
               <span className="block py-2 px-4 text-gray-300 font-semibold">Content Management</span>
             </li>
+            <li><Link href="/admin/home-content" className="block py-2 px-4 rounded hover:bg-gray-700">Home Page Content</Link></li>
+            <li><Link href="/admin/lc-classes" className="block py-2 px-4 rounded hover:bg-gray-700">LC Past Classes</Link></li>
+            <li><Link href="/admin/lc-past-events" className="block py-2 px-4 rounded hover:bg-gray-700">LC Past Events</Link></li>
+            <li><Link href="/admin/lc-services" className="block py-2 px-4 rounded hover:bg-gray-700">LC Services</Link></li>
+            <li><Link href="/admin/lc-gallery" className="block py-2 px-4 rounded hover:bg-gray-700">LC Gallery</Link></li>
             <li><Link href="/admin/alumni-comments" className="block py-2 px-4 rounded hover:bg-gray-700">Alumni Comments</Link></li>
             <li><Link href="/admin/blog-entries" className="block py-2 px-4 rounded hover:bg-gray-700">Blog Entries</Link></li>
             <li><Link href="/admin/service-entries" className="block py-2 px-4 rounded hover:bg-gray-700">Service Entries</Link></li>
@@ -43,7 +48,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 ml-64">
         {children}
       </main>
     </div>
