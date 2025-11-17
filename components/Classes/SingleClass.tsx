@@ -17,7 +17,7 @@ const SingleClass = ({ classItem }: { classItem: Class }) => {
           <h3>
             <Link
               href={`/lc-past-classes/${slug}`}
-              className="mb-4 block text-xl font-bold text-black hover:text-primary dark:text-white dark:hover:text-primary sm:text-2xl"
+              className="mb-4 block text-xl font-bold text-body-color hover:text-primary dark:text-white dark:hover:text-primary sm:text-2xl"
             >
               {year}
             </Link>

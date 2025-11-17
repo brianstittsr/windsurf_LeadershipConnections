@@ -3,14 +3,14 @@ import { Class } from "@/types/class";
 const classesData: Class[] = [
   {
     id: 1,
-    slug: "class-2016-2017",
-    year: "2016-2017",
-    title: "Leadership C.O.N.N.E.C.T.I.O.N.S. Class of 2016-2017",
+    slug: "class-1998-1999",
+    year: "1998-1999",
+    title: "Leadership C.O.N.N.E.C.T.I.O.N.S. Class of 1998-1999",
     paragraph:
-      "The 2016-2017 class marked another successful year of empowering young leaders through comprehensive programs in leadership development, community service, and academic excellence.",
+      "The inaugural 1998-1999 class marked the beginning of our journey in empowering young leaders through comprehensive programs in leadership development, community service, and academic excellence.",
     image: "/images/LC_Classes/screen-shot-2017-05-23-at-11-18-36-am_orig.png",
-    graduationDate: "May 2017",
-    tags: ["Leadership", "Class of 2017"],
+    graduationDate: "May 1999",
+    tags: ["Leadership", "Class of 1999"],
   },
   {
     id: 2,

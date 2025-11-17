@@ -76,7 +76,7 @@ const Header = () => {
                     width={60}
                     height={15}
                     priority
-                    className="object-contain"
+                    className="object-contain brightness-0"
                   />
                   <span className="text-[10px] text-gray-600 mt-0.5 whitespace-nowrap">affiliated with Womens Foundation of North Carolina</span>
                 </div>

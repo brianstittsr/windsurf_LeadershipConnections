@@ -13,7 +13,7 @@ const benefits = [
   },
   {
     icon: <FaLaptopCode className="text-4xl text-primary" />,
-    title: 'High Technology Learning',
+    title: 'Emerging Technology Learning',
     description: 'Engage in cutting-edge workshops that enhance your technological skills.',
     imageUrl: '/images/programs/Welborn/Robo Dog - Welborn.jpg',
   },

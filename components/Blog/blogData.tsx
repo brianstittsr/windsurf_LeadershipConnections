@@ -69,7 +69,7 @@ const blogData: Blog[] = [
     title: "Introducing STEEM: Building Futures through Technology",
     paragraph:
       "In an age where technology is rapidly evolving, the STEEM program is at the forefront of equipping youth with the skills and knowledge to thrive in this digital landscape through innovative workshops in robotics, coding, and creative entrepreneurship.",
-    image: "/images/hero/pexels-mikhail-nilov-9242856.jpg",
+    image: "/images/cellphone_images/5822257108524370710.jpg",
     author: {
       name: "Brian Stitt",
       image: "/images/logo/LeadershipConnectionsLogo.png",
@@ -132,10 +132,10 @@ const blogData: Blog[] = [
     title: "Crafting Skills in the Trades: Building, Designing, and Creating",
     paragraph:
       "Join us as we highlight the importance of trades education. Uncover how hands-on experience in construction, design, and craftsmanship can prepare youth for rewarding career paths.",
-    image: "/images/hero/pexels-pixabay-315934.jpg",
+    image: "/images/cellphone_images/6326587696750049260.JPG",
     author: {
-      name: "Katherine Harreleson",
-      image: "/images/history/Katherine_Harrelson.png",
+      name: "Gloria Bass",
+      image: "/images/history/GloriaBass.webp",
       designation: "Program Director",
     },
     tags: ["Trades", "Education"],

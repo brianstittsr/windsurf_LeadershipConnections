@@ -7,4 +7,5 @@ export type Event = {
   date: string;
   location: string;
   tags: string[];
+  content?: string;
 };

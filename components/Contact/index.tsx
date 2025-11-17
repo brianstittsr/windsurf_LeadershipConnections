@@ -17,7 +17,7 @@ const Contact = () => {
     'Red Carpet Kids',
     'STEEM Program',
     'College and University Visits',
-    'High Technology Learning',
+    'Emerging Technology Learning',
     'Corporate Visits',
     'Fitness and Wellness Activities',
     'Volunteering',
