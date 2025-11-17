@@ -8,7 +8,7 @@ const benefits = [
   {
     icon: <FaUniversity className="text-4xl text-primary" />,
     title: 'College and University Visits',
-    description: 'Explore campuses and get inspired by what your future could hold!',
+    description: 'LC Students visit High Point University and get inspired by their potential future in medicine!',
     imageUrl: '/images/programs/HighPoint_University/HPU-2022.jpg',
   },
   {
