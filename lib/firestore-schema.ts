@@ -1,11 +1,17 @@
 import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
+import { UserRole } from '@/types/roles';
+import { MemberProfile } from '@/types/member-profile.types';
+import { Connection, Mentorship, Message, MessageThread } from '@/types/networking.types';
+import { LCForm, Dataset } from '@/types/lc-form.types';
+
 // Define the schema structure for our Firestore collections
 export interface UserProfile {
   uid: string;
   email: string;
   name: string;
+  role?: UserRole;
   address?: string;
   city?: string;
   state?: string;
@@ -178,6 +184,110 @@ export async function initializeFirestoreSchema() {
   }
 }
 
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  location: string;
+  image?: string;
+  category: 'workshop' | 'class' | 'event' | 'meeting' | 'other';
+  maxAttendees?: number;
+  currentAttendees: number;
+  registrationRequired: boolean;
+  registrationFormId?: string;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CustomForm {
+  id: string;
+  title: string;
+  description: string;
+  slug: string;
+  fields: any[];
+  template?: string;
+  qrCode?: string;
+  publicUrl: string;
+  published: boolean;
+  allowMultipleSubmissions: boolean;
+  requiresAuth: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  submissionCount: number;
+}
+
+export interface FormSubmission {
+  id: string;
+  formId: string;
+  formTitle: string;
+  data: Record<string, any>;
+  submittedBy?: string;
+  submittedAt: Date;
+  ipAddress?: string;
+  trackingData?: {
+    deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
+    browser: string;
+    browserVersion: string;
+    os: string;
+    screenResolution: string;
+    timezone: string;
+    timestamp: Date;
+    userAgent: string;
+    referrer: string;
+    language: string;
+    approximateLocation?: {
+      city?: string;
+      region?: string;
+      country?: string;
+      latitude?: number;
+      longitude?: number;
+    };
+  };
+}
+
+export interface BrainstormingMethod {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  imageUrl: string;
+  keyPoints: string[];
+  bestFor: string;
+  steps: string[];
+  tips: string[];
+  examples: string[];
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon?: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  tags: string[];
+  status: 'active' | 'archived' | 'completed';
+  // Associated resources
+  formIds: string[];
+  datasetIds: string[];
+  eventIds: string[];
+  // Metadata
+  metadata: {
+    totalForms: number;
+    totalDatasets: number;
+    totalSubmissions: number;
+    lastActivity?: Date;
+  };
+}
+
+// Export types for Leadership Connections
+export type { MemberProfile, Connection, Mentorship, Message, MessageThread, LCForm, Dataset };
+
 // Collection references for easy access
 export const collections = {
   users: 'users',
@@ -186,5 +296,19 @@ export const collections = {
   serviceEntries: 'serviceEntries',
   programEntries: 'programEntries',
   adminUsers: 'adminUsers',
-  settings: 'settings'
+  settings: 'settings',
+  calendarEvents: 'calendarEvents',
+  customForms: 'customForms',
+  formSubmissions: 'formSubmissions',
+  // Leadership Connections collections
+  memberProfiles: 'memberProfiles',
+  connections: 'connections',
+  mentorships: 'mentorships',
+  messages: 'messages',
+  messageThreads: 'messageThreads',
+  lcForms: 'lcForms',
+  lcDatasets: 'lcDatasets',
+  lcFormSubmissions: 'lcFormSubmissions',
+  strategicPlanningMethods: 'strategicPlanningMethods',
+  projects: 'projects'
 };

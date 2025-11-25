@@ -9,3 +9,21 @@ export type Event = {
   tags: string[];
   content?: string;
 };
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  location: string;
+  image?: string;
+  category: 'workshop' | 'class' | 'event' | 'meeting' | 'other';
+  maxAttendees?: number;
+  currentAttendees: number;
+  registrationRequired: boolean;
+  registrationFormId?: string;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

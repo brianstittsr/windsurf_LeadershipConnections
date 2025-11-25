@@ -141,20 +141,5 @@ const blogData: Blog[] = [
     tags: ["Trades", "Education"],
     publishDate: "2023-01-01",
   },
-  {
-    id: 4,
-    slug: "dance-and-well-being",
-    title: "Dance Your Way to Health: The Connection Between Dance and Well-being",
-    paragraph:
-      "Read about how dance, as a form of fitness, inspires creativity, builds confidence, and fosters strong community ties among young people.",
-    image: "/images/hero/pexels-pixabay-533630.jpg",
-    author: {
-      name: "TyG",
-      image: "/images/history/TyG.webp",
-      designation: "Red Carpet Kids Ambassador",
-    },
-    tags: ["Dance", "Health"],
-    publishDate: "2023-01-01",
-  },
 ];
 export default blogData;
