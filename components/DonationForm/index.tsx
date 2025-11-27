@@ -185,7 +185,7 @@ const DonationForm: React.FC = () => {
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
           <p className="text-gray-600">
             Your donation of ${selectedAmount} has been successfully processed. 
-            Your support helps Leadership C.O.N.N.E.C.T.I.O.N.S. continue empowering young women to become tomorrow's leaders.
+            Your support helps Leadership C.O.N.N.E.C.T.I.O.N.S. continue empowering youth to become tomorrow's leaders.
           </p>
         </div>
         <button
@@ -203,7 +203,7 @@ const DonationForm: React.FC = () => {
       <div className="mb-8 text-center">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">Support Our Mission</h3>
         <p className="text-gray-600">
-          Your donation helps us continue empowering young women through leadership development, 
+          Your donation helps us continue empowering youth through leadership development, 
           mentorship programs, and educational opportunities.
         </p>
       </div>

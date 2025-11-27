@@ -18,7 +18,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     publishDate: "March 15, 2025",
     content: `
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-        Since 1991, the Leadership C.O.N.N.E.C.T.I.O.N.S. Program has been empowering young women to discover their leadership potential and make meaningful contributions to their communities. Our comprehensive approach combines mentorship, skill development, and hands-on experiences to create well-rounded leaders ready to face tomorrow's challenges.
+        Since 1991, the Leadership C.O.N.N.E.C.T.I.O.N.S. Program has been empowering youth to discover their leadership potential and make meaningful contributions to their communities. Our comprehensive approach combines mentorship, skill development, and hands-on experiences to create well-rounded leaders ready to face tomorrow's challenges.
       </p>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
@@ -90,7 +90,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     slug: "summer-college-experience",
     title: "What to Expect from Our Summer 'College Experience'",
     paragraph:
-      "Our summer program offers a taste of college life while building independence and academic focus. Learn how this immersive experience prepares young women for future success.",
+      "Our summer program offers a taste of college life while building independence and academic focus. Learn how this immersive experience prepares youth for future success.",
     image: "/images/blog/blog-02.jpg",
     author: {
       name: "Gloria Bass",
@@ -105,7 +105,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
       </p>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-        During this week-long residential program, participants stay in actual college dormitories, attend workshops and classes taught by university professors, and engage in campus activities that mirror the college experience. This taste of independence helps young women build confidence in their ability to navigate higher education successfully.
+        During this week-long residential program, participants stay in actual college dormitories, attend workshops and classes taught by university professors, and engage in campus activities that mirror the college experience. This taste of independence helps youth build confidence in their ability to navigate higher education successfully.
       </p>
       
       <h3 class="font-xl mb-10 font-bold leading-tight text-black dark:text-white sm:text-2xl sm:leading-tight lg:text-xl lg:leading-tight xl:text-2xl xl:leading-tight">
@@ -164,7 +164,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
       </div>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-        The Summer "College Experience" is just one of the many ways the Leadership C.O.N.N.E.C.T.I.O.N.S. Program prepares young women for future success. By providing this immersive opportunity, we help participants build confidence, independence, and academic focus that will serve them well in their educational journeys.
+        The Summer "College Experience" is just one of the many ways the Leadership C.O.N.N.E.C.T.I.O.N.S. Program prepares youth for future success. By providing this immersive opportunity, we help participants build confidence, independence, and academic focus that will serve them well in their educational journeys.
       </p>
     `,
   },
@@ -173,7 +173,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
     slug: "mentoring-makes-difference",
     title: "How Our 3-Tier Mentoring Approach Makes a Difference",
     paragraph:
-      "Our unique mentoring structure provides comprehensive support through peer, professional, and executive mentors. Discover how this approach helps young women thrive.",
+      "Our unique mentoring structure provides comprehensive support through peer, professional, and executive mentors. Discover how this approach helps youth thrive.",
     image: "/images/blog/blog-03.jpg",
     author: {
       name: "Katherine Harreleson",
@@ -247,7 +247,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
       </h3>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-        Research has shown that young women with multiple mentors are more likely to succeed academically, professionally, and personally. Our 3-Tier approach ensures that participants receive guidance tailored to different aspects of their development, creating a comprehensive support system that addresses both immediate needs and long-term goals.
+        Research has shown that youth with multiple mentors are more likely to succeed academically, professionally, and personally. Our 3-Tier approach ensures that participants receive guidance tailored to different aspects of their development, creating a comprehensive support system that addresses both immediate needs and long-term goals.
       </p>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
@@ -255,7 +255,7 @@ const blogData: (Blog & { slug: string; content: string })[] = [
       </p>
       
       <p class="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed lg:text-base lg:leading-relaxed xl:text-lg xl:leading-relaxed">
-        The Leadership C.O.N.N.E.C.T.I.O.N.S. Program's 3-Tier Mentoring approach is just one of the ways we're committed to providing comprehensive support for young women as they develop into the leaders of tomorrow.
+        The Leadership C.O.N.N.E.C.T.I.O.N.S. Program's 3-Tier Mentoring approach is just one of the ways we're committed to providing comprehensive support for youth as they develop into the leaders of tomorrow.
       </p>
     `,
   },

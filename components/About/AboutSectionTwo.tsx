@@ -31,7 +31,7 @@ const AboutSectionTwo = () => {
                   Leadership Development
                 </h3>
                 <p className="text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  Our comprehensive leadership development programs equip young women with the skills, confidence, and knowledge needed to become effective leaders in their communities and beyond.
+                  Our comprehensive leadership development programs equip youth with the skills, confidence, and knowledge needed to become effective leaders in their communities and beyond.
                 </p>
               </div>
               <div className="mb-9">
@@ -39,7 +39,7 @@ const AboutSectionTwo = () => {
                   Mentorship Programs
                 </h3>
                 <p className="text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  Our mentorship initiatives connect young women with accomplished professionals who provide guidance, support, and valuable insights to help them navigate their educational and career paths.
+                  Our mentorship initiatives connect youth with accomplished professionals who provide guidance, support, and valuable insights to help them navigate their educational and career paths.
                 </p>
               </div>
               <div className="mb-1">
@@ -47,7 +47,7 @@ const AboutSectionTwo = () => {
                   Community Engagement
                 </h3>
                 <p className="text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  We foster a supportive community where young women can build meaningful connections, collaborate on impactful projects, and develop the networks that will support their future success.
+                  We foster a supportive community where youth can build meaningful connections, collaborate on impactful projects, and develop the networks that will support their future success.
                 </p>
               </div>
             </div>

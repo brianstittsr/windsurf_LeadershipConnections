@@ -72,15 +72,15 @@ const About = () => {
             <div>
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-6">History of Leadership C.O.N.N.E.C.T.I.O.N.S.</h2>
               <p className="text-body-color mb-4 text-base leading-relaxed">
-                Leadership Connections, Inc. was founded in 1991 by Kathy Harrelson, who envisioned a program dedicated to empowering young women, particularly those from historically marginalized backgrounds. The initiative aimed to recruit, mentor, and support girls aged 14-17, providing them with access to leadership development opportunities that had traditionally been unavailable to them.
+                Leadership Connections, Inc. was founded in 1991 by Kathy Harrelson, who envisioned a program dedicated to empowering youth, particularly those from historically marginalized backgrounds. The initiative aimed to recruit, mentor, and support girls aged 14-17, providing them with access to leadership development opportunities that had traditionally been unavailable to them.
               </p>
               <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Initial Funding and Development</h3>
               <p className="text-body-color mb-4 text-base leading-relaxed">
-                The program began with funding from the Women's Bureau of the U.S. Department of Labor, which recognized the need for targeted support for young women in North Carolina. This initial financial backing allowed Leadership Connections to establish itself as a pioneering model for comprehensive educational services.
+                The program began with funding from the Women's Bureau of the U.S. Department of Labor, which recognized the need for targeted support for youth in North Carolina. This initial financial backing allowed Leadership Connections to establish itself as a pioneering model for comprehensive educational services.
               </p>
               <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Growth and Expansion</h3>
               <p className="text-body-color mb-4 text-base leading-relaxed">
-                Over the years, Leadership Connections has evolved into a statewide educational program that has successfully graduated over 5,486 young women. The program has adapted its curriculum to include a variety of innovative modules, including leadership training, civic responsibility, and career preparation, all aimed at fostering self-esteem, confidence, and community engagement.
+                Over the years, Leadership Connections has evolved into a statewide educational program that has successfully graduated over 5,486 youth. The program has adapted its curriculum to include a variety of innovative modules, including leadership training, civic responsibility, and career preparation, all aimed at fostering self-esteem, confidence, and community engagement.
               </p>
               <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Mentorship and Community Impact</h3>
               <p className="text-body-color mb-4 text-base leading-relaxed">
@@ -88,11 +88,11 @@ const About = () => {
               </p>
               <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Recognition and Legacy</h3>
               <p className="text-body-color mb-4 text-base leading-relaxed">
-                Leadership Connections has received accolades for its innovative approach to youth development and empowerment. The program's impact is evident in the high percentage of graduates who pursue higher education, with 82% of alumni obtaining college degrees. The establishment of the Katherine L. Harrelson Endowment Scholarship Fund further underscores the program's commitment to supporting future generations of young women.
+                Leadership Connections has received accolades for its innovative approach to youth development and empowerment. The program's impact is evident in the high percentage of graduates who pursue higher education, with 82% of alumni obtaining college degrees. The establishment of the Katherine L. Harrelson Endowment Scholarship Fund further underscores the program's commitment to supporting future generations of youth.
               </p>
               <h3 className="font-semibold text-xl text-primary-600 dark:text-primary-400 mb-3 mt-6">Conclusion</h3>
               <p className="text-body-color mb-4 text-base leading-relaxed">
-                Today, Leadership Connections continues to serve as a vital resource for young women in North Carolina, adapting to the changing needs of its participants while remaining true to its original mission of empowerment and leadership development. The program stands as a testament to the power of mentorship and community support in shaping the leaders of tomorrow.
+                Today, Leadership Connections continues to serve as a vital resource for youth in North Carolina, adapting to the changing needs of its participants while remaining true to its original mission of empowerment and leadership development. The program stands as a testament to the power of mentorship and community support in shaping the leaders of tomorrow.
               </p>
             </div>
             <div className="relative h-[600px] w-full rounded-lg overflow-hidden">
@@ -122,7 +122,7 @@ const About = () => {
             <div>
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-6">The C.O.N.N.E.C.T.I.O.N.S. Meaning</h2>
               <p className="text-body-color mb-6 text-base leading-relaxed">
-                The acronym C.O.N.N.E.C.T.I.O.N.S. holds deep significance in our organization's history and mission. Originally conceived as a program specifically designed for young women, each letter of our name represents a core value that has guided our work since our founding in 1991.
+                The acronym C.O.N.N.E.C.T.I.O.N.S. holds deep significance in our organization's history and mission. Originally conceived as a program specifically designed for youth, each letter of our name represents a core value that has guided our work since our founding in 1991.
               </p>
               <p className="text-body-color mb-6 text-base leading-relaxed">
                 When Katherine Harrelson founded Leadership Connections, she envisioned a comprehensive program that would address the unique challenges and opportunities facing young women, particularly those from underserved communities. The C.O.N.N.E.C.T.I.O.N.S. framework was developed to create meaningful pathways for girls to develop leadership skills, build confidence, and establish lasting relationships that would support their personal and professional growth.

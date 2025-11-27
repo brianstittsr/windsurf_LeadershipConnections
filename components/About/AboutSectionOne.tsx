@@ -20,7 +20,7 @@ const AboutSectionOne = () => {
                   Mission
                 </h3>
                 <p className="text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  To Equip young women with the necessary knowledge, skills, and leadership abilities to effect global progress for young women and girls.
+                  To Equip youth with the necessary knowledge, skills, and leadership abilities to effect global progress for youth and girls.
                 </p>
               </div>
               
@@ -29,7 +29,7 @@ const AboutSectionOne = () => {
                   Vision
                 </h3>
                 <p className="text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  To provide "World Class" training and advocacy that propels young women to achieve the highest level of Leadership.
+                  To provide "World Class" training and advocacy that propels youth to achieve the highest level of Leadership.
                 </p>
               </div>
 
