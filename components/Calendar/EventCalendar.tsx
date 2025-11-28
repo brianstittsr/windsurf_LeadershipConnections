@@ -37,17 +37,19 @@ export default function EventCalendar({ showFilters = true, maxEvents }: EventCa
       );
       
       const querySnapshot = await getDocs(eventsQuery);
-      const eventsData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          startDate: data.startDate?.toDate() || new Date(),
-          endDate: data.endDate?.toDate() || new Date(),
-          createdAt: data.createdAt?.toDate() || new Date(),
-          updatedAt: data.updatedAt?.toDate() || new Date(),
-        };
-      }) as CalendarEvent[];
+      const eventsData = querySnapshot.docs
+        .map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            startDate: data.startDate?.toDate() || new Date(),
+            endDate: data.endDate?.toDate() || new Date(),
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: data.updatedAt?.toDate() || new Date(),
+          };
+        })
+        .filter(event => !(event as any).hidden) as CalendarEvent[]; // Filter out hidden events
       
       setEvents(eventsData);
     } catch (error) {

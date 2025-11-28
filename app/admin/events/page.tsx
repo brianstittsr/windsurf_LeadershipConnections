@@ -154,6 +154,20 @@ const EventsPage = () => {
     }
   };
 
+  const handleToggleHidden = async (event: CalendarEvent) => {
+    try {
+      const newHiddenState = !(event as any).hidden;
+      await updateDoc(doc(db, 'calendarEvents', event.id), {
+        hidden: newHiddenState,
+        updatedAt: Timestamp.fromDate(new Date())
+      });
+      fetchEvents();
+    } catch (error) {
+      console.error('Error toggling event visibility:', error);
+      alert('Failed to update event visibility');
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       title: '',
@@ -566,6 +580,11 @@ const EventsPage = () => {
                         Draft
                       </span>
                     )}
+                    {(event as any).hidden && (
+                      <span className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">
+                        Hidden from Public
+                      </span>
+                    )}
                   </div>
                   {!isCollapsed && (
                     <>
@@ -597,10 +616,16 @@ const EventsPage = () => {
                     Delete
                   </button>
                   <button
-                    onClick={toggleCollapse}
-                    className="text-gray-600 hover:text-gray-800"
+                    onClick={() => handleToggleHidden(event)}
+                    className="text-orange-600 hover:text-orange-800 relative group"
+                    title="Toggle visibility on public calendar"
                   >
-                    {isCollapsed ? 'Show' : 'Hide'}
+                    {(event as any).hidden ? 'Unhide' : 'Hide'}
+                    <span className="absolute bottom-full right-0 mb-2 w-48 px-3 py-2 text-xs text-white bg-gray-900 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-normal">
+                      {(event as any).hidden 
+                        ? 'Click to show this event on the public calendar'
+                        : 'Click to hide this event from the public calendar'}
+                    </span>
                   </button>
                 </div>
               </div>
