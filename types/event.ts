@@ -8,6 +8,11 @@ export type Event = {
   location: string;
   tags: string[];
   content?: string;
+  registrationLink?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 };
 
 export interface CalendarEvent {

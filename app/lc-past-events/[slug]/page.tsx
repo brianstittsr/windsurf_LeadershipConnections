@@ -1,43 +1,87 @@
-import { Metadata } from "next";
-import Image from "next/image";
-import { getEventBySlug, getAllEvents } from "@/lib/eventUtils";
-import { notFound } from "next/navigation";
-import TagButton from "@/components/Blog/TagButton";
+'use client';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const event = getEventBySlug(slug);
-  
-  if (!event) {
-    return {
-      title: "Event Not Found",
-      description: "The requested event could not be found",
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import TagButton from "@/components/Blog/TagButton";
+import dynamic from 'next/dynamic';
+import type { Event } from "@/types/event";
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
+// Dynamic imports to avoid SSR issues with leaflet
+const EventMap = dynamic(() => import('@/components/Events/EventMap'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-gray-200 rounded-lg animate-pulse"></div>
+});
+
+const EventQRCode = dynamic(() => import('@/components/Events/EventQRCode'), {
+  ssr: false,
+});
+
+const EventDetailsPage = () => {
+  const params = useParams();
+  const slug = params?.slug as string;
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        // Try to fetch from Firebase first
+        const eventsRef = doc(db, 'lcPastEvents', slug);
+        const eventSnap = await getDoc(eventsRef);
+        
+        if (eventSnap.exists()) {
+          const data = eventSnap.data();
+          setEvent({ 
+            id: parseInt(eventSnap.id) || 0,
+            slug: eventSnap.id,
+            ...data 
+          } as Event);
+        }
+      } catch (error) {
+        console.error('Error fetching event:', error);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    if (slug) {
+      fetchEvent();
+    }
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <section className="pb-[120px] pt-[150px]">
+        <div className="container">
+          <div className="flex justify-center">
+            <div className="w-full px-4 lg:w-8/12">
+              <div className="animate-pulse">
+                <div className="h-10 bg-gray-200 rounded mb-8"></div>
+                <div className="h-64 bg-gray-200 rounded mb-8"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
-  return {
-    title: `${event.title} | Leadership C.O.N.N.E.C.T.I.O.N.S.`,
-    description: event.paragraph,
-  };
-}
-
-export async function generateStaticParams() {
-  const events = getAllEvents();
-  return events.map((event) => ({
-    slug: event.slug,
-  }));
-}
-
-const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-  const { slug } = await params;
-  const event = getEventBySlug(slug);
-
   if (!event) {
-    notFound();
+    return (
+      <section className="pb-[120px] pt-[150px]">
+        <div className="container">
+          <div className="flex justify-center">
+            <div className="w-full px-4 lg:w-8/12">
+              <h2 className="text-3xl font-bold text-gray-900">Event Not Found</h2>
+              <p className="text-gray-600 mt-4">The requested event could not be found.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -97,6 +141,39 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
                   <div className="blog-details">
                     <div dangerouslySetInnerHTML={{ __html: event.content }} />
                   </div>
+
+                  {/* Registration QR Code */}
+                  {event.registrationLink && (
+                    <div className="mt-12">
+                      <EventQRCode 
+                        registrationLink={event.registrationLink}
+                        eventTitle={event.title}
+                      />
+                    </div>
+                  )}
+
+                  {/* Location Map */}
+                  {event.coordinates && (
+                    <div className="mt-12">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-6">Event Location</h3>
+                      <EventMap
+                        latitude={event.coordinates.lat}
+                        longitude={event.coordinates.lng}
+                        locationName={event.location}
+                        eventTitle={event.title}
+                      />
+                      <p className="text-sm text-gray-600 mt-3 text-center">
+                        <a 
+                          href={`https://www.openstreetmap.org/?mlat=${event.coordinates.lat}&mlon=${event.coordinates.lng}#map=15/${event.coordinates.lat}/${event.coordinates.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline"
+                        >
+                          View on OpenStreetMap →
+                        </a>
+                      </p>
+                    </div>
+                  )}
 
                   <div className="mt-12 flex flex-wrap items-center justify-between">
                     <div className="mb-5">

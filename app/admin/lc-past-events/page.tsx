@@ -18,6 +18,11 @@ interface EventItem {
   tags: string[];
   content?: string;
   published?: boolean;
+  registrationLink?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 const LCPastEventsPage = () => {
@@ -329,6 +334,66 @@ const EventForm = ({ initialData, onSave, onCancel, saving }: {
         />
         <p className="text-xs text-gray-500 mt-1">
           Use HTML with Tailwind classes for styling. This will be displayed on the event detail page.
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Registration Link (optional)
+        </label>
+        <input
+          type="url"
+          value={formData.registrationLink || ''}
+          onChange={(e) => setFormData({ ...formData, registrationLink: e.target.value })}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+          placeholder="https://example.com/register"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          If provided, a QR code will be displayed on the event detail page for easy registration.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Latitude (optional)
+          </label>
+          <input
+            type="number"
+            step="any"
+            value={formData.coordinates?.lat || ''}
+            onChange={(e) => setFormData({ 
+              ...formData, 
+              coordinates: { 
+                lat: parseFloat(e.target.value) || 0, 
+                lng: formData.coordinates?.lng || 0 
+              } 
+            })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+            placeholder="35.7796"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Longitude (optional)
+          </label>
+          <input
+            type="number"
+            step="any"
+            value={formData.coordinates?.lng || ''}
+            onChange={(e) => setFormData({ 
+              ...formData, 
+              coordinates: { 
+                lat: formData.coordinates?.lat || 0, 
+                lng: parseFloat(e.target.value) || 0 
+              } 
+            })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+            placeholder="-78.6382"
+          />
+        </div>
+        <p className="text-xs text-gray-500 col-span-2">
+          If provided, an OpenStreetMap will be displayed on the event detail page. Find coordinates at <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">OpenStreetMap.org</a>
         </p>
       </div>
 
