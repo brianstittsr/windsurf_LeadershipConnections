@@ -120,26 +120,26 @@ const LCEventCalendar = () => {
         description="Stay connected with upcoming Leadership C.O.N.N.E.C.T.I.O.N.S. events and activities"
       />
 
-      <section className="pb-[120px] pt-[120px] bg-white dark:bg-gray-900">
+      <section className="pb-[120px] pt-[120px] bg-white">
         <div className="container">
           <div className="mx-auto max-w-4xl">
-            <h1 className="mb-12 text-center text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-5xl">
+            <h1 className="mb-12 text-center text-3xl font-bold text-black sm:text-4xl md:text-5xl">
               Upcoming Events
             </h1>
 
             {loading ? (
               <div className="text-center">
-                <p className="text-body-color dark:text-gray-300">Loading events...</p>
+                <p className="text-body-color">Loading events...</p>
               </div>
             ) : events.length === 0 ? (
               <div className="text-center">
-                <p className="text-body-color dark:text-gray-300">No upcoming events scheduled at this time.</p>
+                <p className="text-body-color">No upcoming events scheduled at this time.</p>
               </div>
             ) : (
               <div className="space-y-12">
                 {Object.entries(eventsByMonth).map(([monthYear, monthEvents]) => (
                   <div key={monthYear}>
-                    <h2 className="mb-6 text-2xl font-bold text-primary dark:text-primary-light">
+                    <h2 className="mb-6 text-2xl font-bold text-primary">
                       {monthYear}
                     </h2>
                     
@@ -147,7 +147,7 @@ const LCEventCalendar = () => {
                       {monthEvents.map((event) => (
                         <div
                           key={event.id}
-                          className="wow fadeInUp group relative overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-2xl dark:bg-gray-800"
+                          className="wow fadeInUp group relative overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-2xl"
                           data-wow-delay=".1s"
                         >
                           <div className="flex items-stretch">
@@ -168,17 +168,17 @@ const LCEventCalendar = () => {
                                   <span className="mb-2 inline-block rounded bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase">
                                     {getCategoryDisplay(event.category)}
                                   </span>
-                                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
+                                  <h3 className="mb-2 text-xl font-bold text-black sm:text-2xl">
                                     {event.title}
                                   </h3>
                                 </div>
                               </div>
 
-                              <p className="mb-4 text-base text-body-color dark:text-gray-300">
+                              <p className="mb-4 text-base text-body-color">
                                 {event.description}
                               </p>
 
-                              <div className="flex flex-wrap gap-4 text-sm text-body-color dark:text-gray-400">
+                              <div className="flex flex-wrap gap-4 text-sm text-body-color">
                                 <div className="flex items-center gap-2">
                                   <svg
                                     className="h-5 w-5 text-primary"

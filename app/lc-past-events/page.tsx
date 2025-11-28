@@ -7,6 +7,7 @@ import SingleEvent from "@/components/Events/SingleEvent";
 import eventsData from "@/components/Events/eventsData";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from 'next/link';
+import { Event } from "@/types/event";
 
 interface CalendarEvent {
   id: string;
@@ -21,26 +22,28 @@ interface CalendarEvent {
 
 const LCPastEventsPage = () => {
   const [pastCalendarEvents, setPastCalendarEvents] = useState<CalendarEvent[]>([]);
+  const [firestorePastEvents, setFirestorePastEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPastEvents = async () => {
+    const fetchAllPastEvents = async () => {
       try {
+        // Fetch calendar events
         const now = new Date();
-        const eventsRef = collection(db, 'calendarEvents');
-        const q = query(
-          eventsRef,
+        const calendarEventsRef = collection(db, 'calendarEvents');
+        const calendarQuery = query(
+          calendarEventsRef,
           where('published', '==', true),
           where('endDate', '<', Timestamp.fromDate(now)),
           orderBy('endDate', 'desc')
         );
         
-        const querySnapshot = await getDocs(q);
-        const eventsData: CalendarEvent[] = [];
+        const calendarSnapshot = await getDocs(calendarQuery);
+        const calendarEventsData: CalendarEvent[] = [];
         
-        querySnapshot.forEach((doc) => {
+        calendarSnapshot.forEach((doc) => {
           const data = doc.data();
-          eventsData.push({
+          calendarEventsData.push({
             id: doc.id,
             title: data.title,
             description: data.description,
@@ -52,7 +55,34 @@ const LCPastEventsPage = () => {
           });
         });
         
-        setPastCalendarEvents(eventsData);
+        setPastCalendarEvents(calendarEventsData);
+
+        // Fetch past events from lcPastEvents collection
+        const pastEventsRef = collection(db, 'lcPastEvents');
+        const pastEventsQuery = query(
+          pastEventsRef,
+          where('published', '==', true)
+        );
+        
+        const pastEventsSnapshot = await getDocs(pastEventsQuery);
+        const pastEventsData: Event[] = [];
+        
+        pastEventsSnapshot.forEach((doc) => {
+          const data = doc.data();
+          pastEventsData.push({
+            id: data.id || 0,
+            slug: data.slug || doc.id,
+            title: data.title || '',
+            paragraph: data.paragraph || '',
+            image: data.image || '/images/events/default.jpg',
+            date: data.date || '',
+            location: data.location || '',
+            tags: data.tags || [],
+            content: data.content
+          });
+        });
+        
+        setFirestorePastEvents(pastEventsData);
       } catch (error) {
         console.error('Error fetching past events:', error);
       } finally {
@@ -60,7 +90,7 @@ const LCPastEventsPage = () => {
       }
     };
 
-    fetchPastEvents();
+    fetchAllPastEvents();
   }, []);
 
   const formatDate = (date: Date) => {
@@ -89,12 +119,12 @@ const LCPastEventsPage = () => {
         description="Explore past events and activities from Leadership C.O.N.N.E.C.T.I.O.N.S. - celebrating our community impact and memorable moments."
       />
 
-      <section className="py-16 md:py-20 lg:py-28 bg-white dark:bg-gray-900">
+      <section className="py-16 md:py-20 lg:py-28 bg-white">
         <div className="container">
           {/* Calendar Events Section */}
           {pastCalendarEvents.length > 0 && (
             <div className="mb-16">
-              <h2 className="mb-8 text-center text-3xl font-bold text-black dark:text-white sm:text-4xl">
+              <h2 className="mb-8 text-center text-3xl font-bold text-black sm:text-4xl">
                 Past Calendar Events
               </h2>
               
@@ -110,26 +140,26 @@ const LCPastEventsPage = () => {
                       href={`/lc-event-calendar/${event.id}`}
                       className="group"
                     >
-                      <div className="overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-2xl dark:bg-gray-800">
+                      <div className="overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-2xl">
                         <div className="p-6">
                           <div className="mb-3 flex items-center justify-between">
-                            <span className="inline-block rounded bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                            <span className="inline-block rounded bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                               {getCategoryDisplay(event.category)}
                             </span>
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                            <span className="text-sm text-gray-500">
                               {formatDate(event.startDate)}
                             </span>
                           </div>
                           
-                          <h3 className="mb-3 text-xl font-bold text-black transition-colors group-hover:text-primary dark:text-white">
+                          <h3 className="mb-3 text-xl font-bold text-black transition-colors group-hover:text-primary">
                             {event.title}
                           </h3>
                           
-                          <p className="mb-4 line-clamp-3 text-base text-body-color dark:text-gray-300">
+                          <p className="mb-4 line-clamp-3 text-base text-body-color">
                             {event.description}
                           </p>
                           
-                          <div className="flex items-center gap-2 text-sm text-body-color dark:text-gray-400">
+                          <div className="flex items-center gap-2 text-sm text-body-color">
                             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -147,18 +177,25 @@ const LCPastEventsPage = () => {
 
           {/* Legacy Events Section */}
           <div>
-            <h2 className="mb-8 text-center text-3xl font-bold text-black dark:text-white sm:text-4xl">
+            <h2 className="mb-8 text-center text-3xl font-bold text-black sm:text-4xl">
               Event Gallery
             </h2>
             <div className="-mx-4 flex flex-wrap justify-center">
-              {eventsData.map((event) => (
-                <div
-                  key={event.id}
-                  className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3"
-                >
-                  <SingleEvent event={event} />
-                </div>
-              ))}
+              {/* Combine Firestore events with static events, removing duplicates */}
+              {(() => {
+                const firestoreSlugs = new Set(firestorePastEvents.map(e => e.slug));
+                const uniqueStaticEvents = eventsData.filter(e => !firestoreSlugs.has(e.slug));
+                const allEvents = [...firestorePastEvents, ...uniqueStaticEvents];
+                
+                return allEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3"
+                  >
+                    <SingleEvent event={event} />
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         </div>

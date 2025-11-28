@@ -122,10 +122,10 @@ const LCClassesPage = () => {
     <div>
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             LC Past Classes
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Manage Leadership Connections past classes
           </p>
         </div>
@@ -146,13 +146,13 @@ const LCClassesPage = () => {
       {/* Class List */}
       <div className="grid gap-4 mb-8">
         {classes.map((classItem) => (
-          <div key={classItem.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div key={classItem.id} className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
                   {classItem.title} ({classItem.year})
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-2">{classItem.paragraph}</p>
+                <p className="text-gray-600 mb-2">{classItem.paragraph}</p>
                 <p className="text-sm text-gray-500">Graduation: {classItem.graduationDate}</p>
                 <div className="flex gap-2 mt-2">
                   {classItem.tags.map((tag, idx) => (
@@ -184,8 +184,8 @@ const LCClassesPage = () => {
       {/* Edit/Add Modal */}
       {(editingClass || isAdding) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {editingClass ? 'Edit Class' : 'Add New Class'}
             </h2>
             
@@ -222,92 +222,92 @@ const ClassForm = ({ initialData, onSave, onCancel, saving }: {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Year
           </label>
           <input
             type="text"
             value={formData.year}
             onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Slug (URL)
           </label>
           <input
             type="text"
             value={formData.slug}
             onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Title
         </label>
         <input
           type="text"
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Description
         </label>
         <textarea
           value={formData.paragraph}
           onChange={(e) => setFormData({ ...formData, paragraph: e.target.value })}
           rows={3}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Graduation Date
         </label>
         <input
           type="text"
           value={formData.graduationDate}
           onChange={(e) => setFormData({ ...formData, graduationDate: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Image Path
         </label>
         <input
           type="text"
           value={formData.image}
           onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Tags (comma-separated)
         </label>
         <input
           type="text"
           value={formData.tags.join(', ')}
           onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
         />
       </div>
 
@@ -315,7 +315,7 @@ const ClassForm = ({ initialData, onSave, onCancel, saving }: {
         <button
           type="button"
           onClick={onCancel}
-          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
+          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-900"
         >
           Cancel
         </button>

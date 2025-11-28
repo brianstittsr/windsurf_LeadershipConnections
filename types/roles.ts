@@ -18,6 +18,7 @@ export interface RolePermissions {
   canViewAnalytics: boolean;
   canExportData: boolean;
   canDeleteContent: boolean;
+  canArchiveContent: boolean;
   canManageRoles: boolean;
 }
 
@@ -32,6 +33,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewAnalytics: true,
     canExportData: true,
     canDeleteContent: true,
+    canArchiveContent: true,
     canManageRoles: true,
   },
   SuperUser: {
@@ -43,7 +45,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canManageSettings: false,
     canViewAnalytics: true,
     canExportData: true,
-    canDeleteContent: true,
+    canDeleteContent: false,  // SuperUser cannot delete
+    canArchiveContent: true,  // SuperUser can archive
     canManageRoles: false,
   },
   User: {
@@ -56,6 +59,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewAnalytics: false,
     canExportData: false,
     canDeleteContent: false,
+    canArchiveContent: false,
     canManageRoles: false,
   },
 };

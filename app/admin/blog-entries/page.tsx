@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase';
 import { BlogEntry } from '@/lib/firestore-schema';
 import Link from 'next/link';
 import Image from 'next/image';
+import AIContentGenerator from '@/components/Admin/AIContentGenerator';
 
 const BlogEntriesAdmin = () => {
   const [blogs, setBlogs] = useState<BlogEntry[]>([]);
@@ -223,12 +224,22 @@ const BlogEntriesAdmin = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Content (HTML)</label>
+              
+              {/* AI Content Generator */}
+              <AIContentGenerator
+                summary={formData.paragraph}
+                contentType="blog"
+                onContentGenerated={(content) => {
+                  setFormData(prev => ({ ...prev, content }));
+                }}
+              />
+              
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                 rows={8}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 font-mono text-sm"
-                placeholder="Enter HTML content..."
+                placeholder="Enter HTML content or use AI to generate..."
               />
             </div>
 

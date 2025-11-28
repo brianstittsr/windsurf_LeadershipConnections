@@ -67,6 +67,22 @@ export interface BlogEntry {
   updatedAt?: Date;
 }
 
+export interface PastEventEntry {
+  id: number;
+  slug: string;
+  title: string;
+  paragraph: string;
+  image: string;
+  date: string;
+  location: string;
+  tags: string[];
+  content?: string;
+  published: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  firestoreId?: string;
+}
+
 export interface ServiceEntry {
   id: string;
   slug: string;

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "compress-images": "node scripts/compress-images.js",
     "add-blog": "node add-blog-to-firebase.js",
-    "migrate-blogs": "node migrate-remaining-blogs.js"
+    "migrate-blogs": "node migrate-remaining-blogs.js",
+    "migrate-past-events": "node migrate-past-events.js"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^4.0.2",
@@ -22,6 +23,7 @@
     "eslint-config-next": "13.1.6",
     "firebase": "^12.5.0",
     "firebase-admin": "^13.5.0",
+    "lucide-react": "^0.263.1",
     "next": "^15.5.3",
     "next-themes": "^0.2.1",
     "nodemailer": "^7.0.10",

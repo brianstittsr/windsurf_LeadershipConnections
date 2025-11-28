@@ -184,5 +184,11 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated() && (request.auth.uid == profileId || isAdmin());
     }
+    
+    // Past Events - public read, admin write
+    match /lcPastEvents/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }
