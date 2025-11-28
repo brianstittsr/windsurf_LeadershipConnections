@@ -35,7 +35,7 @@ const SigninPage = () => {
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
             <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
-              <h3 className="mb-3 text-center text-2xl font-bold text-body-color dark:text-white sm:text-3xl">
+              <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                 Sign in to your account
               </h3>
               <form onSubmit={handleSignin}>

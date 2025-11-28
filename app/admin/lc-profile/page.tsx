@@ -6,14 +6,6 @@ import { useRouter } from 'next/navigation';
 import {
   MemberProfile,
   MemberProfileFormData,
-  LEADERSHIP_PROGRAMS,
-  INDUSTRIES,
-  EXPERTISE_AREAS,
-  NC_REGIONS,
-  CONTACT_METHODS,
-  CAUSES,
-  LeadershipProgram,
-  BoardMembership
 } from '@/types/member-profile.types';
 import {
   getMemberProfile,
@@ -27,14 +19,24 @@ import ProfessionalInfoSection from '@/components/MemberProfile/ProfessionalInfo
 import NetworkingSection from '@/components/MemberProfile/NetworkingSection';
 import CommunitySection from '@/components/MemberProfile/CommunitySection';
 import PrivacySection from '@/components/MemberProfile/PrivacySection';
+import { FaCheck, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 
-export default function MemberProfilePage() {
+const WIZARD_STEPS = [
+  { id: 1, title: 'Personal Info', description: 'Basic information about you' },
+  { id: 2, title: 'Program Info', description: 'Your LC program participation' },
+  { id: 3, title: 'Professional', description: 'Career and expertise' },
+  { id: 4, title: 'Networking', description: 'Connection preferences' },
+  { id: 5, title: 'Community', description: 'Volunteer and causes' },
+  { id: 6, title: 'Privacy', description: 'Profile visibility settings' },
+];
+
+export default function MemberProfileWizard() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   
+  const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [profile, setProfile] = useState<MemberProfile | null>(null);
@@ -85,16 +87,13 @@ export default function MemberProfilePage() {
         setProfile(existingProfile);
         setFormData(existingProfile);
       } else {
-        // Initialize with user email
         setFormData(prev => ({
           ...prev,
           email: user.email || '',
         }));
-        setEditMode(true); // Start in edit mode for new profiles
       }
     } catch (error) {
       console.error('Error loading profile:', error);
-      alert('Error loading profile. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -138,10 +137,38 @@ export default function MemberProfilePage() {
     }
   };
 
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!(formData.firstName && formData.lastName && formData.email);
+      case 2:
+        return !!(formData.programs && formData.programs.length > 0);
+      default:
+        return true;
+    }
+  };
+
+  const handleNext = () => {
+    if (!validateStep(currentStep)) {
+      alert('Please fill in all required fields before continuing.');
+      return;
+    }
+    if (currentStep < WIZARD_STEPS.length) {
+      setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSave = async () => {
     if (!user) return;
 
-    // Validation
     if (!formData.firstName || !formData.lastName || !formData.email) {
       alert('Please fill in all required fields (First Name, Last Name, Email)');
       return;
@@ -156,20 +183,13 @@ export default function MemberProfilePage() {
     try {
       await saveMemberProfile(user.uid, formData as MemberProfileFormData);
       await loadProfile();
-      setEditMode(false);
       alert('Profile saved successfully!');
+      router.push('/admin/dashboard');
     } catch (error) {
       console.error('Error saving profile:', error);
       alert('Error saving profile. Please try again.');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    if (profile) {
-      setFormData(profile);
-      setEditMode(false);
     }
   };
 
@@ -187,128 +207,176 @@ export default function MemberProfilePage() {
   const completeness = calculateProfileCompleteness(formData);
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Member Profile</h1>
-            <p className="text-gray-600 mt-2">
-              Manage your Leadership Connections profile and networking preferences
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {!editMode ? (
-              <>
-                <button
-                  onClick={() => router.push('/admin/lc-profile/wizard-page')}
-                  className="bg-white border border-primary text-primary px-6 py-2 rounded-lg hover:bg-primary/10 transition-colors"
-                >
-                  Setup Wizard
-                </button>
-                <button
-                  onClick={() => setEditMode(true)}
-                  className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
-                >
-                  Edit Profile
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handleCancel}
-                  disabled={saving}
-                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 disabled:opacity-50"
-                >
-                  {saving ? 'Saving...' : 'Save Profile'}
-                </button>
-              </>
-            )}
-          </div>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Member Profile Setup</h1>
+        <p className="text-gray-600">
+          Complete your profile step by step to maximize your networking opportunities
+        </p>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-sm font-semibold text-gray-700">
+            Step {currentStep} of {WIZARD_STEPS.length}
+          </span>
+          <span className="text-sm font-bold text-primary">{completeness}% Complete</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
+          <div
+            className="bg-primary h-3 rounded-full transition-all duration-300"
+            style={{ width: `${(currentStep / WIZARD_STEPS.length) * 100}%` }}
+          ></div>
         </div>
 
-        {/* Profile Completeness */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-700">
-              Profile Completeness
-            </span>
-            <span className="text-sm font-bold text-primary">{completeness}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${completeness}%` }}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-600 mt-2">
-            Complete your profile to increase visibility and networking opportunities
-          </p>
-          {completeness < 50 && !editMode && (
-            <button
-              onClick={() => router.push('/admin/lc-profile/wizard-page')}
-              className="mt-3 text-xs font-semibold text-primary hover:text-primary/80 underline"
-            >
-              Use the Setup Wizard to complete your profile step-by-step →
-            </button>
-          )}
+        {/* Step Indicators */}
+        <div className="flex justify-between">
+          {WIZARD_STEPS.map((step, index) => (
+            <div key={step.id} className="flex flex-col items-center flex-1">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 transition-all ${
+                  currentStep > step.id
+                    ? 'bg-green-500 text-white'
+                    : currentStep === step.id
+                    ? 'bg-primary text-white ring-4 ring-primary/20'
+                    : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                {currentStep > step.id ? <FaCheck /> : step.id}
+              </div>
+              <div className="text-center hidden md:block">
+                <p className={`text-xs font-semibold ${
+                  currentStep >= step.id ? 'text-gray-900' : 'text-gray-400'
+                }`}>
+                  {step.title}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">{step.description}</p>
+              </div>
+              {index < WIZARD_STEPS.length - 1 && (
+                <div className={`hidden md:block absolute h-0.5 w-full top-5 left-1/2 -z-10 ${
+                  currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
+                }`} style={{ width: `calc(100% / ${WIZARD_STEPS.length})` }} />
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Profile Form - All Sections */}
-      <div className="space-y-6">
-        <PersonalInfoSection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-          onPhotoUpload={handlePhotoUpload}
-          uploadingPhoto={uploadingPhoto}
-        />
+      {/* Step Content */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {WIZARD_STEPS[currentStep - 1].title}
+          </h2>
+          <p className="text-gray-600">
+            {WIZARD_STEPS[currentStep - 1].description}
+          </p>
+        </div>
 
-        <ProgramInfoSection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-          onArrayAdd={handleArrayAdd}
-          onArrayRemove={handleArrayRemove}
-        />
+        {currentStep === 1 && (
+          <PersonalInfoSection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+            onPhotoUpload={handlePhotoUpload}
+            uploadingPhoto={uploadingPhoto}
+          />
+        )}
 
-        <ProfessionalInfoSection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-          onArrayAdd={handleArrayAdd}
-          onArrayRemove={handleArrayRemove}
-        />
+        {currentStep === 2 && (
+          <ProgramInfoSection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+            onArrayAdd={handleArrayAdd}
+            onArrayRemove={handleArrayRemove}
+          />
+        )}
 
-        <NetworkingSection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-          onArrayAdd={handleArrayAdd}
-          onArrayRemove={handleArrayRemove}
-        />
+        {currentStep === 3 && (
+          <ProfessionalInfoSection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+            onArrayAdd={handleArrayAdd}
+            onArrayRemove={handleArrayRemove}
+          />
+        )}
 
-        <CommunitySection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-          onArrayAdd={handleArrayAdd}
-          onArrayRemove={handleArrayRemove}
-        />
+        {currentStep === 4 && (
+          <NetworkingSection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+            onArrayAdd={handleArrayAdd}
+            onArrayRemove={handleArrayRemove}
+          />
+        )}
 
-        <PrivacySection
-          formData={formData}
-          editMode={editMode}
-          onInputChange={handleInputChange}
-        />
+        {currentStep === 5 && (
+          <CommunitySection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+            onArrayAdd={handleArrayAdd}
+            onArrayRemove={handleArrayRemove}
+          />
+        )}
+
+        {currentStep === 6 && (
+          <PrivacySection
+            formData={formData}
+            editMode={true}
+            onInputChange={handleInputChange}
+          />
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between items-center">
+        <button
+          onClick={handlePrevious}
+          disabled={currentStep === 1}
+          className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <FaChevronLeft />
+          Previous
+        </button>
+
+        <div className="text-sm text-gray-500">
+          Step {currentStep} of {WIZARD_STEPS.length}
+        </div>
+
+        {currentStep < WIZARD_STEPS.length ? (
+          <button
+            onClick={handleNext}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
+          >
+            Next
+            <FaChevronRight />
+          </button>
+        ) : (
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+          >
+            {saving ? 'Saving...' : 'Complete Profile'}
+            <FaCheck />
+          </button>
+        )}
+      </div>
+
+      {/* Skip to End Option */}
+      <div className="mt-6 text-center">
+        <button
+          onClick={() => router.push('/admin/dashboard')}
+          className="text-sm text-gray-500 hover:text-gray-700 underline"
+        >
+          Save and return to dashboard
+        </button>
       </div>
     </div>
   );

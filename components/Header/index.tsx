@@ -73,12 +73,13 @@ const Header = () => {
                   <Image
                     src="/images/logo/LeadershipConnectionsLogo.png"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    width={60}
-                    height={15}
+                    width={40}
+                    height={40}
                     priority
                     className="object-contain brightness-0"
+                    style={{ width: '40px', height: 'auto' }}
                   />
-                  <span className="text-[10px] text-gray-600 mt-0.5 whitespace-nowrap">affiliated with Womens Foundation of North Carolina</span>
+                  <span className="text-[8px] text-gray-600 mt-0.5 whitespace-nowrap">affiliated with Womens Foundation of North Carolina</span>
                 </div>
               </Link>
             </div>

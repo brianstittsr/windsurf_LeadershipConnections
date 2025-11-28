@@ -38,6 +38,12 @@ const menuData: Menu[] = [
     newTab: false,
   },
   {
+    id: 38,
+    title: "LC Event Calendar",
+    path: "/lc-event-calendar",
+    newTab: false,
+  },
+  {
     id: 3,
     title: "Get Involved",
     path: "/get-involved",

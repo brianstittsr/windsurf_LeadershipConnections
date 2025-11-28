@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import { db } from '@/lib/firebase';
 import { BlogEntry } from '@/lib/firestore-schema';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const BlogEntriesAdmin = () => {
   const [blogs, setBlogs] = useState<BlogEntry[]>([]);
@@ -13,6 +14,7 @@ const BlogEntriesAdmin = () => {
   const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
+    id: 0,
     title: '',
     slug: '',
     paragraph: '',
@@ -36,7 +38,7 @@ const BlogEntriesAdmin = () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'blogEntries'));
       const blogsData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
+        firestoreId: doc.id,  // Firestore document ID (string)
         ...doc.data()
       })) as BlogEntry[];
       setBlogs(blogsData);
@@ -67,8 +69,8 @@ const BlogEntriesAdmin = () => {
         updatedAt: new Date()
       };
 
-      if (editingBlog) {
-        await updateDoc(doc(db, 'blogEntries', editingBlog.id), {
+      if (editingBlog && editingBlog.firestoreId) {
+        await updateDoc(doc(db, 'blogEntries', editingBlog.firestoreId), {
           ...blogData,
           updatedAt: new Date()
         });
@@ -86,6 +88,7 @@ const BlogEntriesAdmin = () => {
   const handleEdit = (blog: BlogEntry) => {
     setEditingBlog(blog);
     setFormData({
+      id: typeof blog.id === 'number' ? blog.id : parseInt(String(blog.id)) || 0,
       title: blog.title,
       slug: blog.slug,
       paragraph: blog.paragraph,
@@ -99,10 +102,10 @@ const BlogEntriesAdmin = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (firestoreId: string) => {
     if (confirm('Are you sure you want to delete this blog entry?')) {
       try {
-        await deleteDoc(doc(db, 'blogEntries', id));
+        await deleteDoc(doc(db, 'blogEntries', firestoreId));
         fetchBlogs();
       } catch (error) {
         console.error('Error deleting blog:', error);
@@ -112,6 +115,7 @@ const BlogEntriesAdmin = () => {
 
   const resetForm = () => {
     setFormData({
+      id: 0,
       title: '',
       slug: '',
       paragraph: '',
@@ -167,8 +171,19 @@ const BlogEntriesAdmin = () => {
             {editingBlog ? 'Edit Blog Entry' : 'Add New Blog Entry'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">ID (Numeric)</label>
+                <input
+                  type="number"
+                  value={formData.id}
+                  onChange={(e) => setFormData({ ...formData, id: parseInt(e.target.value) || 0 })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                  placeholder="e.g., 1, 2, 3..."
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 <input
                   type="text"
@@ -182,16 +197,17 @@ const BlogEntriesAdmin = () => {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
-                <input
-                  type="text"
-                  value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
-                  required
-                />
-              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Slug (URL-friendly)</label>
+              <input
+                type="text"
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                required
+              />
             </div>
             
             <div>
@@ -224,6 +240,7 @@ const BlogEntriesAdmin = () => {
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                  placeholder="/images/blog/my-image.jpg"
                 />
               </div>
               <div>
@@ -234,6 +251,51 @@ const BlogEntriesAdmin = () => {
                   onChange={(e) => setFormData({ ...formData, publishDate: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
                 />
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Author Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Author Name</label>
+                  <input
+                    type="text"
+                    value={formData.author.name}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      author: { ...formData.author, name: e.target.value }
+                    })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Author Image</label>
+                  <input
+                    type="text"
+                    value={formData.author.image}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      author: { ...formData.author, image: e.target.value }
+                    })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                    placeholder="/images/authors/john.jpg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Author Title/Role</label>
+                  <input
+                    type="text"
+                    value={formData.author.designation}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      author: { ...formData.author, designation: e.target.value }
+                    })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
+                    placeholder="Program Director"
+                  />
+                </div>
               </div>
             </div>
 
@@ -299,56 +361,72 @@ const BlogEntriesAdmin = () => {
 
       <div className="grid gap-6">
         {blogs.map((blog) => (
-          <div key={blog.id} className="bg-white p-6 rounded-lg shadow-lg">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">{blog.title}</h3>
-                <p className="text-gray-600">/{blog.slug}</p>
-                <div className="flex items-center mt-2">
-                  {blog.published ? (
-                    <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                      Published
+          <div key={blog.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="flex gap-4">
+              {/* Thumbnail Image */}
+              <div className="w-48 h-48 flex-shrink-0 relative bg-gray-200">
+                <Image
+                  src={blog.image || '/images/blog/blog-default.jpg'}
+                  alt={blog.title}
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                />
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-gray-900">{blog.title}</h3>
+                    <p className="text-gray-600 text-sm">/{blog.slug}</p>
+                    <div className="flex items-center mt-2">
+                      {blog.published ? (
+                        <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                          Published
+                        </span>
+                      ) : (
+                        <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                          Draft
+                        </span>
+                      )}
+                      <span className="ml-2 text-sm text-gray-500">{blog.publishDate}</span>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Link
+                      href={`/blog/${blog.slug}`}
+                      className="text-green-600 hover:text-green-800"
+                      target="_blank"
+                    >
+                      View
+                    </Link>
+                    <button
+                      onClick={() => handleEdit(blog)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => blog.firestoreId && handleDelete(blog.firestoreId)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+                <p className="text-gray-700 mb-4 line-clamp-2">{blog.paragraph}</p>
+                <div className="flex flex-wrap gap-2">
+                  {blog.tags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded"
+                    >
+                      {tag}
                     </span>
-                  ) : (
-                    <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                      Draft
-                    </span>
-                  )}
-                  <span className="ml-2 text-sm text-gray-500">{blog.publishDate}</span>
+                  ))}
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <Link
-                  href={`/blog/${blog.slug}`}
-                  className="text-green-600 hover:text-green-800"
-                  target="_blank"
-                >
-                  View
-                </Link>
-                <button
-                  onClick={() => handleEdit(blog)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(blog.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-            <p className="text-gray-700 mb-4">{blog.paragraph}</p>
-            <div className="flex flex-wrap gap-2">
-              {blog.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="inline-block bg-primary/10 text-primary text-xs px-2 py-1 rounded"
-                >
-                  {tag}
-                </span>
-              ))}
             </div>
           </div>
         ))}

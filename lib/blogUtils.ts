@@ -1,4 +1,6 @@
 import { Blog } from "@/types/blog";
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 // Extended blog data with real content and slugs
 const blogData: (Blog & { slug: string; content: string })[] = [
@@ -261,17 +263,90 @@ const blogData: (Blog & { slug: string; content: string })[] = [
   },
 ];
 
-// Get all blogs
-export function getAllBlogs() {
-  return blogData;
+// Fetch blogs from Firestore and combine with static data
+async function fetchFirestoreBlogs(): Promise<(Blog & { slug: string; content: string })[]> {
+  try {
+    const blogsRef = collection(db, 'blogEntries');
+    const querySnapshot = await getDocs(blogsRef);
+    
+    const firestoreBlogs: (Blog & { slug: string; content: string })[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      firestoreBlogs.push({
+        id: data.id || 0,
+        slug: data.slug || doc.id,
+        title: data.title || '',
+        paragraph: data.paragraph || '',
+        image: data.image || '/images/blog/blog-default.jpg',
+        author: data.author || {
+          name: 'Leadership Connections',
+          image: '/images/logo/LeadershipConnectionsLogo.png',
+          designation: 'Team'
+        },
+        tags: data.tags || [],
+        publishDate: data.publishDate || new Date().toISOString().split('T')[0],
+        content: data.content || ''
+      });
+    });
+    
+    return firestoreBlogs;
+  } catch (error) {
+    console.error('Error fetching Firestore blogs:', error);
+    return [];
+  }
 }
 
-// Get blog by slug
-export function getBlogBySlug(slug: string) {
+// Get all blogs (Firestore + static, removing duplicates)
+export async function getAllBlogs() {
+  const firestoreBlogs = await fetchFirestoreBlogs();
+  
+  // Get slugs from Firestore blogs to avoid duplicates
+  const firestoreSlugs = new Set(firestoreBlogs.map(blog => blog.slug));
+  
+  // Filter out static blogs that exist in Firestore
+  const uniqueStaticBlogs = blogData.filter(blog => !firestoreSlugs.has(blog.slug));
+  
+  // Combine Firestore blogs (priority) with unique static blogs
+  return [...firestoreBlogs, ...uniqueStaticBlogs];
+}
+
+// Get blog by slug (check Firestore first, then static)
+export async function getBlogBySlug(slug: string) {
+  // First check Firestore
+  try {
+    const blogsRef = collection(db, 'blogEntries');
+    const q = query(blogsRef, where('slug', '==', slug));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const data = doc.data();
+      return {
+        id: data.id || 0,
+        slug: data.slug || doc.id,
+        title: data.title || '',
+        paragraph: data.paragraph || '',
+        image: data.image || '/images/blog/blog-default.jpg',
+        author: data.author || {
+          name: 'Leadership Connections',
+          image: '/images/logo/LeadershipConnectionsLogo.png',
+          designation: 'Team'
+        },
+        tags: data.tags || [],
+        publishDate: data.publishDate || new Date().toISOString().split('T')[0],
+        content: data.content || ''
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching blog by slug from Firestore:', error);
+  }
+  
+  // Fall back to static data
   return blogData.find((blog) => blog.slug === slug);
 }
 
 // Get recent blogs (for homepage)
-export function getRecentBlogs(count: number = 3) {
-  return blogData.slice(0, count);
+export async function getRecentBlogs(count: number = 3) {
+  const allBlogs = await getAllBlogs();
+  return allBlogs.slice(0, count);
 }

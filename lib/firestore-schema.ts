@@ -48,7 +48,8 @@ export interface AlumniComment {
 }
 
 export interface BlogEntry {
-  id: string;
+  id: string | number;  // Can be numeric (user-defined) or string (Firestore doc ID)
+  firestoreId?: string;  // Firestore document ID
   slug: string;
   title: string;
   paragraph: string;
@@ -62,8 +63,8 @@ export interface BlogEntry {
   tags: string[];
   publishDate: string;
   published: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ServiceEntry {

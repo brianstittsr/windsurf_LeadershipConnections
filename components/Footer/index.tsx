@@ -19,7 +19,7 @@ const Footer = () => {
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
                     width={100}
                     height={25}
-                    className="object-contain"
+                    className="object-contain brightness-0"
                   />
                 </Link>
                 <p className="dark:text-body-color-dark mb-9 text-base leading-relaxed text-body-color">

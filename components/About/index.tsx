@@ -107,37 +107,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* The C.O.N.N.E.C.T.I.O.N.S. Meaning Section */}
-      <section className="py-16 md:py-20 lg:py-28 bg-gray-50">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative h-[500px] w-full rounded-lg overflow-hidden">
-              <Image
-                src="/images/cellphone_images/8374467173046807092.jpg"
-                alt="Original C.O.N.N.E.C.T.I.O.N.S. Acronym"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400 mb-6">The C.O.N.N.E.C.T.I.O.N.S. Meaning</h2>
-              <p className="text-body-color mb-6 text-base leading-relaxed">
-                The acronym C.O.N.N.E.C.T.I.O.N.S. holds deep significance in our organization's history and mission. Originally conceived as a program specifically designed for youth, each letter of our name represents a core value that has guided our work since our founding in 1991.
-              </p>
-              <p className="text-body-color mb-6 text-base leading-relaxed">
-                When Katherine Harrelson founded Leadership Connections, she envisioned a comprehensive program that would address the unique challenges and opportunities facing young women, particularly those from underserved communities. The C.O.N.N.E.C.T.I.O.N.S. framework was developed to create meaningful pathways for girls to develop leadership skills, build confidence, and establish lasting relationships that would support their personal and professional growth.
-              </p>
-              <p className="text-body-color mb-6 text-base leading-relaxed">
-                Each component of the C.O.N.N.E.C.T.I.O.N.S. model was carefully crafted to address specific developmental needs of adolescent girls. The program recognized that young women often face unique societal pressures and barriers, and sought to create an empowering environment where they could explore their potential, develop their voices, and build the skills necessary to become effective leaders in their communities.
-              </p>
-              <p className="text-body-color mb-4 text-base leading-relaxed">
-                While our program has evolved over the years to serve a broader population, the foundational principles embedded in the C.O.N.N.E.C.T.I.O.N.S. acronym continue to guide our mission. These core values remain as relevant today as they were when we first began, serving as a testament to the enduring importance of intentional, values-based youth development programming.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Our Leadership Team Section */}
       <section className="py-16 md:py-20 lg:py-28 bg-secondary">
         <div className="container text-center">

@@ -43,8 +43,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="flex pt-20 min-h-screen bg-gray-50">
-      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm p-4 fixed left-0 top-20 bottom-0 overflow-y-auto">
+    <div className="flex min-h-screen bg-gray-50">
+      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm p-4 fixed left-0 top-[88px] bottom-0 overflow-y-auto z-10">
         <div className="mb-4 pb-4 border-b border-gray-200">
           <p className="text-xs text-gray-500 uppercase tracking-wide">Logged in as:</p>
           <p className="text-sm font-semibold truncate text-gray-900">{user?.email}</p>
@@ -100,7 +100,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </ul>
         </nav>
       </aside>
-      <main className="flex-1 p-8 ml-64 bg-gray-50">
+      <main className="flex-1 p-8 ml-64 pt-[120px] bg-gray-50">
         {children}
       </main>
     </div>

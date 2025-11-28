@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp } fro
 import { db } from '@/lib/firebase';
 import { CalendarEvent } from '@/lib/firestore-schema';
 import { format } from 'date-fns';
+import { addSampleCalendarEvent, addMultipleSampleEvents } from '@/lib/add-sample-event';
 
 const EventsPage = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -180,16 +181,39 @@ const EventsPage = () => {
     return <div className="text-center py-8">Loading...</div>;
   }
 
+  const handleAddSampleEvents = async () => {
+    if (confirm('Add 3 sample events to the calendar?')) {
+      const result = await addMultipleSampleEvents();
+      if (result.success) {
+        alert(result.message);
+        fetchEvents();
+      } else {
+        alert('Error adding sample events: ' + result.error);
+      }
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Event Calendar Management</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
-        >
-          Add New Event
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={handleAddSampleEvents}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Sample Events
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
+          >
+            Add New Event
+          </button>
+        </div>
       </div>
 
       {showForm && (

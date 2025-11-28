@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        (request.auth.token.email == 'brianstittsr@gmail.com' ||
+         request.auth.token.email == 'kathy@ncleadconnect.org' ||
+         request.auth.token.email == 'gloria@ncleadconnect.org');
+    }
+    
+    // Blog Entries - public read, admin write
+    match /blogEntries/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Allow all other collections for now (TEMPORARY - for testing)
+    match /{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

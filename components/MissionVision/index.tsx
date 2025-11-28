@@ -4,16 +4,16 @@ import React from 'react';
 
 const MissionVision = () => {
   return (
-    <section className="relative py-16 md:py-20 lg:py-28 bg-gray-50 dark:bg-gray-900">
+    <section className="relative py-16 md:py-20 lg:py-28 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900 dark:to-blue-900">
       <div className="container">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Vision */}
           <div className="wow fadeInUp" data-wow-delay=".1s">
-            <div className="h-full rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800 lg:p-10">
-              <div className="mb-6 flex items-center justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <div className="h-full rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 p-8 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl lg:p-12">
+              <div className="mb-8 flex items-center justify-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm shadow-lg">
                   <svg
-                    className="h-8 w-8 text-primary"
+                    className="h-14 w-14 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -33,10 +33,10 @@ const MissionVision = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="mb-4 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+              <h3 className="mb-6 text-center text-3xl font-bold text-white sm:text-4xl">
                 Our Vision
               </h3>
-              <p className="text-center text-base leading-relaxed text-body-color dark:text-gray-300">
+              <p className="text-center text-lg leading-relaxed text-white/95">
                 To develop a world-class Academy that will provide training and advocacy that propels youth to achieve the highest level of leadership.
               </p>
             </div>
@@ -44,11 +44,11 @@ const MissionVision = () => {
 
           {/* Mission */}
           <div className="wow fadeInUp" data-wow-delay=".2s">
-            <div className="h-full rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800 lg:p-10">
-              <div className="mb-6 flex items-center justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <div className="h-full rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 p-8 shadow-2xl transform transition-all duration-300 hover:scale-105 hover:shadow-3xl lg:p-12">
+              <div className="mb-8 flex items-center justify-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm shadow-lg">
                   <svg
-                    className="h-8 w-8 text-primary"
+                    className="h-14 w-14 text-white"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -62,10 +62,10 @@ const MissionVision = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="mb-4 text-center text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
+              <h3 className="mb-6 text-center text-3xl font-bold text-white sm:text-4xl">
                 Our Mission
               </h3>
-              <p className="text-center text-base leading-relaxed text-body-color dark:text-gray-300">
+              <p className="text-center text-lg leading-relaxed text-white/95">
                 To equip youth with the necessary nutrition, education, knowledge, skills, and leadership abilities to effect global progress for boys and girls.
               </p>
             </div>

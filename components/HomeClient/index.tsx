@@ -4,7 +4,7 @@ import ScrollUp from "@/components/Common/ScrollUp";
 import Hero from "@/components/Hero";
 import InteractiveBenefits from "@/components/InteractiveBenefits";
 import MissionVision from "@/components/MissionVision";
-import Testimonials from "@/components/Testimonials";
+import ConnectionsMeaning from "@/components/ConnectionsMeaning";
 import CTA from "@/components/CTA";
 
 const HomeClient = () => {
@@ -14,7 +14,7 @@ const HomeClient = () => {
       <Hero />
       <InteractiveBenefits />
       <MissionVision />
-      <Testimonials />
+      <ConnectionsMeaning />
       <CTA />
     </>
   );
