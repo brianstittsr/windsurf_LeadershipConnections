@@ -7,6 +7,13 @@ import { db } from '@/lib/firebase';
 import Breadcrumb from '@/components/Common/Breadcrumb';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
+import dynamic from 'next/dynamic';
+
+// Dynamic import for map to avoid SSR issues
+const EventMap = dynamic(() => import('@/components/Events/EventMap'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[400px] bg-gray-200 rounded-lg animate-pulse"></div>
+});
 
 interface CalendarEvent {
   id: string;
@@ -21,6 +28,11 @@ interface CalendarEvent {
   maxAttendees?: number;
   currentAttendees?: number;
   registrationRequired?: boolean;
+  registrationFormId?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 const EventDetailPage = () => {
@@ -50,6 +62,8 @@ const EventDetailPage = () => {
             maxAttendees: data.maxAttendees,
             currentAttendees: data.currentAttendees || 0,
             registrationRequired: data.registrationRequired,
+            registrationFormId: data.registrationFormId,
+            coordinates: data.coordinates,
           });
         }
       } catch (error) {
@@ -92,8 +106,18 @@ const EventDetailPage = () => {
     return categories[category] || 'Event';
   };
 
-  const getGoogleMapsUrl = (location: string) => {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+  const getOpenStreetMapUrl = (location: string, coordinates?: { lat: number; lng: number }) => {
+    if (coordinates) {
+      return `https://www.openstreetmap.org/?mlat=${coordinates.lat}&mlon=${coordinates.lng}#map=15/${coordinates.lat}/${coordinates.lng}`;
+    }
+    return `https://www.openstreetmap.org/search?query=${encodeURIComponent(location)}`;
+  };
+
+  const getRegistrationFormUrl = () => {
+    if (typeof window !== 'undefined' && event?.registrationFormId) {
+      return `${window.location.origin}/forms/public/${event.registrationFormId}`;
+    }
+    return '';
   };
 
   const getEventUrl = () => {
@@ -256,61 +280,106 @@ const EventDetailPage = () => {
               <h2 className="mb-4 text-2xl font-bold text-black">Location</h2>
               <p className="mb-4 text-base text-body-color">{event.location}</p>
               
-              {/* Google Maps Embed */}
-              <div className="mb-4 overflow-hidden rounded-lg">
-                <iframe
-                  width="100%"
-                  height="400"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY'}&q=${encodeURIComponent(event.location)}`}
-                />
-              </div>
-
-              <a
-                href={getGoogleMapsUrl(event.location)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-primary hover:underline"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-                Open in Google Maps
-              </a>
+              {/* OpenStreetMap */}
+              {event.coordinates ? (
+                <>
+                  <div className="mb-4 overflow-hidden rounded-lg">
+                    <EventMap
+                      latitude={event.coordinates.lat}
+                      longitude={event.coordinates.lng}
+                      locationName={event.location}
+                      eventTitle={event.title}
+                    />
+                  </div>
+                  <a
+                    href={getOpenStreetMapUrl(event.location, event.coordinates)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary hover:underline"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    Open in OpenStreetMap
+                  </a>
+                </>
+              ) : (
+                <p className="text-sm text-gray-500 italic">Map coordinates not available for this event.</p>
+              )}
             </div>
 
             {/* QR Code Section */}
             <div className="rounded-2xl bg-white p-8 shadow-xl">
               <h2 className="mb-4 text-2xl font-bold text-black">Share This Event</h2>
               <p className="mb-6 text-base text-body-color">
-                Scan this QR code with your smartphone camera to share the event location and details
+                Scan these QR codes with your smartphone camera to quickly access event information
               </p>
 
-              <div className="flex flex-col items-center gap-6 sm:flex-row">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {/* QR Code for Event URL */}
-                <div className="rounded-lg bg-white p-6 shadow-lg">
-                  <QRCodeSVG
-                    value={getEventUrl()}
-                    size={200}
-                    level="H"
-                    includeMargin={true}
-                  />
-                  <p className="mt-3 text-center text-sm font-medium text-gray-600">Event Details</p>
+                <div className="flex flex-col items-center">
+                  <div className="rounded-lg bg-white p-6 shadow-lg">
+                    <QRCodeSVG
+                      value={getEventUrl()}
+                      size={200}
+                      level="H"
+                      includeMargin={true}
+                    />
+                  </div>
+                  <p className="mt-3 text-center text-sm font-semibold text-gray-700">Event Details</p>
+                  <a
+                    href={getEventUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 text-xs text-primary hover:underline"
+                  >
+                    {getEventUrl().replace(/^https?:\/\//, '').substring(0, 40)}...
+                  </a>
                 </div>
 
-                {/* QR Code for Google Maps Location */}
-                <div className="rounded-lg bg-white p-6 shadow-lg">
-                  <QRCodeSVG
-                    value={getGoogleMapsUrl(event.location)}
-                    size={200}
-                    level="H"
-                    includeMargin={true}
-                  />
-                  <p className="mt-3 text-center text-sm font-medium text-gray-600">Event Location</p>
+                {/* QR Code for OpenStreetMap Location */}
+                <div className="flex flex-col items-center">
+                  <div className="rounded-lg bg-white p-6 shadow-lg">
+                    <QRCodeSVG
+                      value={getOpenStreetMapUrl(event.location, event.coordinates)}
+                      size={200}
+                      level="H"
+                      includeMargin={true}
+                    />
+                  </div>
+                  <p className="mt-3 text-center text-sm font-semibold text-gray-700">Event Location</p>
+                  <a
+                    href={getOpenStreetMapUrl(event.location, event.coordinates)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 text-xs text-primary hover:underline"
+                  >
+                    Open in OpenStreetMap →
+                  </a>
                 </div>
+
+                {/* QR Code for Registration Form */}
+                {event.registrationFormId && (
+                  <div className="flex flex-col items-center">
+                    <div className="rounded-lg bg-white p-6 shadow-lg">
+                      <QRCodeSVG
+                        value={getRegistrationFormUrl()}
+                        size={200}
+                        level="H"
+                        includeMargin={true}
+                      />
+                    </div>
+                    <p className="mt-3 text-center text-sm font-semibold text-gray-700">Registration Form</p>
+                    <a
+                      href={getRegistrationFormUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 text-xs text-primary hover:underline"
+                    >
+                      Register Online →
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 rounded-lg bg-blue-50 p-4">
@@ -322,7 +391,7 @@ const EventDetailPage = () => {
                     <p className="text-sm font-medium text-blue-900">How to use QR codes:</p>
                     <ul className="mt-2 list-inside list-disc text-sm text-blue-800">
                       <li>Open your smartphone camera app</li>
-                      <li>Point it at the QR code</li>
+                      <li>Point it at any QR code above</li>
                       <li>Tap the notification to open the link</li>
                     </ul>
                   </div>
@@ -331,13 +400,18 @@ const EventDetailPage = () => {
             </div>
 
             {/* Registration CTA */}
-            {event.registrationRequired && (
+            {event.registrationRequired && event.registrationFormId && (
               <div className="mt-8 rounded-2xl bg-gradient-to-r from-primary to-purple-600 p-8 text-center text-white shadow-xl">
                 <h3 className="mb-4 text-2xl font-bold">Ready to Join?</h3>
                 <p className="mb-6 text-lg">Register now to secure your spot at this event!</p>
-                <button className="rounded-lg bg-white px-8 py-3 font-semibold text-primary transition-all hover:bg-gray-100">
+                <a
+                  href={getRegistrationFormUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-primary transition-all hover:bg-gray-100"
+                >
                   Register Now
-                </button>
+                </a>
               </div>
             )}
           </div>
