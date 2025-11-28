@@ -124,7 +124,7 @@ const EventDetailPage = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-body-color dark:text-gray-300">Loading event details...</p>
+        <p className="text-body-color">Loading event details...</p>
       </div>
     );
   }
@@ -133,7 +133,7 @@ const EventDetailPage = () => {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">Event Not Found</h2>
+          <h2 className="mb-4 text-2xl font-bold text-black">Event Not Found</h2>
           <Link href="/lc-event-calendar" className="text-primary hover:underline">
             Back to Event Calendar
           </Link>
@@ -164,7 +164,7 @@ const EventDetailPage = () => {
             </Link>
 
             {/* Event Header */}
-            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
+            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
                 <span className="inline-block rounded bg-primary/10 px-4 py-2 text-sm font-semibold text-primary uppercase">
                   {getCategoryDisplay(event.category)}
@@ -180,7 +180,7 @@ const EventDetailPage = () => {
                 </button>
               </div>
 
-              <h1 className="mb-6 text-3xl font-bold text-black dark:text-white sm:text-4xl md:text-5xl">
+              <h1 className="mb-6 text-3xl font-bold text-black sm:text-4xl md:text-5xl">
                 {event.title}
               </h1>
 
@@ -193,8 +193,8 @@ const EventDetailPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Date</p>
-                    <p className="text-base font-medium text-black dark:text-white">{formatDate(event.startDate)}</p>
+                    <p className="text-sm font-semibold text-gray-500">Date</p>
+                    <p className="text-base font-medium text-black">{formatDate(event.startDate)}</p>
                   </div>
                 </div>
 
@@ -205,8 +205,8 @@ const EventDetailPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Time</p>
-                    <p className="text-base font-medium text-black dark:text-white">
+                    <p className="text-sm font-semibold text-gray-500">Time</p>
+                    <p className="text-base font-medium text-black">
                       {formatTime(event.startDate)} - {formatTime(event.endDate)}
                     </p>
                   </div>
@@ -220,19 +220,19 @@ const EventDetailPage = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-500 dark:text-gray-400">Location</p>
-                    <p className="text-base font-medium text-black dark:text-white">{event.location}</p>
+                    <p className="text-sm font-semibold text-gray-500">Location</p>
+                    <p className="text-base font-medium text-black">{event.location}</p>
                   </div>
                 </div>
               </div>
 
               {event.maxAttendees && (
-                <div className="mt-6 rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                <div className="mt-6 rounded-lg bg-gray-50 p-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-gray-700">
                       Attendees: {event.currentAttendees} / {event.maxAttendees}
                     </span>
-                    <div className="h-2 w-48 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
+                    <div className="h-2 w-48 overflow-hidden rounded-full bg-gray-200">
                       <div
                         className="h-full bg-primary transition-all"
                         style={{ width: `${((event.currentAttendees || 0) / event.maxAttendees) * 100}%` }}
@@ -244,17 +244,17 @@ const EventDetailPage = () => {
             </div>
 
             {/* Event Description */}
-            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">About This Event</h2>
-              <p className="whitespace-pre-line text-base leading-relaxed text-body-color dark:text-gray-300">
+            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-black">About This Event</h2>
+              <p className="whitespace-pre-line text-base leading-relaxed text-body-color">
                 {event.description}
               </p>
             </div>
 
             {/* Location Map */}
-            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">Location</h2>
-              <p className="mb-4 text-base text-body-color dark:text-gray-300">{event.location}</p>
+            <div className="mb-8 rounded-2xl bg-white p-8 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-black">Location</h2>
+              <p className="mb-4 text-base text-body-color">{event.location}</p>
               
               {/* Google Maps Embed */}
               <div className="mb-4 overflow-hidden rounded-lg">
@@ -283,9 +283,9 @@ const EventDetailPage = () => {
             </div>
 
             {/* QR Code Section */}
-            <div className="rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">Share This Event</h2>
-              <p className="mb-6 text-base text-body-color dark:text-gray-300">
+            <div className="rounded-2xl bg-white p-8 shadow-xl">
+              <h2 className="mb-4 text-2xl font-bold text-black">Share This Event</h2>
+              <p className="mb-6 text-base text-body-color">
                 Scan this QR code with your smartphone camera to share the event location and details
               </p>
 
@@ -313,14 +313,14 @@ const EventDetailPage = () => {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+              <div className="mt-6 rounded-lg bg-blue-50 p-4">
                 <div className="flex items-start gap-3">
-                  <svg className="h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-6 w-6 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
-                    <p className="text-sm font-medium text-blue-900 dark:text-blue-200">How to use QR codes:</p>
-                    <ul className="mt-2 list-inside list-disc text-sm text-blue-800 dark:text-blue-300">
+                    <p className="text-sm font-medium text-blue-900">How to use QR codes:</p>
+                    <ul className="mt-2 list-inside list-disc text-sm text-blue-800">
                       <li>Open your smartphone camera app</li>
                       <li>Point it at the QR code</li>
                       <li>Tap the notification to open the link</li>
