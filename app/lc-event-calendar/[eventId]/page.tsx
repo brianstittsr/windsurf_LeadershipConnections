@@ -331,9 +331,12 @@ const EventDetailPage = () => {
                     href={getEventUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 text-xs text-primary hover:underline"
+                    className="mt-3 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:bg-primary/90"
                   >
-                    {getEventUrl().replace(/^https?:\/\//, '').substring(0, 40)}...
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View Event Page
                   </a>
                 </div>
 
@@ -352,9 +355,13 @@ const EventDetailPage = () => {
                     href={getOpenStreetMapUrl(event.location, event.coordinates)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 text-xs text-primary hover:underline"
+                    className="mt-3 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:bg-primary/90"
                   >
-                    Open in OpenStreetMap →
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Get Directions
                   </a>
                 </div>
 
@@ -374,9 +381,12 @@ const EventDetailPage = () => {
                       href={getRegistrationFormUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-2 text-xs text-primary hover:underline"
+                      className="mt-3 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:bg-primary/90"
                     >
-                      Register Online →
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Register Now
                     </a>
                   </div>
                 )}
