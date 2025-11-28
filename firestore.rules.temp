@@ -35,16 +35,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
-    // LC Past Classes - public read, admin write
+    // LC Past Classes - TEMPORARY: Allow all writes for migration
     match /lcPastClasses/{document=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;  // TEMPORARY FOR MIGRATION
     }
     
-    // LC Past Events - public read, admin write
+    // LC Past Events - TEMPORARY: Allow all writes for migration
     match /lcPastEvents/{document=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;  // TEMPORARY FOR MIGRATION
     }
     
     // LC Services - public read, admin write

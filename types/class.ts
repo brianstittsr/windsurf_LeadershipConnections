@@ -8,4 +8,5 @@ export type Class = {
   graduationDate: string;
   classSize?: number;
   tags: string[];
+  content?: string;
 };

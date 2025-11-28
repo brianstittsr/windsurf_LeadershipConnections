@@ -12,7 +12,8 @@
     "update-image-refs": "node update-image-references.js",
     "add-blog": "node add-blog-to-firebase.js",
     "migrate-blogs": "node migrate-remaining-blogs.js",
-    "migrate-past-events": "node migrate-past-events.js"
+    "migrate-past-events": "node migrate-past-events.js",
+    "migrate-past-classes": "node migrate-past-classes.js"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^4.0.2",

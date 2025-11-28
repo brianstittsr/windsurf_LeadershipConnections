@@ -12,8 +12,6 @@ const MemberRegistration = () => {
     {
       name: 'Shanice Roberts',
       image: 'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=800',
-      level: 'Intermediate',
-      levelColor: 'bg-blue-500',
       career: 'Education Administration',
       specializations: ['Curriculum Development', 'Teacher Training', 'Student Success'],
       languages: ['English', 'Spanish'],
@@ -22,8 +20,6 @@ const MemberRegistration = () => {
     {
       name: 'Terrell Jackson',
       image: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=800',
-      level: 'Intermediate',
-      levelColor: 'bg-blue-500',
       career: 'Social Work',
       specializations: ['Youth Services', 'Family Counseling', 'Crisis Intervention'],
       languages: ['English'],
@@ -69,10 +65,6 @@ const MemberRegistration = () => {
                       className="object-cover"
                       priority={index === 0}
                     />
-                  </div>
-                  {/* Level Badge */}
-                  <div className={`absolute top-4 right-4 ${profile.levelColor} text-white px-4 py-1 rounded-full text-sm font-semibold z-10`}>
-                    {profile.level}
                   </div>
                 </div>
 

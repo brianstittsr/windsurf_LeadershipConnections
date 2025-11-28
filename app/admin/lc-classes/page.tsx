@@ -16,6 +16,8 @@ interface ClassItem {
   image: string;
   graduationDate: string;
   tags: string[];
+  content?: string;
+  published?: boolean;
 }
 
 const LCClassesPage = () => {
@@ -46,7 +48,7 @@ const LCClassesPage = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'lcClasses'));
+        const querySnapshot = await getDocs(collection(db, 'lcPastClasses'));
         const classesData: ClassItem[] = [];
         querySnapshot.forEach((doc) => {
           classesData.push({ id: doc.id, ...doc.data() } as ClassItem);
@@ -69,7 +71,7 @@ const LCClassesPage = () => {
     try {
       if ('id' in classData) {
         // Update existing
-        const docRef = doc(db, 'lcClasses', classData.id);
+        const docRef = doc(db, 'lcPastClasses', classData.id);
         await setDoc(docRef, {
           slug: classData.slug,
           year: classData.year,
@@ -78,12 +80,19 @@ const LCClassesPage = () => {
           image: classData.image,
           graduationDate: classData.graduationDate,
           tags: classData.tags,
+          content: classData.content || '',
+          published: classData.published !== undefined ? classData.published : true,
         });
         setClasses(prev => prev.map(c => c.id === classData.id ? classData : c));
         setMessage('Class updated successfully!');
       } else {
         // Add new
-        const docRef = await addDoc(collection(db, 'lcClasses'), classData);
+        const newClassData = {
+          ...classData,
+          content: classData.content || '',
+          published: classData.published !== undefined ? classData.published : true,
+        };
+        const docRef = await addDoc(collection(db, 'lcPastClasses'), newClassData);
         setClasses(prev => [...prev, { id: docRef.id, ...classData } as ClassItem]);
         setMessage('Class added successfully!');
       }
@@ -101,7 +110,7 @@ const LCClassesPage = () => {
     if (!confirm('Are you sure you want to delete this class?')) return;
 
     try {
-      await deleteDoc(doc(db, 'lcClasses', id));
+      await deleteDoc(doc(db, 'lcPastClasses', id));
       setClasses(prev => prev.filter(c => c.id !== id));
       setMessage('Class deleted successfully!');
     } catch (error) {
@@ -309,6 +318,35 @@ const ClassForm = ({ initialData, onSave, onCancel, saving }: {
           onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Full Article Content (HTML)
+        </label>
+        <textarea
+          value={formData.content || ''}
+          onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+          rows={12}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 font-mono text-sm"
+          placeholder="Enter HTML content for the full article..."
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Use HTML with Tailwind classes for styling. This will be displayed on the class detail page.
+        </p>
+      </div>
+
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="published"
+          checked={formData.published !== false}
+          onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+          className="h-4 w-4 text-primary border-gray-300 rounded"
+        />
+        <label htmlFor="published" className="ml-2 text-sm font-medium text-gray-700">
+          Published (visible on site)
+        </label>
       </div>
 
       <div className="flex justify-end gap-4 pt-4">

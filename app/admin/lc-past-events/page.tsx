@@ -16,6 +16,8 @@ interface EventItem {
   date: string;
   location: string;
   tags: string[];
+  content?: string;
+  published?: boolean;
 }
 
 const LCPastEventsPage = () => {
@@ -77,12 +79,19 @@ const LCPastEventsPage = () => {
           date: eventData.date,
           location: eventData.location,
           tags: eventData.tags,
+          content: eventData.content || '',
+          published: eventData.published !== undefined ? eventData.published : true,
         });
         setEvents(prev => prev.map(e => e.id === eventData.id ? eventData : e));
         setMessage('Event updated successfully!');
       } else {
-        const docRef = await addDoc(collection(db, 'lcPastEvents'), eventData);
-        setEvents(prev => [...prev, { id: docRef.id, ...eventData } as EventItem]);
+        const newEventData = {
+          ...eventData,
+          content: eventData.content || '',
+          published: eventData.published !== undefined ? eventData.published : true,
+        };
+        const docRef = await addDoc(collection(db, 'lcPastEvents'), newEventData);
+        setEvents(prev => [...prev, { id: docRef.id, ...newEventData } as EventItem]);
         setMessage('Event added successfully!');
       }
       setEditingEvent(null);
@@ -305,6 +314,35 @@ const EventForm = ({ initialData, onSave, onCancel, saving }: {
           onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()) })}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Full Article Content (HTML)
+        </label>
+        <textarea
+          value={formData.content || ''}
+          onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+          rows={12}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 font-mono text-sm"
+          placeholder="Enter HTML content for the full article..."
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Use HTML with Tailwind classes for styling. This will be displayed on the event detail page.
+        </p>
+      </div>
+
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          id="published"
+          checked={formData.published !== false}
+          onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+          className="h-4 w-4 text-primary border-gray-300 rounded"
+        />
+        <label htmlFor="published" className="ml-2 text-sm font-medium text-gray-700">
+          Published (visible on site)
+        </label>
       </div>
 
       <div className="flex justify-end gap-4 pt-4">

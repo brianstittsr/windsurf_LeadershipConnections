@@ -11,6 +11,7 @@ export interface HomeContent {
     primaryButtonLink: string;
     secondaryButtonText: string;
     secondaryButtonLink: string;
+    videoUrl: string;
   };
   cta: {
     title: string;
@@ -29,6 +30,7 @@ const defaultContent: HomeContent = {
     primaryButtonLink: '/get-involved',
     secondaryButtonText: 'Learn More',
     secondaryButtonLink: '/about',
+    videoUrl: '/videos/LeadershipConnectionsv3NoAud.mp4',
   },
   cta: {
     title: 'Ready to Make a Difference?',
