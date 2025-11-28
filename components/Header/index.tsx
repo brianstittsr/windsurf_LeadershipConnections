@@ -77,7 +77,7 @@ const Header = () => {
                     height={40}
                     priority
                     className="object-contain brightness-0"
-                    style={{ width: '40px', height: 'auto' }}
+                    style={{ width: 'auto', height: '40px' }}
                   />
                   <span className="text-[8px] text-gray-600 mt-0.5 whitespace-nowrap">affiliated with Womens Foundation of North Carolina</span>
                 </div>
