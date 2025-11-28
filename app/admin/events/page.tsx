@@ -596,6 +596,12 @@ const EventsPage = () => {
                   >
                     Delete
                   </button>
+                  <button
+                    onClick={toggleCollapse}
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    {isCollapsed ? 'Show' : 'Hide'}
+                  </button>
                 </div>
               </div>
             </div>
