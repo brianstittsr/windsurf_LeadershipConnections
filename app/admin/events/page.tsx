@@ -13,7 +13,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [showEntries, setShowEntries] = useState(true);
+  const [collapsedEntries, setCollapsedEntries] = useState<Set<string>>(new Set());
 
   const [formData, setFormData] = useState({
     title: '',
@@ -206,19 +206,6 @@ const EventsPage = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Event Calendar Management</h1>
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowEntries(!showEntries)}
-            className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2"
-          >
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {showEntries ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              )}
-            </svg>
-            {showEntries ? 'Hide Entries' : 'Show Entries'}
-          </button>
           <button
             onClick={handleAddSampleEvents}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
@@ -527,63 +514,91 @@ const EventsPage = () => {
         </div>
       )}
 
-      {showEntries && (
-        <div className="grid gap-6">
-          {events.map((event) => (
-          <div key={event.id} className="bg-white p-6 rounded-lg shadow-lg">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                  <span className={`inline-block text-xs px-2 py-1 rounded ${getCategoryColor(event.category)}`}>
-                    {event.category}
-                  </span>
-                  {event.published ? (
-                    <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                      Published
+      <div className="grid gap-6">
+        {events.map((event) => {
+          const isCollapsed = collapsedEntries.has(event.id);
+          const toggleCollapse = () => {
+            const newCollapsed = new Set(collapsedEntries);
+            if (isCollapsed) {
+              newCollapsed.delete(event.id);
+            } else {
+              newCollapsed.add(event.id);
+            }
+            setCollapsedEntries(newCollapsed);
+          };
+
+          return (
+            <div key={event.id} className="bg-white p-6 rounded-lg shadow-lg">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <button
+                      onClick={toggleCollapse}
+                      className="text-gray-600 hover:text-gray-900 mr-2"
+                      title={isCollapsed ? 'Expand entry' : 'Collapse entry'}
+                    >
+                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        {isCollapsed ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        )}
+                      </svg>
+                    </button>
+                    <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
+                    <span className={`inline-block text-xs px-2 py-1 rounded ${getCategoryColor(event.category)}`}>
+                      {event.category}
                     </span>
-                  ) : (
-                    <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                      Draft
-                    </span>
+                    {event.published ? (
+                      <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                        Published
+                      </span>
+                    ) : (
+                      <span className="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                        Draft
+                      </span>
+                    )}
+                  </div>
+                  {!isCollapsed && (
+                    <>
+                      <p className="text-gray-700 mb-2">{event.description}</p>
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <p>📅 {format(new Date(event.startDate), 'PPP p')} - {format(new Date(event.endDate), 'PPP p')}</p>
+                        <p>📍 {event.location}</p>
+                        {event.maxAttendees && (
+                          <p>👥 {event.currentAttendees} / {event.maxAttendees} attendees</p>
+                        )}
+                        {event.registrationRequired && (
+                          <p className="text-primary">✓ Registration Required</p>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
-                <p className="text-gray-700 mb-2">{event.description}</p>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p>📅 {format(new Date(event.startDate), 'PPP p')} - {format(new Date(event.endDate), 'PPP p')}</p>
-                  <p>📍 {event.location}</p>
-                  {event.maxAttendees && (
-                    <p>👥 {event.currentAttendees} / {event.maxAttendees} attendees</p>
-                  )}
-                  {event.registrationRequired && (
-                    <p className="text-primary">✓ Registration Required</p>
-                  )}
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleEdit(event)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
                 </div>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(event)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(event.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  Delete
-                </button>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {events.length === 0 && (
           <div className="text-center py-12 text-gray-500">
             No events yet. Click "Add New Event" to create your first event.
           </div>
         )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
