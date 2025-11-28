@@ -15,13 +15,22 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 
+// Helper to check if db is available
+function checkDb() {
+  if (!db) {
+    throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+  }
+  return db;
+}
+
 // Generic Firestore operations
 export class FirestoreService {
   
   // Create a new document
   static async create(collectionName: string, data: any) {
     try {
-      const docRef = await addDoc(collection(db, collectionName), {
+      const firestore = checkDb();
+      const docRef = await addDoc(collection(firestore, collectionName), {
         ...data,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -36,7 +45,8 @@ export class FirestoreService {
   // Get a single document by ID
   static async getById(collectionName: string, id: string) {
     try {
-      const docRef = doc(db, collectionName, id);
+      const firestore = checkDb();
+      const docRef = doc(firestore, collectionName, id);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
@@ -53,7 +63,8 @@ export class FirestoreService {
   // Get all documents from a collection
   static async getAll(collectionName: string) {
     try {
-      const querySnapshot = await getDocs(collection(db, collectionName));
+      const firestore = checkDb();
+      const querySnapshot = await getDocs(collection(firestore, collectionName));
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -67,7 +78,8 @@ export class FirestoreService {
   // Get documents with query constraints
   static async getWithQuery(collectionName: string, constraints: QueryConstraint[]) {
     try {
-      const q = query(collection(db, collectionName), ...constraints);
+      const firestore = checkDb();
+      const q = query(collection(firestore, collectionName), ...constraints);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -82,7 +94,8 @@ export class FirestoreService {
   // Update a document
   static async update(collectionName: string, id: string, data: any) {
     try {
-      const docRef = doc(db, collectionName, id);
+      const firestore = checkDb();
+      const docRef = doc(firestore, collectionName, id);
       await updateDoc(docRef, {
         ...data,
         updatedAt: new Date()
@@ -97,7 +110,8 @@ export class FirestoreService {
   // Delete a document
   static async delete(collectionName: string, id: string) {
     try {
-      const docRef = doc(db, collectionName, id);
+      const firestore = checkDb();
+      const docRef = doc(firestore, collectionName, id);
       await deleteDoc(docRef);
       return { id, deleted: true };
     } catch (error) {
