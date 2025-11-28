@@ -1,6 +1,11 @@
 [
   {
-    "origin": ["http://localhost:3000", "http://localhost:3001"],
+    "origin": [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://www.ncleadconnect.org",
+      "https://ncleadconnect.org"
+    ],
     "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
     "maxAgeSeconds": 3600
   }
