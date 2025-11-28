@@ -4,6 +4,17 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 export async function POST(request: Request) {
   try {
+    // Check if Firebase Admin is initialized
+    if (!adminAuth || !adminDb) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Firebase Admin is not configured. Please check your environment variables.',
+        },
+        { status: 500 }
+      );
+    }
+
     const adminUsers = [
       {
         email: 'brianstittsr@gmail.com',

@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI only if API key is available
+let openai: OpenAI | null = null;
+
+if (process.env.OPENAI_API_KEY) {
+  openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+} else {
+  console.warn('OpenAI API key is not configured. Content generation will not be available.');
+}
 
 const CONTENT_PROMPTS = {
   blog: `You are a professional content writer for Leadership C.O.N.N.E.C.T.I.O.N.S., a youth development organization. 
@@ -74,6 +81,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Invalid content type. Must be: blog, event, or class' },
         { status: 400 }
+      );
+    }
+
+    if (!openai) {
+      return NextResponse.json(
+        { error: 'OpenAI is not configured. Please check your environment variables.' },
+        { status: 500 }
       );
     }
 
