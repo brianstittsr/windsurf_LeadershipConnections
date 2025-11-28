@@ -17,19 +17,19 @@ const SingleClass = ({ classItem }: { classItem: Class }) => {
           <h3>
             <Link
               href={`/lc-past-classes/${slug}`}
-              className="mb-4 block text-xl font-bold text-body-color hover:text-primary dark:text-white dark:hover:text-primary sm:text-2xl"
+              className="mb-4 block text-xl font-bold text-black hover:text-primary sm:text-2xl"
             >
               {year}
             </Link>
           </h3>
-          <p className="mb-6 border-b border-body-color border-opacity-10 pb-6 text-base font-medium text-body-color dark:border-white dark:border-opacity-10">
+          <p className="mb-6 border-b border-gray-300 pb-6 text-base font-medium text-gray-700">
             {paragraph}
           </p>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="mr-5 flex items-center border-r border-body-color border-opacity-10 pr-5 dark:border-white dark:border-opacity-10 xl:mr-3 xl:pr-3 2xl:mr-5 2xl:pr-5">
+              <div className="mr-5 flex items-center border-r border-gray-300 pr-5 xl:mr-3 xl:pr-3 2xl:mr-5 2xl:pr-5">
                 <div className="w-full">
-                  <p className="text-sm font-medium text-body-color">
+                  <p className="text-sm font-medium text-gray-600">
                     Graduated: {graduationDate}
                   </p>
                 </div>
