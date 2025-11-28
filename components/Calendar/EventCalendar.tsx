@@ -239,22 +239,38 @@ export default function EventCalendar({ showFilters = true, maxEvents }: EventCa
             filteredEvents.map(event => (
               <div
                 key={event.id}
-                className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
+                className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
                 onClick={() => setSelectedEvent(event)}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                  <span className={`text-xs px-2 py-1 rounded ${getCategoryBadgeColor(event.category)}`}>
-                    {event.category}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-3">{event.description}</p>
-                <div className="text-sm text-gray-500 space-y-1">
-                  <p>📅 {format(new Date(event.startDate), 'PPP p')}</p>
-                  <p>📍 {event.location}</p>
-                  {event.maxAttendees && (
-                    <p>👥 {event.currentAttendees} / {event.maxAttendees} attendees</p>
+                <div className="flex flex-col sm:flex-row">
+                  {/* Event Thumbnail */}
+                  {event.image && (
+                    <div className="sm:w-48 h-48 sm:h-auto flex-shrink-0">
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   )}
+                  
+                  {/* Event Details */}
+                  <div className="p-6 flex-1">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
+                      <span className={`text-xs px-2 py-1 rounded ${getCategoryBadgeColor(event.category)} ml-2 flex-shrink-0`}>
+                        {event.category}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 mb-3 line-clamp-2">{event.description}</p>
+                    <div className="text-sm text-gray-500 space-y-1">
+                      <p>📅 {format(new Date(event.startDate), 'PPP p')}</p>
+                      <p>📍 {event.location}</p>
+                      {event.maxAttendees && (
+                        <p>👥 {event.currentAttendees} / {event.maxAttendees} attendees</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))
