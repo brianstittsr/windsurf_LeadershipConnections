@@ -23,7 +23,7 @@ const programsData: Program[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/RKK_MLK_Choir.png" alt="Red Carpet Kids MLK Choir" class="w-full h-auto rounded" />
+          <img src="/images/RKK_MLK_Choir.webp" alt="Red Carpet Kids MLK Choir" class="w-full h-auto rounded" />
         </div>
 
         <h3 class="text-2xl font-bold mb-6 text-primary-600 dark:text-primary-400">Mission</h3>
@@ -44,7 +44,7 @@ const programsData: Program[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/programs/Michelle-Obama-Empowerment-Academy/RCK_Firebirds_spring2024/Screenshot-2025-10-31-005307.png" alt="Red Carpet Kids Firebirds" class="w-full h-auto rounded" />
+          <img src="/images/programs/Michelle-Obama-Empowerment-Academy/RCK_Firebirds_spring2024/Screenshot-2025-10-31-005307.webp" alt="Red Carpet Kids Firebirds" class="w-full h-auto rounded" />
         </div>
 
         <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Youth Empowerment Café</h4>
@@ -180,7 +180,7 @@ const programsData: Program[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/programs/Welborn/Robo Dog - Welborn.jpg" alt="STEEM Robotics - Robo Dog" class="w-full h-auto rounded" />
+          <img src="/images/programs/Welborn/Robo Dog - Welborn.webp" alt="STEEM Robotics - Robo Dog" class="w-full h-auto rounded" />
         </div>
 
         <h3 class="text-2xl font-bold mb-6 text-primary-600 dark:text-primary-400">Core Components</h3>
@@ -196,7 +196,7 @@ const programsData: Program[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/programs/steem_Academy_Warnersville/STEEM Academy - Warnersville v4.jpg" alt="STEEM Academy Warnersville" class="w-full h-auto rounded" />
+          <img src="/images/programs/steem_Academy_Warnersville/STEEM Academy - Warnersville v4.webp" alt="STEEM Academy Warnersville" class="w-full h-auto rounded" />
         </div>
 
         <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Collaboration and Teamwork</h4>

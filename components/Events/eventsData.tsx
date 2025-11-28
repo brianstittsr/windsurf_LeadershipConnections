@@ -110,7 +110,7 @@ const eventsData: Event[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/cellphone_images/DemorcracyWithOutWallsCropped.jpg" alt="Students meeting with government officials" class="w-full h-auto rounded" />
+          <img src="/images/cellphone_images/DemorcracyWithOutWallsCropped.webp" alt="Students meeting with government officials" class="w-full h-auto rounded" />
         </div>
 
         <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Program Mission and Vision</h4>
@@ -124,7 +124,7 @@ const eventsData: Event[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/cellphone_images/5677840881919356564.jpg" alt="Students in government building" class="w-full h-auto rounded" />
+          <img src="/images/cellphone_images/5677840881919356564.webp" alt="Students in government building" class="w-full h-auto rounded" />
         </div>
 
         <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Interactive Learning Experiences</h4>
@@ -138,7 +138,7 @@ const eventsData: Event[] = [
         </p>
 
         <div class="mb-10 w-full overflow-hidden rounded">
-          <img src="/images/cellphone_images/DemorcracyWithOutWallsCropped3.jpg" alt="Group discussion with government officials" class="w-full h-auto rounded" />
+          <img src="/images/cellphone_images/DemorcracyWithOutWallsCropped3.webp" alt="Group discussion with government officials" class="w-full h-auto rounded" />
         </div>
 
         <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Civic Education and Awareness</h4>

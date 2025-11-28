@@ -1,6 +1,5 @@
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from './firebase';
+import { db } from './firebase';
 import { MemberProfile, MemberProfileFormData } from '@/types/member-profile.types';
 import { collections } from './firestore-schema';
 
@@ -107,37 +106,109 @@ export async function saveMemberProfile(
 }
 
 /**
- * Upload profile photo to Firebase Storage
+ * Convert image file to WebP base64 format for optimal performance
  */
 export async function uploadProfilePhoto(
   userId: string,
   file: File
 ): Promise<string> {
   try {
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `profile-${userId}-${Date.now()}.${fileExtension}`;
-    const storageRef = ref(storage, `member-profiles/${userId}/${fileName}`);
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      throw new Error('File must be an image');
+    }
     
-    await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(storageRef);
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      throw new Error('Image must be less than 5MB');
+    }
     
-    return downloadURL;
+    // Convert to WebP base64
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        
+        // Load and convert image to WebP
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Set max dimensions
+          const maxWidth = 800;
+          const maxHeight = 800;
+          let width = img.width;
+          let height = img.height;
+          
+          // Calculate new dimensions while maintaining aspect ratio
+          if (width > height) {
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw image
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Convert to WebP format with 85% quality for optimal size/quality balance
+          // WebP provides 25-35% better compression than JPEG
+          const webpBase64 = canvas.toDataURL('image/webp', 0.85);
+          
+          // Fallback to JPEG if WebP is not supported (rare in modern browsers)
+          if (webpBase64.startsWith('data:image/webp')) {
+            resolve(webpBase64);
+          } else {
+            console.warn('WebP not supported, falling back to JPEG');
+            const jpegBase64 = canvas.toDataURL('image/jpeg', 0.8);
+            resolve(jpegBase64);
+          }
+        };
+        
+        img.onerror = () => {
+          reject(new Error('Failed to load image'));
+        };
+        
+        img.src = base64String;
+      };
+      
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'));
+      };
+      
+      reader.readAsDataURL(file);
+    });
   } catch (error) {
-    console.error('Error uploading profile photo:', error);
+    console.error('Error converting profile photo to WebP:', error);
     throw error;
   }
 }
 
 /**
- * Delete profile photo from Firebase Storage
+ * Delete profile photo (base64 stored in Firestore)
+ * Since we're using base64, we just need to update the profile to remove the photo URL
  */
-export async function deleteProfilePhoto(photoUrl: string): Promise<void> {
+export async function deleteProfilePhoto(userId: string): Promise<void> {
   try {
-    const storageRef = ref(storage, photoUrl);
-    await deleteObject(storageRef);
+    const profileRef = doc(db, collections.memberProfiles, userId);
+    await updateDoc(profileRef, {
+      profilePhotoUrl: null,
+      updatedAt: Timestamp.fromDate(new Date())
+    });
   } catch (error) {
     console.error('Error deleting profile photo:', error);
-    // Don't throw error if file doesn't exist
+    throw error;
   }
 }
 

@@ -42,14 +42,14 @@ const AboutSectionOne = () => {
                 data-wow-delay=".2s"
               >
                 <Image
-                  src="/images/logo/LeadershipConnectionsLogo.png"
+                  src="/images/logo/LeadershipConnectionsLogo.webp"
                   alt="Leadership Connections logo"
                   fill
                   style={{ objectFit: 'contain' }}
                   className="drop-shadow-three mx-auto max-w-full dark:hidden dark:drop-shadow-none lg:mr-0"
                 />
                 <Image
-                  src="/images/logo/LeadershipConnectionsLogo.png"
+                  src="/images/logo/LeadershipConnectionsLogo.webp"
                   alt="Leadership Connections logo"
                   fill
                   style={{ objectFit: 'contain' }}

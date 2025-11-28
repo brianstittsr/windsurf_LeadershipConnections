@@ -4,7 +4,7 @@ import React from 'react';
 
 const MissionVision = () => {
   return (
-    <section className="relative py-16 md:py-20 lg:py-28 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-purple-900 dark:to-blue-900">
+    <section className="relative py-16 md:py-20 lg:py-28 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <div className="container">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Vision */}

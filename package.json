@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "compress-images": "node scripts/compress-images.js",
+    "convert-to-webp": "node convert-images-to-webp.js",
+    "update-image-refs": "node update-image-references.js",
     "add-blog": "node add-blog-to-firebase.js",
     "migrate-blogs": "node migrate-remaining-blogs.js",
     "migrate-past-events": "node migrate-past-events.js"

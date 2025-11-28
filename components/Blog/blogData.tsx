@@ -28,7 +28,7 @@ const blogData: Blog[] = [
       </p>
 
       <div class="mb-10 w-full overflow-hidden rounded">
-        <img src="/images/cellphone_images/8489697603616538147.jpg" alt="Students engaged in STEEM workshop" class="w-full object-cover" />
+        <img src="/images/cellphone_images/8489697603616538147.webp" alt="Students engaged in STEEM workshop" class="w-full object-cover" />
       </div>
 
       <h3 class="mb-4 text-xl font-bold text-primary-600 dark:text-primary-400 sm:text-2xl">Exploring the World of Robotics</h3>
@@ -42,7 +42,7 @@ const blogData: Blog[] = [
       </p>
 
       <div class="mb-10 w-full overflow-hidden rounded">
-        <img src="/images/cellphone_images/5822257108524370710.jpg" alt="Youth learning coding and technology" class="w-full object-cover" />
+        <img src="/images/cellphone_images/5822257108524370710.webp" alt="Youth learning coding and technology" class="w-full object-cover" />
       </div>
 
       <h3 class="mb-4 text-xl font-bold text-primary-600 dark:text-primary-400 sm:text-2xl">Creative Entrepreneurship: Turning Ideas into Reality</h3>

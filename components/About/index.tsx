@@ -97,7 +97,7 @@ const About = () => {
             </div>
             <div className="relative h-[600px] w-full rounded-lg overflow-hidden">
               <Image
-                src="/images/history/Katherine_Harrelson.png"
+                src="/images/history/Katherine_Harrelson.webp"
                 alt="Katherine Harrelson - Founder"
                 fill
                 className="object-contain"

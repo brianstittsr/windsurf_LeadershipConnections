@@ -17,7 +17,7 @@ export default function FormBrandingHeader({
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Image
-              src="/images/logo/LeadershipConnectionsLogo.png"
+              src="/images/logo/LeadershipConnectionsLogo.webp"
               alt="Leadership Connections"
               width={60}
               height={60}
@@ -45,7 +45,7 @@ export default function FormBrandingHeader({
       <div className="max-w-4xl mx-auto text-center">
         <div className="flex justify-center mb-4">
           <Image
-            src="/images/logo/LeadershipConnectionsLogo.png"
+            src="/images/logo/LeadershipConnectionsLogo.webp"
             alt="Leadership Connections"
             width={120}
             height={120}
@@ -74,7 +74,7 @@ export function FormBrandingFooter() {
       <div className="max-w-4xl mx-auto text-center">
         <div className="flex items-center justify-center gap-3 mb-3">
           <Image
-            src="/images/logo/LeadershipConnectionsLogo.png"
+            src="/images/logo/LeadershipConnectionsLogo.webp"
             alt="Leadership Connections"
             width={40}
             height={40}

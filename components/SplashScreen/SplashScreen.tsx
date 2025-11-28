@@ -88,7 +88,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
                 {/* Logo container */}
                 <div className="logo-container wow fadeInDown" data-wow-delay=".1s" style={{ marginBottom: '20px', textAlign: 'center' }}>
                   <Image 
-                    src="/images/logo/LeadershipConnectionsLogo.png" 
+                    src="/images/logo/LeadershipConnectionsLogo.webp" 
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo" 
                     width={150} 
                     height={75} 

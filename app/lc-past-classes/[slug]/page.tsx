@@ -56,7 +56,7 @@ export default async function ClassDetailPage({ params }: Props) {
                       <div className="mr-3">
                         <div className="relative h-10 w-10 overflow-hidden rounded-full">
                           <Image
-                            src="/images/logo/LeadershipConnectionsLogo.png"
+                            src="/images/logo/LeadershipConnectionsLogo.webp"
                             alt="Leadership C.O.N.N.E.C.T.I.O.N.S."
                             width={40}
                             height={40}
