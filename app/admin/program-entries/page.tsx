@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import { db } from '@/lib/firebase';
 import { ProgramEntry } from '@/lib/firestore-schema';
 import Link from 'next/link';
+import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
 
 const ProgramEntriesAdmin = () => {
   const [programs, setPrograms] = useState<ProgramEntry[]>([]);
@@ -195,7 +196,14 @@ const ProgramEntriesAdmin = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <EnhanceWithAI
+                  currentText={formData.paragraph}
+                  onEnhanced={(enhancedText) => setFormData({ ...formData, paragraph: enhancedText })}
+                  fieldName="program description"
+                />
+              </div>
               <textarea
                 value={formData.paragraph}
                 onChange={(e) => setFormData({ ...formData, paragraph: e.target.value })}

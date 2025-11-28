@@ -7,6 +7,7 @@ import { BlogEntry } from '@/lib/firestore-schema';
 import Link from 'next/link';
 import Image from 'next/image';
 import AIContentGenerator from '@/components/Admin/AIContentGenerator';
+import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
 
 const BlogEntriesAdmin = () => {
   const [blogs, setBlogs] = useState<BlogEntry[]>([]);
@@ -212,7 +213,14 @@ const BlogEntriesAdmin = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Summary</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Summary</label>
+                <EnhanceWithAI
+                  currentText={formData.paragraph}
+                  onEnhanced={(enhancedText) => setFormData({ ...formData, paragraph: enhancedText })}
+                  fieldName="blog summary"
+                />
+              </div>
               <textarea
                 value={formData.paragraph}
                 onChange={(e) => setFormData({ ...formData, paragraph: e.target.value })}

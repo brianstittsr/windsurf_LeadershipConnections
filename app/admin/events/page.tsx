@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase';
 import { CalendarEvent } from '@/lib/firestore-schema';
 import { format } from 'date-fns';
 import { addSampleCalendarEvent, addMultipleSampleEvents } from '@/lib/add-sample-event';
+import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
 
 const EventsPage = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -242,7 +243,14 @@ const EventsPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <EnhanceWithAI
+                  currentText={formData.description}
+                  onEnhanced={(enhancedText) => setFormData({ ...formData, description: enhancedText })}
+                  fieldName="event description"
+                />
+              </div>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}

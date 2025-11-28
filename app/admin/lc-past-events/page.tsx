@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { isAdminUser } from '@/lib/adminUsers';
+import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
 
 interface EventItem {
   id: string;
@@ -271,9 +272,16 @@ const EventForm = ({ initialData, onSave, onCancel, saving }: {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
+        <div className="flex justify-between items-center mb-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
+          <EnhanceWithAI
+            currentText={formData.paragraph}
+            onEnhanced={(enhancedText) => setFormData({ ...formData, paragraph: enhancedText })}
+            fieldName="event description"
+          />
+        </div>
         <textarea
           value={formData.paragraph}
           onChange={(e) => setFormData({ ...formData, paragraph: e.target.value })}
