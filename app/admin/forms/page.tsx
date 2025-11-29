@@ -7,7 +7,7 @@ import { CustomForm } from '@/lib/firestore-schema';
 import { FormField, FormTemplate, formTemplates } from '@/types/form';
 import Link from 'next/link';
 import { generateFormQRCode, generateFormPublicUrl } from '@/lib/qrcode-utils';
-import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats } from '@/lib/datahub-service';
+import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats, ensureDatasetForForm } from '@/lib/datahub-service';
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -148,35 +148,68 @@ const FormsPage = () => {
     try {
       const publicUrl = generateFormPublicUrl(editingForm?.id || 'temp');
       
-      const formDataToSave = {
-        title: formData.title,
-        description: formData.description,
-        slug: formData.slug || generateSlug(formData.title),
-        template: formData.template,
-        fields: formData.fields,
-        publicUrl,
-        published: formData.published,
-        allowMultipleSubmissions: formData.allowMultipleSubmissions,
-        requiresAuth: formData.requiresAuth,
-        datasetEnabled: formData.datasetEnabled,
-        datasetId: formData.datasetId,
-        submissionCount: 0,
-        updatedAt: Timestamp.fromDate(new Date())
-      };
-
+      let formId = editingForm?.id;
+      
+      // Save or update the form first
       if (editingForm) {
-        await updateDoc(doc(db, 'customForms', editingForm.id), formDataToSave);
-      } else {
-        const docRef = await addDoc(collection(db, 'customForms'), {
-          ...formDataToSave,
-          createdAt: Timestamp.fromDate(new Date())
+        // Update existing form
+        await updateDoc(doc(db, 'customForms', editingForm.id), {
+          title: formData.title,
+          description: formData.description,
+          slug: formData.slug || generateSlug(formData.title),
+          template: formData.template,
+          fields: formData.fields,
+          publicUrl,
+          published: formData.published,
+          allowMultipleSubmissions: formData.allowMultipleSubmissions,
+          requiresAuth: formData.requiresAuth,
+          updatedAt: Timestamp.fromDate(new Date())
         });
+        console.log('✅ Form updated:', editingForm.id);
+      } else {
+        // Create new form
+        const docRef = await addDoc(collection(db, 'customForms'), {
+          title: formData.title,
+          description: formData.description,
+          slug: formData.slug || generateSlug(formData.title),
+          template: formData.template,
+          fields: formData.fields,
+          publicUrl,
+          published: formData.published,
+          allowMultipleSubmissions: formData.allowMultipleSubmissions,
+          requiresAuth: formData.requiresAuth,
+          submissionCount: 0,
+          createdAt: Timestamp.fromDate(new Date()),
+          updatedAt: Timestamp.fromDate(new Date())
+        });
+        
+        formId = docRef.id;
         
         // Update with correct public URL
         const correctPublicUrl = generateFormPublicUrl(docRef.id);
         await updateDoc(doc(db, 'customForms', docRef.id), {
           publicUrl: correctPublicUrl
         });
+        console.log('✅ Form created:', docRef.id);
+      }
+
+      // Auto-create dataset if form has fields
+      if (formId && formData.fields.length > 0) {
+        try {
+          console.log('🔄 Auto-creating dataset for form:', formId);
+          const datasetId = await ensureDatasetForForm(
+            formId,
+            formData.title,
+            formData.fields
+          );
+          console.log('✅ Dataset ensured:', datasetId);
+          alert(`Form saved successfully! Dataset ${datasetId} is linked.`);
+        } catch (datasetError) {
+          console.error('⚠️ Error creating dataset:', datasetError);
+          alert('Form saved, but there was an error creating the dataset. The dataset will be created on first submission.');
+        }
+      } else {
+        alert('Form saved successfully!');
       }
 
       resetForm();
