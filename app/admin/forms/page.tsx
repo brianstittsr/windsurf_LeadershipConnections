@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { CustomForm } from '@/lib/firestore-schema';
-import { FormTemplate, formTemplates, FormField } from '@/types/form';
-import { generateFormQRCode, generateFormPublicUrl } from '@/lib/qrcode-utils';
+import { FormField, FormTemplate } from '@/types/form';
 import Link from 'next/link';
+import { generateFormQRCode } from '@/lib/qr-generator';
+import AIFormGenerator from '@/components/Forms/AIFormGenerator';
+import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats } from '@/lib/datahub-service';
 import AIFormBuilderWizard from '@/components/AIFormBuilder/AIFormBuilderWizard';
 import FormCard from '@/components/Forms/FormCard';
 import ProjectAssignmentModal from '@/components/Forms/ProjectAssignmentModal';
@@ -254,20 +256,51 @@ const FormsPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this form? This will also delete all submissions.')) {
-      try {
-        await deleteDoc(doc(db, 'customForms', id));
+    try {
+      // Check if form has a linked dataset
+      const datasetId = await getDatasetForForm(id);
+      
+      let deleteDatasetToo = false;
+      if (datasetId) {
+        const stats = await getDatasetStats(datasetId);
+        const recordCount = stats?.recordCount || 0;
         
-        // Delete all submissions for this form
-        const submissionsQuery = query(collection(db, 'formSubmissions'), where('formId', '==', id));
-        const submissionsSnapshot = await getDocs(submissionsQuery);
-        const deletePromises = submissionsSnapshot.docs.map(doc => deleteDoc(doc.ref));
-        await Promise.all(deletePromises);
-        
-        fetchForms();
-      } catch (error) {
-        console.error('Error deleting form:', error);
+        // Show custom confirmation dialog for dataset deletion
+        const confirmMessage = `This form has a linked dataset with ${recordCount} record(s).\n\nDo you want to delete the dataset as well?\n\n- Click OK to delete BOTH the form AND the dataset\n- Click Cancel to delete ONLY the form (dataset will be preserved)`;
+        deleteDatasetToo = confirm(confirmMessage);
       }
+      
+      // Final confirmation for form deletion
+      if (!confirm('Are you sure you want to delete this form? This will also delete all submissions.')) {
+        return;
+      }
+      
+      // Delete the form
+      await deleteDoc(doc(db, 'customForms', id));
+      
+      // Delete all submissions for this form
+      const submissionsQuery = query(collection(db, 'formSubmissions'), where('formId', '==', id));
+      const submissionsSnapshot = await getDocs(submissionsQuery);
+      const deletePromises = submissionsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+      
+      // Handle dataset deletion or unlinking
+      if (datasetId) {
+        if (deleteDatasetToo) {
+          await deleteDataset(datasetId);
+          alert('Form, submissions, and dataset deleted successfully.');
+        } else {
+          await unlinkFormFromDataset(id);
+          alert('Form and submissions deleted. Dataset preserved.');
+        }
+      } else {
+        alert('Form and submissions deleted successfully.');
+      }
+      
+      fetchForms();
+    } catch (error) {
+      console.error('Error deleting form:', error);
+      alert('Error deleting form. Please try again.');
     }
   };
 

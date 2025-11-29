@@ -8,6 +8,7 @@ import { FormField } from '@/types/form';
 import { useParams } from 'next/navigation';
 import FormBrandingHeader, { FormBrandingFooter } from '@/components/FormBranding/FormBrandingHeader';
 import { captureFormTrackingData } from '@/lib/formTracking';
+import { ensureDatasetForForm } from '@/lib/datahub-service';
 
 export default function PublicFormPage() {
   const params = useParams();
@@ -106,6 +107,20 @@ export default function PublicFormPage() {
       // Capture tracking data
       const trackingData = await captureFormTrackingData();
       
+      // Ensure dataset exists for this form (auto-create if needed)
+      let datasetId: string | null = null;
+      try {
+        datasetId = await ensureDatasetForForm(
+          form!.id,
+          form!.title,
+          form!.fields as FormField[]
+        );
+        console.log('✅ Dataset ensured:', datasetId);
+      } catch (datasetError) {
+        console.error('⚠️ Error ensuring dataset:', datasetError);
+        // Continue with form submission even if dataset creation fails
+      }
+      
       // Create submission with tracking data
       const submission: Omit<FormSubmission, 'id'> = {
         formId: form!.id,
@@ -124,16 +139,15 @@ export default function PublicFormPage() {
       const formRef = doc(db, 'customForms', form!.id);
       const formDoc = await getDoc(formRef);
       const currentCount = formDoc.data()?.submissionCount || 0;
-      const formDataFromDoc = formDoc.data();
       
       await updateDoc(formRef, {
         submissionCount: currentCount + 1
       });
 
-      // Send to dataset if enabled
-      if (formDataFromDoc?.datasetEnabled && formDataFromDoc?.datasetId) {
+      // Send to dataset if we have a datasetId
+      if (datasetId) {
         try {
-          await fetch(`/api/datasets/${formDataFromDoc.datasetId}/records`, {
+          await fetch(`/api/datasets/${datasetId}/records`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -149,8 +163,9 @@ export default function PublicFormPage() {
               }
             })
           });
+          console.log('✅ Data sent to dataset:', datasetId);
         } catch (datasetError) {
-          console.error('Error sending to dataset:', datasetError);
+          console.error('⚠️ Error sending to dataset:', datasetError);
           // Don't fail the form submission if dataset sync fails
         }
       }
