@@ -111,6 +111,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                   <span className="block py-2 px-4 text-gray-500 font-semibold text-xs uppercase tracking-wider">User Management</span>
                 </li>
                 <li><Link href="/admin/users" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Manage Users</Link></li>
+                <li><Link href="/admin/subscriptions" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Subscriptions</Link></li>
+                <li><Link href="/admin/jobs" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Job Postings</Link></li>
               </>
             )}
           </ul>
