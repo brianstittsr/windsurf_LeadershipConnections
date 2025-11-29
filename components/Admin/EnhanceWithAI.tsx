@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface EnhanceWithAIProps {
   currentText: string;
@@ -11,12 +12,13 @@ interface EnhanceWithAIProps {
 
 const EnhanceWithAI = ({ currentText, onEnhanced, fieldName = 'text' }: EnhanceWithAIProps) => {
   const { userRole } = useAuth();
+  const { hasFeature } = useSubscription();
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [error, setError] = useState('');
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   
-  // Check if user has AI subscription (SuperAdmin has full access)
-  const hasAISubscription = userRole === 'SuperAdmin'; // For now, only SuperAdmin
+  // Check if user has AI text enhancement feature
+  const hasAISubscription = hasFeature('ai-text-enhancement');
 
   const enhanceText = async () => {
     // Check subscription for SuperUser

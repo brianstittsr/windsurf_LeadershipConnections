@@ -8,9 +8,11 @@ import { format } from 'date-fns';
 import { addSampleCalendarEvent, addMultipleSampleEvents } from '@/lib/add-sample-event';
 import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
 import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 
 const EventsPage = () => {
   const { userRole } = useAuth();
+  const { hasFeature } = useSubscription();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [forms, setForms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +21,8 @@ const EventsPage = () => {
   const [collapsedEntries, setCollapsedEntries] = useState<Set<string>>(new Set());
   const [showGeoSubscriptionModal, setShowGeoSubscriptionModal] = useState(false);
   
-  // Check if user has geocoding subscription (SuperAdmin has full access)
-  const hasGeoSubscription = userRole === 'SuperAdmin'; // For now, only SuperAdmin
+  // Check if user has geocoding feature
+  const hasGeoSubscription = hasFeature('geocoding');
 
   const [formData, setFormData] = useState({
     title: '',

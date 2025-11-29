@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase';
 import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload, FaArchive, FaRobot, FaMagic, FaChartLine, FaLock } from 'react-icons/fa';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface DatasetSchema {
   fields: Array<{
@@ -53,9 +54,13 @@ export default function DatasetViewPage() {
   const [exporting, setExporting] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [aiFeature, setAIFeature] = useState<'merge' | 'reporting' | 'analysis' | null>(null);
+  const { hasFeature, hasAnyFeature } = useSubscription();
   
-  // Check if user has AI subscription (placeholder - would check actual subscription status)
-  const hasAISubscription = userRole === 'SuperAdmin'; // For now, only SuperAdmin
+  // Check if user has AI data features
+  const hasDataMerge = hasFeature('ai-data-merge');
+  const hasReporting = hasFeature('ai-reporting');
+  const hasDataAnalysis = hasFeature('ai-data-analysis');
+  const hasAnyAIFeature = hasAnyFeature(['ai-data-merge', 'ai-reporting', 'ai-data-analysis']);
 
   useEffect(() => {
     if (datasetId) {
@@ -161,11 +166,17 @@ export default function DatasetViewPage() {
   };
 
   const handleAIFeature = (feature: 'merge' | 'reporting' | 'analysis') => {
-    if (!hasAISubscription && userRole === 'SuperUser') {
+    const featureMap = {
+      merge: hasDataMerge,
+      reporting: hasReporting,
+      analysis: hasDataAnalysis,
+    };
+    
+    if (!featureMap[feature] && userRole === 'SuperUser') {
       // Show subscription modal for SuperUser
       setAIFeature(feature);
       setShowAIModal(true);
-    } else if (hasAISubscription) {
+    } else if (featureMap[feature]) {
       // Execute AI feature for SuperAdmin or subscribed SuperUser
       executeAIFeature(feature);
     }
@@ -461,12 +472,12 @@ export default function DatasetViewPage() {
               {/* AI Data Merge */}
               <button
                 onClick={() => handleAIFeature('merge')}
-                disabled={!hasAISubscription}
+                disabled={!hasDataMerge}
                 className="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
                 <FaMagic />
                 AI Data Merge
-                {!hasAISubscription && (
+                {!hasDataMerge && (
                   <FaLock className="absolute right-3 text-xs" />
                 )}
               </button>
@@ -474,12 +485,12 @@ export default function DatasetViewPage() {
               {/* AI Reporting */}
               <button
                 onClick={() => handleAIFeature('reporting')}
-                disabled={!hasAISubscription}
+                disabled={!hasReporting}
                 className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
                 <FaChartLine />
                 AI Reporting
-                {!hasAISubscription && (
+                {!hasReporting && (
                   <FaLock className="absolute right-3 text-xs" />
                 )}
               </button>
@@ -487,12 +498,12 @@ export default function DatasetViewPage() {
               {/* AI Data Analysis */}
               <button
                 onClick={() => handleAIFeature('analysis')}
-                disabled={!hasAISubscription}
+                disabled={!hasDataAnalysis}
                 className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
                 <FaDatabase />
                 AI Data Analysis
-                {!hasAISubscription && (
+                {!hasDataAnalysis && (
                   <FaLock className="absolute right-3 text-xs" />
                 )}
               </button>
