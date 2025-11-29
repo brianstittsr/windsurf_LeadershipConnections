@@ -19,7 +19,7 @@ export default function FormBrandingHeader({
             <Image
               src="/images/logo/LeadershipConnectionsLogo.webp"
               alt="Leadership Connections"
-              width={60}
+              width={120}
               height={60}
               className="object-contain"
               style={{ width: 'auto', height: '60px', maxWidth: '100%' }}
@@ -47,7 +47,7 @@ export default function FormBrandingHeader({
           <Image
             src="/images/logo/LeadershipConnectionsLogo.webp"
             alt="Leadership Connections"
-            width={120}
+            width={240}
             height={120}
             className="object-contain"
             style={{ width: 'auto', height: '120px', maxWidth: '100%' }}
@@ -76,7 +76,7 @@ export function FormBrandingFooter() {
           <Image
             src="/images/logo/LeadershipConnectionsLogo.webp"
             alt="Leadership Connections"
-            width={40}
+            width={80}
             height={40}
             className="object-contain"
             style={{ width: 'auto', height: '40px', maxWidth: '100%' }}
