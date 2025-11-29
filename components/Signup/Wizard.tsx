@@ -75,9 +75,9 @@ const Wizard = () => {
         )}
       </div>
       {step > totalSteps && (
-        <div className="text-center bg-white dark:bg-dark p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-black dark:text-white">Thank you for signing up!</h2>
-          <p className="text-body-color dark:text-white">A welcome email has been sent to your address.</p>
+        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-black">Thank you for signing up!</h2>
+          <p className="text-gray-700">A welcome email has been sent to your address.</p>
         </div>
       )}
     </div>

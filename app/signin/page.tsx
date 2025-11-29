@@ -34,15 +34,15 @@ const SigninPage = () => {
       <div className="container">
         <div className="-mx-4 flex flex-wrap">
           <div className="w-full px-4">
-            <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
-              <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
+            <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 sm:p-[60px]">
+              <h3 className="mb-3 text-center text-2xl font-bold text-black sm:text-3xl">
                 Sign in to your account
               </h3>
               <form onSubmit={handleSignin}>
                 <div className="mb-8">
                   <label
                     htmlFor="email"
-                    className="mb-3 block text-sm text-body-color dark:text-white"
+                    className="mb-3 block text-sm text-gray-700"
                   >
                     Your Email
                   </label>
@@ -52,13 +52,13 @@ const SigninPage = () => {
                     placeholder="Enter your Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="border-stroke dark:text-white dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
+                    className="w-full rounded-sm border border-gray-300 bg-white px-6 py-3 text-base text-gray-900 outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 <div className="mb-8">
                   <label
                     htmlFor="password"
-                    className="mb-3 block text-sm text-body-color dark:text-white"
+                    className="mb-3 block text-sm text-gray-700"
                   >
                     Your Password
                   </label>
@@ -68,12 +68,12 @@ const SigninPage = () => {
                     placeholder="Enter your Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="border-stroke dark:text-white dark:shadow-two w-full rounded-sm border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:focus:border-primary dark:focus:shadow-none"
+                    className="w-full rounded-sm border border-gray-300 bg-white px-6 py-3 text-base text-gray-900 outline-none transition-all duration-300 focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
                 {error && <p className="mb-4 text-center text-red-500">{error}</p>}
                 <div className="mb-6">
-                  <button type="submit" className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90">
+                  <button type="submit" className="flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90 shadow-lg">
                     Sign in
                   </button>
                 </div>
