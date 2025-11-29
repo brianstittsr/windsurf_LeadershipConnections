@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import RegistrationModal from './RegistrationModal';
+import MemberProfileWizardModal from './MemberProfileWizardModal';
 
 const MemberRegistration = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +29,7 @@ const MemberRegistration = () => {
 
   return (
     <>
-      <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <MemberProfileWizardModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       
       <section className="relative z-10 overflow-hidden bg-primary py-16 md:py-20 lg:py-28">
       <div className="container">
