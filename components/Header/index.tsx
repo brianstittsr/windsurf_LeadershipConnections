@@ -73,7 +73,7 @@ const Header = () => {
                   <Image
                     src="/images/logo/LeadershipConnectionsLogo.webp"
                     alt="Leadership C.O.N.N.E.C.T.I.O.N.S. Logo"
-                    width={40}
+                    width={80}
                     height={40}
                     priority
                     className="object-contain brightness-0"
