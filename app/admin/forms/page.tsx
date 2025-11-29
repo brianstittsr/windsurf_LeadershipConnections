@@ -4,15 +4,18 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { CustomForm } from '@/lib/firestore-schema';
-import { FormField, FormTemplate } from '@/types/form';
+import { FormField, FormTemplate, formTemplates } from '@/types/form';
 import Link from 'next/link';
-import { generateFormQRCode } from '@/lib/qrcode-utils';
-import AIFormGenerator from '@/components/Forms/AIFormGenerator';
+import { generateFormQRCode, generateFormPublicUrl } from '@/lib/qrcode-utils';
 import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats } from '@/lib/datahub-service';
-import AIFormBuilderWizard from '@/components/AIFormBuilder/AIFormBuilderWizard';
-import FormCard from '@/components/Forms/FormCard';
-import ProjectAssignmentModal from '@/components/Forms/ProjectAssignmentModal';
-import { FaRobot } from 'react-icons/fa';
+
+// Helper function to generate slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
 
 const FormsPage = () => {
   const [forms, setForms] = useState<CustomForm[]>([]);
@@ -20,12 +23,8 @@ const FormsPage = () => {
   const [editingForm, setEditingForm] = useState<CustomForm | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
-  const [showAIWizard, setShowAIWizard] = useState(false);
   const [generatingQR, setGeneratingQR] = useState(false);
   const [selectedFormForQR, setSelectedFormForQR] = useState<string | null>(null);
-  const [showProjectModal, setShowProjectModal] = useState(false);
-  const [selectedFormForProject, setSelectedFormForProject] = useState<CustomForm | null>(null);
-  const [projects, setProjects] = useState<Record<string, any>>({});
 
   const [formData, setFormData] = useState({
     title: '',
@@ -43,7 +42,6 @@ const FormsPage = () => {
 
   useEffect(() => {
     fetchForms();
-    fetchProjects();
   }, []);
 
   const fetchForms = async () => {
@@ -65,22 +63,6 @@ const FormsPage = () => {
       console.error('Error fetching forms:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchProjects = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'projects'));
-      const projectsMap: Record<string, any> = {};
-      querySnapshot.docs.forEach(doc => {
-        projectsMap[doc.id] = {
-          id: doc.id,
-          ...doc.data(),
-        };
-      });
-      setProjects(projectsMap);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
     }
   };
 
@@ -383,30 +365,13 @@ const FormsPage = () => {
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Custom Forms Management</h1>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowAIWizard(true)}
-            className="bg-gradient-to-r from-purple-600 to-primary text-white px-6 py-2 rounded-lg hover:from-purple-700 hover:to-primary/90 flex items-center gap-2 shadow-lg"
-          >
-            <FaRobot className="text-xl" />
-            AI Form Builder
-          </button>
-          <button
-            onClick={() => setShowTemplateSelector(true)}
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
-          >
-            Create New Form
-          </button>
-        </div>
+        <button
+          onClick={() => setShowTemplateSelector(true)}
+          className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90"
+        >
+          Create New Form
+        </button>
       </div>
-
-      {/* AI Form Builder Wizard */}
-      {showAIWizard && (
-        <AIFormBuilderWizard
-          onClose={() => setShowAIWizard(false)}
-          onFormGenerated={handleAIFormGenerated}
-        />
-      )}
 
       {/* Template Selector Modal */}
       {showTemplateSelector && (
@@ -715,58 +680,53 @@ const FormsPage = () => {
         </div>
       )}
 
-      {/* Project Assignment Modal */}
-      {showProjectModal && selectedFormForProject && (
-        <ProjectAssignmentModal
-          formId={selectedFormForProject.id}
-          formTitle={selectedFormForProject.title}
-          currentProjectId={(selectedFormForProject as any).projectId}
-          onClose={() => {
-            setShowProjectModal(false);
-            setSelectedFormForProject(null);
-          }}
-          onAssigned={() => {
-            fetchForms();
-            fetchProjects();
-          }}
-        />
+      {/* Forms List - Table View */}
+      {forms.length === 0 ? (
+        <div className="text-center py-12 text-gray-500 bg-white rounded-lg shadow">
+          No forms yet. Click "Create New Form" to get started.
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submissions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {forms.map((form) => (
+                <tr key={form.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{form.title}</div>
+                    <div className="text-sm text-gray-500">{form.slug}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${form.published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {form.published ? 'Published' : 'Draft'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <Link href={`/admin/forms/submissions/${form.id}`} className="text-primary hover:underline">
+                      {form.submissionCount || 0} submissions
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    <button onClick={() => handleEdit(form)} className="text-primary hover:text-primary/80">Edit</button>
+                    <button onClick={() => handleDuplicate(form)} className="text-blue-600 hover:text-blue-800">Duplicate</button>
+                    <button onClick={() => handleGenerateQR(form.id)} className="text-green-600 hover:text-green-800" disabled={generatingQR && selectedFormForQR === form.id}>
+                      {generatingQR && selectedFormForQR === form.id ? 'Generating...' : 'QR Code'}
+                    </button>
+                    <button onClick={() => handleDelete(form.id)} className="text-red-600 hover:text-red-800">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
-
-      {/* Forms List - Card View */}
-      <div className="grid gap-6">
-        {forms.map((form) => {
-          const formProject = (form as any).projectId ? projects[(form as any).projectId] : null;
-          return (
-            <FormCard
-              key={form.id}
-              form={{
-                ...form,
-                projectName: formProject?.name,
-                projectColor: formProject?.color,
-                datasetEnabled: (form as any).datasetEnabled,
-                datasetId: (form as any).datasetId,
-              }}
-              onEdit={handleEdit}
-              onDuplicate={handleDuplicate}
-              onDelete={handleDelete}
-              onGenerateQR={handleGenerateQR}
-              onAssignProject={(formId) => {
-                const selectedForm = forms.find(f => f.id === formId);
-                if (selectedForm) {
-                  setSelectedFormForProject(selectedForm);
-                  setShowProjectModal(true);
-                }
-              }}
-              generatingQR={generatingQR && selectedFormForQR === form.id}
-            />
-          );
-        })}
-        {forms.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            No forms yet. Click "Create New Form" to get started.
-          </div>
-        )}
-      </div>
     </div>
   );
 };
