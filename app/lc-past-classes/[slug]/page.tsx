@@ -47,10 +47,10 @@ export default async function ClassDetailPage({ params }: Props) {
           <div className="-mx-4 flex flex-wrap justify-center">
             <div className="w-full px-4 lg:w-8/12">
               <div>
-                <h2 className="mb-8 text-3xl font-bold leading-tight text-primary-600 dark:text-primary-400 sm:text-4xl sm:leading-tight">
+                <h2 className="mb-8 text-3xl font-bold leading-tight text-primary sm:text-4xl sm:leading-tight">
                   {title}
                 </h2>
-                <div className="mb-10 flex flex-wrap items-center justify-between border-b border-body-color border-opacity-10 pb-4 dark:border-white dark:border-opacity-10">
+                <div className="mb-10 flex flex-wrap items-center justify-between border-b border-gray-300 pb-4">
                   <div className="flex flex-wrap items-center">
                     <div className="mb-5 mr-10 flex items-center">
                       <div className="mr-3">
@@ -114,7 +114,7 @@ export default async function ClassDetailPage({ params }: Props) {
                     </div>
                   </div>
                   <div
-                    className="blog-details"
+                    className="blog-details prose prose-lg max-w-none text-gray-900"
                     dangerouslySetInnerHTML={{ __html: content }}
                   />
                 </div>
