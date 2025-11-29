@@ -20,7 +20,7 @@ The application has three distinct user roles with different levels of access:
   - DataHub Admin
   - Any administrative features
 
-- **After Sign In**: Redirected to `/member-directory`
+- **After Sign In**: Redirected to `/admin/lc-profile` (their profile page)
 
 ### 2. **SuperUser** (Staff/Administrators)
 - **Access Level**: Full Admin (except delete)
@@ -115,7 +115,7 @@ All other users default to `'User'` role.
 
 After successful sign-in, users are redirected based on their role:
 
-- **User** → `/member-directory`
+- **User** → `/admin/lc-profile` (their profile page)
 - **SuperUser** → `/admin/dashboard`
 - **SuperAdmin** → `/admin/dashboard`
 
@@ -127,7 +127,7 @@ After completing the 6-step profile wizard:
 2. Username mapping saved to `usernames` collection
 3. User role saved to `userRoles` collection (defaults to 'User')
 4. Member profile saved to `memberProfiles` collection
-5. User redirected to `/member-directory`
+5. User redirected to `/admin/lc-profile` (their profile page)
 
 ## Profile Visibility Settings
 

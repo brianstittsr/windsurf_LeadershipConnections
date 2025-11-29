@@ -248,7 +248,7 @@ export default function MemberProfileWizardModal({ isOpen, onClose }: MemberProf
 
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = '/member-directory';
+        window.location.href = '/admin/lc-profile';
       }, 3000);
 
     } catch (error: any) {

@@ -27,11 +27,9 @@ const SigninPage = () => {
       // Redirect based on role
       if (role === 'SuperAdmin' || role === 'SuperUser') {
         router.push('/admin/dashboard');
-      } else if (role === 'User') {
-        router.push('/member-directory');
       } else {
-        // Fallback for users without a role
-        router.push('/');
+        // Regular users go to their profile page
+        router.push('/admin/lc-profile');
       }
     } catch (error: any) {
       setError(error.message);
