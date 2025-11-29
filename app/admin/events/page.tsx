@@ -7,14 +7,20 @@ import { CalendarEvent } from '@/lib/firestore-schema';
 import { format } from 'date-fns';
 import { addSampleCalendarEvent, addMultipleSampleEvents } from '@/lib/add-sample-event';
 import EnhanceWithAI from '@/components/Admin/EnhanceWithAI';
+import { useAuth } from '@/context/AuthContext';
 
 const EventsPage = () => {
+  const { userRole } = useAuth();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [forms, setForms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [collapsedEntries, setCollapsedEntries] = useState<Set<string>>(new Set());
+  const [showGeoSubscriptionModal, setShowGeoSubscriptionModal] = useState(false);
+  
+  // Check if user has geocoding subscription (SuperAdmin has full access)
+  const hasGeoSubscription = userRole === 'SuperAdmin'; // For now, only SuperAdmin
 
   const [formData, setFormData] = useState({
     title: '',
@@ -35,6 +41,52 @@ const EventsPage = () => {
 
   const [geocoding, setGeocoding] = useState(false);
   const [geocodeMessage, setGeocodeMessage] = useState('');
+  
+  const handleGetCoordinates = async () => {
+    // Check subscription for SuperUser
+    if (!hasGeoSubscription && userRole === 'SuperUser') {
+      setShowGeoSubscriptionModal(true);
+      return;
+    }
+    
+    // Proceed with geocoding
+    if (!formData.location) {
+      setGeocodeMessage('Please enter a location first');
+      return;
+    }
+    setGeocoding(true);
+    setGeocodeMessage('');
+    try {
+      // Use Nominatim (OpenStreetMap) geocoding service
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.location)}&limit=1`,
+        {
+          headers: {
+            'User-Agent': 'LeadershipConnections/1.0'
+          }
+        }
+      );
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        setFormData({
+          ...formData,
+          coordinates: {
+            lat: parseFloat(lat),
+            lng: parseFloat(lon)
+          }
+        });
+        setGeocodeMessage(`✓ Coordinates found: ${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`);
+      } else {
+        setGeocodeMessage('✗ Location not found. Try a more specific address.');
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      setGeocodeMessage('✗ Error geocoding address');
+    } finally {
+      setGeocoding(false);
+    }
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -333,46 +385,9 @@ const EventsPage = () => {
                 />
                 <button
                   type="button"
-                  onClick={async () => {
-                    if (!formData.location) {
-                      setGeocodeMessage('Please enter a location first');
-                      return;
-                    }
-                    setGeocoding(true);
-                    setGeocodeMessage('');
-                    try {
-                      // Use Nominatim (OpenStreetMap) geocoding service
-                      const response = await fetch(
-                        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(formData.location)}&limit=1`,
-                        {
-                          headers: {
-                            'User-Agent': 'LeadershipConnections/1.0'
-                          }
-                        }
-                      );
-                      const data = await response.json();
-                      if (data && data.length > 0) {
-                        const { lat, lon } = data[0];
-                        setFormData({
-                          ...formData,
-                          coordinates: {
-                            lat: parseFloat(lat),
-                            lng: parseFloat(lon)
-                          }
-                        });
-                        setGeocodeMessage(`✓ Coordinates found: ${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`);
-                      } else {
-                        setGeocodeMessage('✗ Location not found. Try a more specific address.');
-                      }
-                    } catch (error) {
-                      console.error('Geocoding error:', error);
-                      setGeocodeMessage('✗ Error geocoding address');
-                    } finally {
-                      setGeocoding(false);
-                    }
-                  }}
+                  onClick={handleGetCoordinates}
                   disabled={geocoding || !formData.location}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center gap-2"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center gap-2 relative"
                 >
                   {geocoding ? (
                     <>
@@ -389,6 +404,11 @@ const EventsPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       Get Coordinates
+                      {!hasGeoSubscription && userRole === 'SuperUser' && (
+                        <svg className="h-3 w-3 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
                     </>
                   )}
                 </button>
@@ -638,6 +658,47 @@ const EventsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Geocoding Subscription Modal */}
+      {showGeoSubscriptionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Geocoding Subscription
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Automatic geocoding converts addresses into precise latitude and longitude coordinates, enabling map integration and location-based features for your events.
+            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-blue-900 font-semibold mb-2">Subscription Required</p>
+              <p className="text-sm text-blue-800">
+                This feature is available as a subscription service for SuperUsers. Contact your administrator to enable geocoding features.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowGeoSubscriptionModal(false)}
+                className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowGeoSubscriptionModal(false);
+                  alert('Contact administrator to enable geocoding subscription features.');
+                }}
+                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Request Access
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
