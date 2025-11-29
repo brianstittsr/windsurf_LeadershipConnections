@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -21,9 +21,13 @@ interface EventMapProps {
 }
 
 const EventMap = ({ latitude, longitude, locationName, eventTitle }: EventMapProps) => {
+  // Create a unique key based on coordinates to force re-initialization only when location changes
+  const mapKey = useMemo(() => `${latitude}-${longitude}`, [latitude, longitude]);
+  
   return (
     <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
       <MapContainer
+        key={mapKey}
         center={[latitude, longitude]}
         zoom={15}
         scrollWheelZoom={false}
