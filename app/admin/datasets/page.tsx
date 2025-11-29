@@ -36,10 +36,20 @@ export default function DatasetsPage() {
     try {
       setLoading(true);
       const response = await fetch('/api/datasets');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to fetch datasets:', errorData);
+        alert(`Error loading datasets: ${errorData.error || 'Unknown error'}. Make sure you are signed in as an admin.`);
+        setDatasets([]);
+        return;
+      }
+      
       const data = await response.json();
       setDatasets(data.datasets || []);
     } catch (error) {
       console.error('Error fetching datasets:', error);
+      alert('Error loading datasets. Make sure you are signed in as an admin.');
     } finally {
       setLoading(false);
     }
