@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload } from 'react-icons/fa';
+import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload, FaArchive, FaRobot, FaMagic, FaChartLine, FaLock } from 'react-icons/fa';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 interface DatasetSchema {
   fields: Array<{
@@ -22,6 +23,9 @@ interface DatasetMetadata {
   recordCount?: number;
   lastSync?: Date;
   isPublic?: boolean;
+  archived?: boolean;
+  archivedAt?: Date;
+  archivedBy?: string;
 }
 
 interface Dataset {
@@ -40,10 +44,18 @@ export default function DatasetViewPage() {
   const params = useParams();
   const router = useRouter();
   const datasetId = params.id as string;
+  const { user, userRole } = useAuth();
   
   const [dataset, setDataset] = useState<Dataset | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [archiving, setArchiving] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiFeature, setAIFeature] = useState<'merge' | 'reporting' | 'analysis' | null>(null);
+  
+  // Check if user has AI subscription (placeholder - would check actual subscription status)
+  const hasAISubscription = userRole === 'SuperAdmin'; // For now, only SuperAdmin
 
   useEffect(() => {
     if (datasetId) {
@@ -78,6 +90,94 @@ export default function DatasetViewPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleArchive = async () => {
+    if (!user || !dataset) return;
+    
+    const confirmed = window.confirm(
+      `Are you sure you want to archive "${dataset.name}"? This will hide it from the active datasets list.`
+    );
+    
+    if (!confirmed) return;
+    
+    setArchiving(true);
+    try {
+      const datasetRef = doc(db, 'datasets', datasetId);
+      await updateDoc(datasetRef, {
+        'metadata.archived': true,
+        'metadata.archivedAt': Timestamp.now(),
+        'metadata.archivedBy': user.uid,
+        updatedAt: Timestamp.now(),
+      });
+      
+      alert('Dataset archived successfully!');
+      router.push('/admin/datasets');
+    } catch (err) {
+      console.error('Error archiving dataset:', err);
+      alert('Failed to archive dataset. Please try again.');
+    } finally {
+      setArchiving(false);
+    }
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      // Placeholder for export functionality
+      // In a real implementation, this would:
+      // 1. Fetch all records from the dataset
+      // 2. Convert to CSV/JSON format
+      // 3. Trigger download
+      
+      const exportData = {
+        dataset: {
+          name: dataset?.name,
+          description: dataset?.description,
+          schema: dataset?.schema,
+          metadata: dataset?.metadata,
+        },
+        exportedAt: new Date().toISOString(),
+        exportedBy: user?.email,
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${dataset?.name.replace(/\\s+/g, '_')}_export_${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('Dataset exported successfully!');
+    } catch (err) {
+      console.error('Error exporting dataset:', err);
+      alert('Failed to export dataset. Please try again.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleAIFeature = (feature: 'merge' | 'reporting' | 'analysis') => {
+    if (!hasAISubscription && userRole === 'SuperUser') {
+      // Show subscription modal for SuperUser
+      setAIFeature(feature);
+      setShowAIModal(true);
+    } else if (hasAISubscription) {
+      // Execute AI feature for SuperAdmin or subscribed SuperUser
+      executeAIFeature(feature);
+    }
+  };
+
+  const executeAIFeature = async (feature: 'merge' | 'reporting' | 'analysis') => {
+    // Placeholder for AI feature execution
+    alert(`AI ${feature} feature coming soon! This will use advanced AI to ${
+      feature === 'merge' ? 'intelligently merge datasets' :
+      feature === 'reporting' ? 'generate comprehensive reports' :
+      'analyze data patterns and insights'
+    }.`);
   };
 
   if (loading) {
@@ -320,22 +420,126 @@ export default function DatasetViewPage() {
           <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Actions</h3>
             <div className="space-y-2">
+              {/* Export - SuperAdmin & SuperUser */}
+              {(userRole === 'SuperAdmin' || userRole === 'SuperUser') && (
+                <button
+                  onClick={handleExport}
+                  disabled={exporting}
+                  className="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaDownload />
+                  {exporting ? 'Exporting...' : 'Export Data'}
+                </button>
+              )}
+
+              {/* Archive - SuperAdmin & SuperUser */}
+              {(userRole === 'SuperAdmin' || userRole === 'SuperUser') && (
+                <button
+                  onClick={handleArchive}
+                  disabled={archiving}
+                  className="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaArchive />
+                  {archiving ? 'Archiving...' : 'Archive Dataset'}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* AI Features */}
+          <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg shadow border border-purple-200 p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+              <FaRobot className="text-purple-600" />
+              AI Data Features
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              {userRole === 'SuperAdmin' 
+                ? 'Advanced AI-powered data operations' 
+                : 'Available as subscription service'}
+            </p>
+            <div className="space-y-2">
+              {/* AI Data Merge */}
               <button
-                onClick={() => router.push(`/admin/datasets/${dataset.id}/edit`)}
-                className="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                onClick={() => handleAIFeature('merge')}
+                disabled={!hasAISubscription}
+                className="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
-                Edit Dataset
+                <FaMagic />
+                AI Data Merge
+                {!hasAISubscription && (
+                  <FaLock className="absolute right-3 text-xs" />
+                )}
               </button>
+
+              {/* AI Reporting */}
               <button
-                className="w-full bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                onClick={() => handleAIFeature('reporting')}
+                disabled={!hasAISubscription}
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
               >
-                <FaDownload />
-                Export Data
+                <FaChartLine />
+                AI Reporting
+                {!hasAISubscription && (
+                  <FaLock className="absolute right-3 text-xs" />
+                )}
+              </button>
+
+              {/* AI Data Analysis */}
+              <button
+                onClick={() => handleAIFeature('analysis')}
+                disabled={!hasAISubscription}
+                className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed relative"
+              >
+                <FaDatabase />
+                AI Data Analysis
+                {!hasAISubscription && (
+                  <FaLock className="absolute right-3 text-xs" />
+                )}
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* AI Subscription Modal */}
+      {showAIModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <FaRobot className="text-purple-600" />
+              AI Feature Subscription
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {aiFeature === 'merge' && 'AI Data Merge intelligently combines multiple datasets using advanced algorithms to identify relationships and merge data seamlessly.'}
+              {aiFeature === 'reporting' && 'AI Reporting generates comprehensive, insightful reports with data visualizations and automated analysis.'}
+              {aiFeature === 'analysis' && 'AI Data Analysis uses machine learning to discover patterns, anomalies, and actionable insights in your data.'}
+            </p>
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-purple-900 font-semibold mb-2">Subscription Required</p>
+              <p className="text-sm text-purple-800">
+                This feature is available as a subscription service for SuperUsers. Contact your administrator to enable AI features.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowAIModal(false)}
+                className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowAIModal(false);
+                  alert('Contact administrator to enable AI subscription features.');
+                }}
+                className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Request Access
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

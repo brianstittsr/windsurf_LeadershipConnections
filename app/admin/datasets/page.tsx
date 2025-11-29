@@ -46,12 +46,14 @@ export default function DatasetsPage() {
       );
       
       const snapshot = await getDocs(q);
-      const datasetsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-      }));
+      const datasetsData = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+          updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+        }))
+        .filter((dataset: any) => !dataset.metadata?.archived); // Filter out archived datasets
       
       console.log(`✅ Fetched ${datasetsData.length} dataset(s)`);
       setDatasets(datasetsData as any[]);
