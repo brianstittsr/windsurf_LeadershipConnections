@@ -25,6 +25,9 @@ const FormsPage = () => {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [generatingQR, setGeneratingQR] = useState(false);
   const [selectedFormForQR, setSelectedFormForQR] = useState<string | null>(null);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [currentQRCode, setCurrentQRCode] = useState<string>('');
+  const [currentFormTitle, setCurrentFormTitle] = useState<string>('');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -323,11 +326,22 @@ const FormsPage = () => {
     setGeneratingQR(true);
     setSelectedFormForQR(formId);
     try {
+      const form = forms.find(f => f.id === formId);
+      if (!form) {
+        throw new Error('Form not found');
+      }
+      
       const qrCode = await generateFormQRCode(formId);
       await updateDoc(doc(db, 'customForms', formId), {
         qrCode,
         updatedAt: Timestamp.fromDate(new Date())
       });
+      
+      // Show the QR code in a modal
+      setCurrentQRCode(qrCode);
+      setCurrentFormTitle(form.title);
+      setShowQRModal(true);
+      
       fetchForms();
     } catch (error) {
       console.error('Error generating QR code:', error);
@@ -336,6 +350,15 @@ const FormsPage = () => {
       setGeneratingQR(false);
       setSelectedFormForQR(null);
     }
+  };
+
+  const downloadQRCode = () => {
+    const link = document.createElement('a');
+    link.href = currentQRCode;
+    link.download = `${currentFormTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-qr-code.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const resetForm = () => {
@@ -758,6 +781,48 @@ const FormsPage = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowQRModal(false)}>
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900">QR Code for {currentFormTitle}</h3>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-white p-4 rounded-lg border-2 border-gray-200 mb-6">
+                <img src={currentQRCode} alt="QR Code" className="w-64 h-64" />
+              </div>
+              
+              <p className="text-sm text-gray-600 text-center mb-6">
+                Scan this QR code to access the form directly
+              </p>
+              
+              <div className="flex gap-3 w-full">
+                <button
+                  onClick={downloadQRCode}
+                  className="flex-1 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 font-medium"
+                >
+                  Download QR Code
+                </button>
+                <button
+                  onClick={() => setShowQRModal(false)}
+                  className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
