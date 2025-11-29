@@ -105,7 +105,29 @@ export default function PublicFormPage() {
     setSubmitting(true);
     try {
       // Capture tracking data
-      const trackingData = await captureFormTrackingData();
+      const rawTrackingData = await captureFormTrackingData();
+      
+      // Clean tracking data to remove undefined values (Firestore doesn't allow them)
+      const cleanTrackingData = JSON.parse(JSON.stringify(rawTrackingData, (key, value) => {
+        return value === undefined ? null : value;
+      }));
+      
+      // Remove null values from approximateLocation if it exists
+      if (cleanTrackingData.approximateLocation) {
+        const cleanLocation: any = {};
+        Object.keys(cleanTrackingData.approximateLocation).forEach(key => {
+          const value = cleanTrackingData.approximateLocation[key];
+          if (value !== null && value !== undefined) {
+            cleanLocation[key] = value;
+          }
+        });
+        // Only include approximateLocation if it has at least one property
+        if (Object.keys(cleanLocation).length > 0) {
+          cleanTrackingData.approximateLocation = cleanLocation;
+        } else {
+          delete cleanTrackingData.approximateLocation;
+        }
+      }
       
       // Ensure dataset exists for this form (auto-create if needed)
       let datasetId: string | null = null;
@@ -127,7 +149,7 @@ export default function PublicFormPage() {
         formTitle: form!.title,
         data: formData,
         submittedAt: new Date(),
-        trackingData: trackingData as any, // Add tracking data
+        trackingData: cleanTrackingData as any, // Add cleaned tracking data
       };
 
       const submissionDoc = await addDoc(collection(db, 'formSubmissions'), {
@@ -157,9 +179,9 @@ export default function PublicFormPage() {
                 sourceApplication: 'LeadershipConnections',
                 submittedBy: submission.submittedBy,
                 submittedAt: new Date(),
-                deviceType: trackingData.deviceType,
-                userAgent: trackingData.userAgent,
-                location: trackingData.approximateLocation,
+                deviceType: cleanTrackingData.deviceType,
+                userAgent: cleanTrackingData.userAgent,
+                location: cleanTrackingData.approximateLocation,
               }
             })
           });
