@@ -45,6 +45,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             role = await initializeUserRole(user.uid, user.email);
           }
           
+          // SuperAdmin can override role for testing
+          if (role === 'SuperAdmin') {
+            const testRole = localStorage.getItem('testRole') as UserRole | null;
+            if (testRole && ['SuperAdmin', 'SuperUser', 'User'].includes(testRole)) {
+              console.log(`🔄 SuperAdmin testing as: ${testRole}`);
+              setUserRole(testRole);
+              setPermissions(ROLE_PERMISSIONS[testRole]);
+              setLoading(false);
+              return;
+            }
+          }
+          
           setUserRole(role);
           setPermissions(ROLE_PERMISSIONS[role]);
         } catch (error) {

@@ -33,6 +33,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <ScrollToTop />
+            <RoleSwitcher />
           </Providers>
         </AuthProvider>
       </body>
@@ -42,3 +43,4 @@ export default function RootLayout({
 
 import { Providers } from "./providers";
 import { AuthProvider } from "@/context/AuthContext";
+import RoleSwitcher from "@/components/Admin/RoleSwitcher";
