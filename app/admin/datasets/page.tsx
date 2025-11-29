@@ -90,9 +90,9 @@ export default function DatasetsPage() {
   };
 
   const filteredDatasets = datasets.filter(dataset => {
-    const matchesSearch = dataset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         dataset.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || dataset.metadata.category === filterCategory;
+    const matchesSearch = dataset.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         dataset.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || dataset.metadata?.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -149,7 +149,7 @@ export default function DatasetsPage() {
               <div>
                 <p className="text-sm text-gray-600">Total Records</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {datasets.reduce((sum, d) => sum + d.metadata.recordCount, 0).toLocaleString()}
+                  {datasets.reduce((sum, d) => sum + (d.metadata?.recordCount || 0), 0).toLocaleString()}
                 </p>
               </div>
               <FaChartBar className="text-3xl text-green-500" />
@@ -248,7 +248,7 @@ export default function DatasetsPage() {
                     </p>
                   </div>
                   <span className="bg-primary/10 text-primary text-xs px-2 py-1 rounded">
-                    {dataset.metadata.category}
+                    {dataset.metadata?.category || 'general'}
                   </span>
                 </div>
 
@@ -256,13 +256,13 @@ export default function DatasetsPage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Records:</span>
                     <span className="font-semibold text-gray-900">
-                      {dataset.metadata.recordCount.toLocaleString()}
+                      {(dataset.metadata?.recordCount || 0).toLocaleString()}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Fields:</span>
                     <span className="font-semibold text-gray-900">
-                      {dataset.schema.fields.length}
+                      {dataset.schema?.fields?.length || 0}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -273,7 +273,7 @@ export default function DatasetsPage() {
                   </div>
                 </div>
 
-                {dataset.metadata.tags.length > 0 && (
+                {dataset.metadata?.tags && dataset.metadata.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-4">
                     {dataset.metadata.tags.slice(0, 3).map((tag, idx) => (
                       <span
