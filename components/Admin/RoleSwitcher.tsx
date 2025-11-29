@@ -10,7 +10,15 @@ export default function RoleSwitcher() {
   const [testRole, setTestRole] = useState<UserRole | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Only show for SuperAdmin
+  // Load test role from localStorage on mount
+  useEffect(() => {
+    const savedTestRole = localStorage.getItem('testRole') as UserRole | null;
+    if (savedTestRole && savedTestRole !== userRole) {
+      setTestRole(savedTestRole);
+    }
+  }, [userRole]);
+
+  // Only show for SuperAdmin (after all hooks)
   if (userRole !== 'SuperAdmin') {
     return null;
   }
@@ -31,14 +39,6 @@ export default function RoleSwitcher() {
     // Force page reload to apply new role
     window.location.reload();
   };
-
-  // Load test role from localStorage on mount
-  useEffect(() => {
-    const savedTestRole = localStorage.getItem('testRole') as UserRole | null;
-    if (savedTestRole && savedTestRole !== userRole) {
-      setTestRole(savedTestRole);
-    }
-  }, [userRole]);
 
   const roles: UserRole[] = ['SuperAdmin', 'SuperUser', 'User'];
 
