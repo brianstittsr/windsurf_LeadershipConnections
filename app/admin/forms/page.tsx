@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase';
 import { CustomForm } from '@/lib/firestore-schema';
 import { FormField, FormTemplate } from '@/types/form';
 import Link from 'next/link';
-import { generateFormQRCode } from '@/lib/qr-generator';
+import { generateFormQRCode } from '@/lib/qrcode-utils';
 import AIFormGenerator from '@/components/Forms/AIFormGenerator';
 import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats } from '@/lib/datahub-service';
 import AIFormBuilderWizard from '@/components/AIFormBuilder/AIFormBuilderWizard';
