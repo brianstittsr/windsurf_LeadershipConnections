@@ -3,95 +3,38 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import {
-  MemberProfile,
-  MemberProfileFormData,
-} from '@/types/member-profile.types';
-import {
-  getMemberProfile,
-  saveMemberProfile,
-  uploadProfilePhoto,
-  calculateProfileCompleteness
-} from '@/lib/memberProfileUtils';
-import PersonalInfoSection from '@/components/MemberProfile/PersonalInfoSection';
-import ProgramInfoSection from '@/components/MemberProfile/ProgramInfoSection';
-import ProfessionalInfoSection from '@/components/MemberProfile/ProfessionalInfoSection';
-import NetworkingSection from '@/components/MemberProfile/NetworkingSection';
-import CommunitySection from '@/components/MemberProfile/CommunitySection';
-import PrivacySection from '@/components/MemberProfile/PrivacySection';
-import { FaCheck, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
+import { MemberProfile } from '@/types/member-profile.types';
+import { getMemberProfile } from '@/lib/memberProfileUtils';
+import { FaEdit, FaUser, FaBriefcase, FaComments, FaTools, FaCertificate, FaMapMarkerAlt } from 'react-icons/fa';
+import Image from 'next/image';
+import Link from 'next/link';
 
-const WIZARD_STEPS = [
-  { id: 1, title: 'Personal Info', description: 'Basic information about you' },
-  { id: 2, title: 'Program Info', description: 'Your LC program participation' },
-  { id: 3, title: 'Professional', description: 'Career and expertise' },
-  { id: 4, title: 'Networking', description: 'Connection preferences' },
-  { id: 5, title: 'Community', description: 'Volunteer and causes' },
-  { id: 6, title: 'Privacy', description: 'Profile visibility settings' },
-];
+type TabType = 'basic' | 'professional' | 'social' | 'tools';
 
-export default function MemberProfileWizard() {
+export default function MemberProfileView() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  
   const [profile, setProfile] = useState<MemberProfile | null>(null);
-  const [formData, setFormData] = useState<Partial<MemberProfileFormData>>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    city: '',
-    state: 'NC',
-    zipCode: '',
-    programs: [],
-    membershipStatus: 'active',
-    participationType: 'graduate',
-    expertise: [],
-    skills: [],
-    languages: ['English'],
-    willingToMentor: false,
-    seekingMentorship: false,
-    openToNetworking: true,
-    availableForSpeaking: false,
-    volunteerInterests: [],
-    causes: [],
-    geographicInterests: [],
-    preferredContactMethods: ['Email'],
-    profileVisibility: 'members-only',
-    showEmail: true,
-    showPhone: false,
-    showEmployer: true,
-    allowDirectMessages: true,
-    includeInDirectory: true,
-  });
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('basic');
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/signin');
-    } else if (user) {
+      return;
+    }
+
+    if (user) {
       loadProfile();
     }
   }, [user, authLoading, router]);
 
   const loadProfile = async () => {
     if (!user) return;
-    
+
     try {
-      const existingProfile = await getMemberProfile(user.uid);
-      
-      if (existingProfile) {
-        setProfile(existingProfile);
-        setFormData(existingProfile);
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          email: user.email || '',
-        }));
-      }
+      const profileData = await getMemberProfile(user.uid);
+      setProfile(profileData);
     } catch (error) {
       console.error('Error loading profile:', error);
     } finally {
@@ -99,101 +42,7 @@ export default function MemberProfileWizard() {
     }
   };
 
-  const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleArrayAdd = (field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: [...(prev[field as keyof typeof prev] as any[] || []), value]
-    }));
-  };
-
-  const handleArrayRemove = (field: string, index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: (prev[field as keyof typeof prev] as any[]).filter((_, i) => i !== index)
-    }));
-  };
-
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-
-    setUploadingPhoto(true);
-    try {
-      const photoUrl = await uploadProfilePhoto(user.uid, file);
-      handleInputChange('profilePhotoUrl', photoUrl);
-      alert('Photo uploaded successfully!');
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-      alert('Error uploading photo. Please try again.');
-    } finally {
-      setUploadingPhoto(false);
-    }
-  };
-
-  const validateStep = (step: number): boolean => {
-    switch (step) {
-      case 1:
-        return !!(formData.firstName && formData.lastName && formData.email);
-      case 2:
-        return !!(formData.programs && formData.programs.length > 0);
-      default:
-        return true;
-    }
-  };
-
-  const handleNext = () => {
-    if (!validateStep(currentStep)) {
-      alert('Please fill in all required fields before continuing.');
-      return;
-    }
-    if (currentStep < WIZARD_STEPS.length) {
-      setCurrentStep(currentStep + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleSave = async () => {
-    if (!user) return;
-
-    if (!formData.firstName || !formData.lastName || !formData.email) {
-      alert('Please fill in all required fields (First Name, Last Name, Email)');
-      return;
-    }
-
-    if (!formData.programs || formData.programs.length === 0) {
-      alert('Please add at least one leadership program');
-      return;
-    }
-
-    setSaving(true);
-    try {
-      await saveMemberProfile(user.uid, formData as MemberProfileFormData);
-      await loadProfile();
-      alert('Profile saved successfully!');
-      router.push('/admin/dashboard');
-    } catch (error) {
-      console.error('Error saving profile:', error);
-      alert('Error saving profile. Please try again.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (authLoading || loading) {
+  if (loading || authLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -204,179 +53,330 @@ export default function MemberProfileWizard() {
     );
   }
 
-  const completeness = calculateProfileCompleteness(formData);
+  if (!profile) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
+          <p className="text-gray-600 mb-4">You haven't created your profile yet.</p>
+          <Link
+            href="/admin/lc-profile/wizard"
+            className="inline-block px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Create Profile
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const tabs = [
+    { id: 'basic' as TabType, label: 'Basic Info', icon: FaUser },
+    { id: 'professional' as TabType, label: 'Professional', icon: FaBriefcase },
+    { id: 'social' as TabType, label: 'Social (LC Chat)', icon: FaComments },
+    { id: 'tools' as TabType, label: 'Tools', icon: FaTools },
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Member Profile Setup</h1>
-        <p className="text-gray-600">
-          Complete your profile step by step to maximize your networking opportunities
-        </p>
-      </div>
+    <div className="max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">My Profile</h1>
 
-      {/* Progress Bar */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-sm font-semibold text-gray-700">
-            Step {currentStep} of {WIZARD_STEPS.length}
-          </span>
-          <span className="text-sm font-bold text-primary">{completeness}% Complete</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
-          <div
-            className="bg-primary h-3 rounded-full transition-all duration-300"
-            style={{ width: `${(currentStep / WIZARD_STEPS.length) * 100}%` }}
-          ></div>
+      {/* Profile Card */}
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        {/* Edit Button */}
+        <div className="mb-6">
+          <Link
+            href="/admin/lc-profile/edit"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            <FaEdit />
+            Edit Profile
+          </Link>
         </div>
 
-        {/* Step Indicators */}
-        <div className="flex justify-between">
-          {WIZARD_STEPS.map((step, index) => (
-            <div key={step.id} className="flex flex-col items-center flex-1">
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-bold mb-2 transition-all ${
-                  currentStep > step.id
-                    ? 'bg-green-500 text-white'
-                    : currentStep === step.id
-                    ? 'bg-primary text-white ring-4 ring-primary/20'
-                    : 'bg-gray-200 text-gray-500'
-                }`}
-              >
-                {currentStep > step.id ? <FaCheck /> : step.id}
+        {/* Profile Header */}
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex items-center gap-4">
+            {/* Profile Photo */}
+            {profile.profilePhotoUrl ? (
+              <Image
+                src={profile.profilePhotoUrl}
+                alt={`${profile.firstName} ${profile.lastName}`}
+                width={100}
+                height={100}
+                className="rounded-full object-cover border-4 border-gray-200"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center border-4 border-gray-200">
+                <span className="text-white text-3xl font-bold">
+                  {profile.firstName?.[0]}{profile.lastName?.[0]}
+                </span>
               </div>
-              <div className="text-center hidden md:block">
-                <p className={`text-xs font-semibold ${
-                  currentStep >= step.id ? 'text-gray-900' : 'text-gray-400'
-                }`}>
-                  {step.title}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">{step.description}</p>
-              </div>
-              {index < WIZARD_STEPS.length - 1 && (
-                <div className={`hidden md:block absolute h-0.5 w-full top-5 left-1/2 -z-10 ${
-                  currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
-                }`} style={{ width: `calc(100% / ${WIZARD_STEPS.length})` }} />
+            )}
+
+            {/* Name and Title */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {profile.firstName} {profile.lastName}
+              </h2>
+              <p className="text-gray-600">{profile.currentTitle || 'Member'}</p>
+              {profile.currentOrganization && (
+                <p className="text-gray-500 text-sm">{profile.currentOrganization}</p>
               )}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Step Content */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {WIZARD_STEPS[currentStep - 1].title}
-          </h2>
-          <p className="text-gray-600">
-            {WIZARD_STEPS[currentStep - 1].description}
-          </p>
-        </div>
-
-        {currentStep === 1 && (
-          <PersonalInfoSection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-            onPhotoUpload={handlePhotoUpload}
-            uploadingPhoto={uploadingPhoto}
-          />
-        )}
-
-        {currentStep === 2 && (
-          <ProgramInfoSection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-            onArrayAdd={handleArrayAdd}
-            onArrayRemove={handleArrayRemove}
-          />
-        )}
-
-        {currentStep === 3 && (
-          <ProfessionalInfoSection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-            onArrayAdd={handleArrayAdd}
-            onArrayRemove={handleArrayRemove}
-          />
-        )}
-
-        {currentStep === 4 && (
-          <NetworkingSection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-            onArrayAdd={handleArrayAdd}
-            onArrayRemove={handleArrayRemove}
-          />
-        )}
-
-        {currentStep === 5 && (
-          <CommunitySection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-            onArrayAdd={handleArrayAdd}
-            onArrayRemove={handleArrayRemove}
-          />
-        )}
-
-        {currentStep === 6 && (
-          <PrivacySection
-            formData={formData}
-            editMode={true}
-            onInputChange={handleInputChange}
-          />
-        )}
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between items-center">
-        <button
-          onClick={handlePrevious}
-          disabled={currentStep === 1}
-          className="flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <FaChevronLeft />
-          Previous
-        </button>
-
-        <div className="text-sm text-gray-500">
-          Step {currentStep} of {WIZARD_STEPS.length}
+          {/* Certification Badge (if applicable) */}
+          {profile.certifications && profile.certifications.length > 0 && (
+            <div className="bg-gradient-to-r from-primary to-purple-600 text-white px-6 py-3 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <FaCertificate />
+                <span className="font-semibold">CERTIFICATION</span>
+              </div>
+              <p className="text-sm">Set Expiration Date</p>
+            </div>
+          )}
         </div>
 
-        {currentStep < WIZARD_STEPS.length ? (
-          <button
-            onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
-          >
-            Next
-            <FaChevronRight />
-          </button>
-        ) : (
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
-          >
-            {saving ? 'Saving...' : 'Complete Profile'}
-            <FaCheck />
-          </button>
-        )}
-      </div>
+        {/* Tab Navigation */}
+        <div className="border-b border-gray-200 mb-6">
+          <div className="flex gap-1 overflow-x-auto">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Icon className="text-lg" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
-      {/* Skip to End Option */}
-      <div className="mt-6 text-center">
-        <button
-          onClick={() => router.push('/admin/dashboard')}
-          className="text-sm text-gray-500 hover:text-gray-700 underline"
-        >
-          Save and return to dashboard
-        </button>
+        {/* Tab Content */}
+        <div className="min-h-[400px]">
+          {/* Basic Info Tab */}
+          {activeTab === 'basic' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">First Name *</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <FaUser className="text-gray-400" />
+                  <span className="text-gray-900">{profile.firstName || '-'}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Last Name *</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <FaUser className="text-gray-400" />
+                  <span className="text-gray-900">{profile.lastName || '-'}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Email *</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <span className="text-gray-900">{profile.email || '-'}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Phone Number</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <span className="text-gray-900">{profile.phone || '-'}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Date Registered</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <span className="text-gray-900">
+                    {profile.createdAt ? new Date(profile.createdAt).toLocaleDateString() : '-'}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Member Type</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <span className="text-gray-900">{profile.membershipStatus || 'Active'}</span>
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-500 mb-1">Location</label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <FaMapMarkerAlt className="text-gray-400" />
+                  <span className="text-gray-900">
+                    {[profile.city, profile.state, profile.zipCode].filter(Boolean).join(', ') || '-'}
+                  </span>
+                </div>
+              </div>
+
+              {profile.linkedInUrl && (
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-500 mb-1">LinkedIn</label>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <a
+                      href={profile.linkedInUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {profile.linkedInUrl}
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Professional Tab */}
+          {activeTab === 'professional' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Position</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Job Title</label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-900">{profile.currentTitle || '-'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Organization</label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-900">{profile.currentOrganization || '-'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Industry</label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-900">{profile.industry || '-'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 mb-1">Years of Experience</label>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <span className="text-gray-900">{profile.yearsExperience || '-'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {profile.expertise && profile.expertise.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Expertise</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.expertise.map((item, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {profile.skills && profile.skills.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {profile.boardMemberships && profile.boardMemberships.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Board Memberships</h3>
+                  <div className="space-y-3">
+                    {profile.boardMemberships.map((board, index) => (
+                      <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                        <p className="font-medium text-gray-900">{board.organization}</p>
+                        <p className="text-sm text-gray-600">{board.role}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {board.current ? 'Current' : 'Past'}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Social (LC Chat) Tab */}
+          {activeTab === 'social' && (
+            <div className="text-center py-12">
+              <FaComments className="text-6xl text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">LC Chat Coming Soon</h3>
+              <p className="text-gray-600 mb-6">
+                Connect and chat with other Leadership C.O.N.N.E.C.T.I.O.N.S. members.
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 max-w-md mx-auto">
+                <p className="text-sm text-blue-800">
+                  In-app messaging will allow you to network, share ideas, and collaborate with fellow alumni.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Tools Tab */}
+          {activeTab === 'tools' && (
+            <div className="text-center py-12">
+              <FaTools className="text-6xl text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Member Tools</h3>
+              <p className="text-gray-600 mb-6">
+                Access resources and tools to help you grow professionally.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <div className="p-6 bg-gray-50 rounded-lg text-left">
+                  <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                  <p className="text-sm text-gray-600">
+                    Access leadership development materials and guides.
+                  </p>
+                </div>
+                <div className="p-6 bg-gray-50 rounded-lg text-left">
+                  <h4 className="font-semibold text-gray-900 mb-2">Events</h4>
+                  <p className="text-sm text-gray-600">
+                    View upcoming events and register for programs.
+                  </p>
+                </div>
+                <div className="p-6 bg-gray-50 rounded-lg text-left">
+                  <h4 className="font-semibold text-gray-900 mb-2">Mentorship</h4>
+                  <p className="text-sm text-gray-600">
+                    Connect with mentors or become a mentor yourself.
+                  </p>
+                </div>
+                <div className="p-6 bg-gray-50 rounded-lg text-left">
+                  <h4 className="font-semibold text-gray-900 mb-2">Directory</h4>
+                  <p className="text-sm text-gray-600">
+                    Search and connect with other members.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
