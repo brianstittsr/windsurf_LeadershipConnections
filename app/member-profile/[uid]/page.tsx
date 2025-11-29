@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { MemberProfile } from '@/types/member-profile.types';
+import { JobPosting } from '@/types/job.types';
 import { FaArrowLeft, FaUser, FaBriefcase, FaMapMarkerAlt, FaEnvelope, FaPhone, FaLinkedin, FaGlobe, FaCalendar } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,12 +16,14 @@ export default function MemberProfileViewPage() {
   const uid = params.uid as string;
   
   const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [jobs, setJobs] = useState<JobPosting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (uid) {
       fetchProfile();
+      fetchUserJobs();
     }
   }, [uid]);
 
@@ -46,6 +49,29 @@ export default function MemberProfileViewPage() {
       setError('Failed to load profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserJobs = async () => {
+    try {
+      const q = query(
+        collection(db, 'jobPostings'),
+        where('postedBy', '==', uid),
+        where('status', '==', 'active')
+      );
+      const querySnapshot = await getDocs(q);
+      const jobsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        } as JobPosting;
+      });
+      setJobs(jobsData);
+    } catch (error) {
+      console.error('Error fetching user jobs:', error);
     }
   };
 
@@ -197,6 +223,35 @@ export default function MemberProfileViewPage() {
                       )}
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Job Postings */}
+          {jobs.length > 0 && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <FaBriefcase className="text-primary" />
+                Job Opportunities Posted
+              </h2>
+              <div className="space-y-4">
+                {jobs.map((job) => (
+                  <Link
+                    key={job.id}
+                    href={`/jobs/${job.id}`}
+                    className="block border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all"
+                  >
+                    <h3 className="font-semibold text-gray-900 mb-1">{job.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{job.company}</p>
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <FaMapMarkerAlt />
+                        {job.city ? `${job.city}, ${job.state}` : job.location}
+                      </span>
+                      <span>{job.viewCount} views</span>
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>

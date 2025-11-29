@@ -210,5 +210,30 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    
+    // Job Postings - authenticated users can read active jobs, SuperUsers/SuperAdmin can manage
+    match /jobPostings/{jobId} {
+      allow read: if isAuthenticated() && (resource.data.status == 'active' || isAdmin());
+      allow create: if isAuthenticated() && isAdmin();
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.postedBy || isAdmin());
+      allow delete: if isAdmin();
+      allow list: if isAuthenticated();
+    }
+    
+    // Job Referrals - users can create referrals, view their own, admins can see all
+    match /jobReferrals/{referralId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.referredBy || 
+        request.auth.uid == resource.data.referredTo || 
+        isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        request.auth.uid == resource.data.referredTo || 
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+      allow list: if isAuthenticated();
+    }
   }
 }
