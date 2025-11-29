@@ -96,7 +96,7 @@ export default function DatasetsPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const categories = Array.from(new Set(datasets.map(d => d.metadata.category)));
+  const categories = Array.from(new Set(datasets.map(d => d.metadata?.category).filter(Boolean)));
 
   if (loading) {
     return (
