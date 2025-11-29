@@ -6,11 +6,13 @@ import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { isAdminUser } from '@/lib/adminUsers';
+import PasswordResetModal from '@/components/Auth/PasswordResetModal';
 
 const SigninPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
   const router = useRouter();
 
   const handleSignin = async (e: React.FormEvent) => {
@@ -72,6 +74,15 @@ const SigninPage = () => {
                   />
                 </div>
                 {error && <p className="mb-4 text-center text-red-500">{error}</p>}
+                <div className="mb-4 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowResetModal(true)}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
                 <div className="mb-6">
                   <button type="submit" className="flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90 shadow-lg">
                     Sign in
@@ -79,7 +90,7 @@ const SigninPage = () => {
                 </div>
               </form>
               <p className="text-center text-base font-medium text-body-color">
-                Don’t you have an account?{" "}
+                Don't you have an account?{" "}
                 <Link href="/signup" className="text-primary hover:underline">
                   Sign up
                 </Link>
@@ -88,6 +99,12 @@ const SigninPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Password Reset Modal */}
+      <PasswordResetModal 
+        isOpen={showResetModal} 
+        onClose={() => setShowResetModal(false)} 
+      />
     </section>
   );
 };

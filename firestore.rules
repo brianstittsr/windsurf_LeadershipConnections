@@ -191,6 +191,20 @@ service cloud.firestore {
       allow write: if isAuthenticated() && (request.auth.uid == profileId || isAdmin());
     }
     
+    // Usernames - for username uniqueness checking
+    match /usernames/{username} {
+      allow read: if true; // Allow checking username availability
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+    
+    // User Roles - for role-based access control
+    match /userRoles/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
+      allow create: if isAuthenticated();
+    }
+    
     // Past Events - public read, admin write
     match /lcPastEvents/{eventId} {
       allow read: if true;

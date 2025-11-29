@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
+import { doc, setDoc, Timestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { MemberProfile } from '@/types/member-profile.types';
 
@@ -19,6 +19,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
 
   const [formData, setFormData] = useState({
     // Account Info
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -56,17 +57,42 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
     }));
   };
 
-  const validateStep = (step: number): boolean => {
+  const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+    try {
+      const usernamesRef = collection(db, 'usernames');
+      const q = query(usernamesRef, where('username', '==', username.toLowerCase()));
+      const snapshot = await getDocs(q);
+      return snapshot.empty;
+    } catch (error) {
+      console.error('Error checking username:', error);
+      return false;
+    }
+  };
+
+  const validateStep = async (step: number): Promise<boolean> => {
     setError('');
     
     switch (step) {
       case 1:
-        if (!formData.email || !formData.password || !formData.confirmPassword) {
+        if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
           setError('Please fill in all account fields');
           return false;
         }
-        if (formData.password.length < 6) {
-          setError('Password must be at least 6 characters');
+        if (formData.username.length < 3) {
+          setError('Username must be at least 3 characters');
+          return false;
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+          setError('Username can only contain letters, numbers, and underscores');
+          return false;
+        }
+        const isAvailable = await checkUsernameAvailability(formData.username);
+        if (!isAvailable) {
+          setError('Username is already taken. Please choose another.');
+          return false;
+        }
+        if (formData.password.length < 8) {
+          setError('Password must be at least 8 characters');
           return false;
         }
         if (formData.password !== formData.confirmPassword) {
@@ -106,8 +132,8 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
     }
   };
 
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
+  const nextStep = async () => {
+    if (await validateStep(currentStep)) {
       setCurrentStep(prev => Math.min(prev + 1, 4));
     }
   };
@@ -142,7 +168,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateStep(4)) {
+    if (!(await validateStep(4))) {
       return;
     }
 
@@ -159,9 +185,29 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
 
       const user = userCredential.user;
 
+      // Update user display name
+      await updateProfile(user, {
+        displayName: `${formData.firstName} ${formData.lastName}`
+      });
+
+      // Save username mapping
+      await setDoc(doc(db, 'usernames', formData.username.toLowerCase()), {
+        userId: user.uid,
+        username: formData.username,
+        createdAt: Timestamp.now(),
+      });
+
+      // Save user role
+      await setDoc(doc(db, 'userRoles', user.uid), {
+        role: 'User',
+        email: formData.email,
+        createdAt: Timestamp.now(),
+      });
+
       // Create member profile in Firestore
       const memberProfile: any = {
         userId: user.uid,
+        username: formData.username,
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -274,6 +320,22 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Username <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-primary focus:outline-none"
+                  placeholder="Choose a unique username"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Letters, numbers, and underscores only. Min 3 characters.</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -297,10 +359,10 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
                   value={formData.password}
                   onChange={handleInputChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-primary focus:outline-none"
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 characters"
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
+                <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
               </div>
 
               <div>
@@ -316,6 +378,15 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
                   placeholder="Re-enter your password"
                   required
                 />
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  Already have an account?{' '}
+                  <a href="/signin" className="text-primary hover:underline font-semibold">
+                    Sign in here
+                  </a>
+                </p>
               </div>
             </div>
           )}
