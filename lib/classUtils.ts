@@ -1,5 +1,7 @@
 import { Class } from "@/types/class";
 import classesData from "@/components/Classes/classesData";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 // Extended class data with full content for detail pages
 const classesWithContent: (Class & { content: string })[] = [
@@ -197,8 +199,40 @@ export function getAllClasses(): Class[] {
   return classesData;
 }
 
-export function getClassBySlug(slug: string): (Class & { content: string }) | undefined {
-  return classesWithContent.find((classItem) => classItem.slug === slug);
+export async function getClassBySlug(slug: string): Promise<(Class & { content: string }) | undefined> {
+  try {
+    // First try to fetch from Firebase
+    const classesQuery = query(
+      collection(db, 'lcPastClasses'),
+      where('slug', '==', slug),
+      where('published', '==', true)
+    );
+    
+    const querySnapshot = await getDocs(classesQuery);
+    
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const data = doc.data();
+      return {
+        id: typeof data.id === 'number' ? data.id : 0,
+        slug: data.slug,
+        year: data.year,
+        title: data.title,
+        paragraph: data.paragraph,
+        image: data.image,
+        graduationDate: data.graduationDate,
+        tags: data.tags || [],
+        content: data.content || '',
+      } as Class & { content: string };
+    }
+    
+    // Fallback to static data if not found in Firebase
+    return classesWithContent.find((classItem) => classItem.slug === slug);
+  } catch (error) {
+    console.error('Error fetching class from Firebase:', error);
+    // Fallback to static data on error
+    return classesWithContent.find((classItem) => classItem.slug === slug);
+  }
 }
 
 export function getRecentClasses(count: number = 3): Class[] {

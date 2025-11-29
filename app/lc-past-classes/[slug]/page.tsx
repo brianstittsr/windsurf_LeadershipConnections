@@ -16,7 +16,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const classItem = getClassBySlug(slug);
+  const classItem = await getClassBySlug(slug);
 
   if (!classItem) {
     return {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ClassDetailPage({ params }: Props) {
   const { slug } = await params;
-  const classItem = getClassBySlug(slug);
+  const classItem = await getClassBySlug(slug);
 
   if (!classItem) {
     notFound();
