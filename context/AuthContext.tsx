@@ -10,6 +10,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   userRole: UserRole;
+  actualRole: UserRole; // The real role before any test override
   permissions: RolePermissions;
   hasPermission: (permission: keyof RolePermissions) => boolean;
 }
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null, 
   loading: true,
   userRole: 'User',
+  actualRole: 'User',
   permissions: defaultPermissions,
   hasPermission: () => false
 });
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<UserRole>('User');
+  const [actualRole, setActualRole] = useState<UserRole>('User');
   const [permissions, setPermissions] = useState<RolePermissions>(defaultPermissions);
 
   useEffect(() => {
@@ -44,6 +47,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (!role || role === 'User') {
             role = await initializeUserRole(user.uid, user.email);
           }
+          
+          // Store the actual role
+          setActualRole(role);
           
           // SuperAdmin can override role for testing
           if (role === 'SuperAdmin') {
@@ -63,10 +69,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           console.error('Error loading user role:', error);
           // Fall back to default role based on email
           const role = getUserRole(user.email);
+          setActualRole(role);
           setUserRole(role);
           setPermissions(ROLE_PERMISSIONS[role]);
         }
       } else {
+        setActualRole('User');
         setUserRole('User');
         setPermissions(defaultPermissions);
       }
@@ -82,7 +90,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, userRole, permissions, hasPermission }}>
+    <AuthContext.Provider value={{ user, loading, userRole, actualRole, permissions, hasPermission }}>
       {children}
     </AuthContext.Provider>
   );

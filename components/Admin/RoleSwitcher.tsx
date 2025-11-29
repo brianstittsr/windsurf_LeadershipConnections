@@ -6,27 +6,27 @@ import { UserRole } from '@/types/roles';
 import { FaUserShield, FaExchangeAlt } from 'react-icons/fa';
 
 export default function RoleSwitcher() {
-  const { user, userRole } = useAuth();
+  const { user, userRole, actualRole } = useAuth();
   const [testRole, setTestRole] = useState<UserRole | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   // Load test role from localStorage on mount
   useEffect(() => {
     const savedTestRole = localStorage.getItem('testRole') as UserRole | null;
-    if (savedTestRole && savedTestRole !== userRole) {
+    if (savedTestRole && savedTestRole !== actualRole) {
       setTestRole(savedTestRole);
     }
-  }, [userRole]);
+  }, [actualRole]);
 
-  // Only show for SuperAdmin (after all hooks)
-  if (userRole !== 'SuperAdmin') {
+  // Only show for SuperAdmin (check actualRole, not userRole)
+  if (actualRole !== 'SuperAdmin') {
     return null;
   }
 
-  const currentDisplayRole = testRole || userRole;
+  const currentDisplayRole = testRole || actualRole;
 
   const handleRoleSwitch = (role: UserRole) => {
-    if (role === userRole) {
+    if (role === actualRole) {
       // Reset to actual role
       setTestRole(null);
       localStorage.removeItem('testRole');
@@ -100,7 +100,7 @@ export default function RoleSwitcher() {
                 >
                   <div className="flex items-center justify-between">
                     <span>{role}</span>
-                    {role === userRole && (
+                    {role === actualRole && (
                       <span className="text-xs opacity-75">(Actual)</span>
                     )}
                     {role === testRole && (
@@ -113,7 +113,7 @@ export default function RoleSwitcher() {
             
             {testRole && (
               <button
-                onClick={() => handleRoleSwitch(userRole)}
+                onClick={() => handleRoleSwitch(actualRole)}
                 className="w-full mt-2 pt-2 border-t border-gray-200 text-xs text-orange-600 hover:text-orange-700 font-semibold"
               >
                 Reset to Actual Role
