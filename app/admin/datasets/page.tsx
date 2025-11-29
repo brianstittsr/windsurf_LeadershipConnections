@@ -35,21 +35,34 @@ export default function DatasetsPage() {
   const fetchDatasets = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/datasets');
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Failed to fetch datasets:', errorData);
-        alert(`Error loading datasets: ${errorData.error || 'Unknown error'}. Make sure you are signed in as an admin.`);
-        setDatasets([]);
-        return;
-      }
+      // Fetch directly from Firestore using user's auth context
+      const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
+      const { db } = await import('@/lib/firebase');
       
-      const data = await response.json();
-      setDatasets(data.datasets || []);
-    } catch (error) {
+      const q = query(
+        collection(db, 'lcDatasets'),
+        orderBy('updatedAt', 'desc')
+      );
+      
+      const snapshot = await getDocs(q);
+      const datasetsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+      }));
+      
+      console.log(`✅ Fetched ${datasetsData.length} dataset(s)`);
+      setDatasets(datasetsData as any[]);
+    } catch (error: any) {
       console.error('Error fetching datasets:', error);
-      alert('Error loading datasets. Make sure you are signed in as an admin.');
+      if (error.code === 'permission-denied') {
+        alert('Permission denied. Make sure you are signed in as an admin (brianstittsr@gmail.com, kathy@ncleadconnect.org, or gloria@ncleadconnect.org)');
+      } else {
+        alert(`Error loading datasets: ${error.message}`);
+      }
+      setDatasets([]);
     } finally {
       setLoading(false);
     }
