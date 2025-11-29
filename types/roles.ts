@@ -50,7 +50,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canManageRoles: false,
   },
   User: {
-    canAccessAdmin: false,
+    canAccessAdmin: true,  // Users can access admin area for their profile
     canManageUsers: false,
     canManageEvents: false,
     canManageForms: false,

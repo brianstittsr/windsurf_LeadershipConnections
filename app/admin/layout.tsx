@@ -53,22 +53,38 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         
         <nav>
           <ul className="space-y-1">
-            <li><Link href="/admin/dashboard" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Dashboard</Link></li>
-            <li><Link href="/admin/profile" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Profile</Link></li>
-            <li><Link href="/admin/lc-profile" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">LC Member Profile</Link></li>
-            
-            {hasPermission('canManageEvents') && (
-              <li><Link href="/admin/events" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Events</Link></li>
+            {/* User role - limited access */}
+            {userRole === 'User' && (
+              <>
+                <li><Link href="/member-directory" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Member Directory</Link></li>
+                <li><Link href="/admin/lc-profile" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">My Profile</Link></li>
+              </>
+            )}
+
+            {/* SuperUser and SuperAdmin - full admin access */}
+            {(userRole === 'SuperUser' || userRole === 'SuperAdmin') && (
+              <>
+                <li><Link href="/admin/dashboard" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Dashboard</Link></li>
+                <li><Link href="/admin/profile" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Profile</Link></li>
+                <li><Link href="/admin/lc-profile" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">LC Member Profile</Link></li>
+              </>
             )}
             
-            {hasPermission('canManageForms') && (
-              <li><Link href="/admin/forms" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Forms</Link></li>
+            {/* SuperUser and SuperAdmin only */}
+            {(userRole === 'SuperUser' || userRole === 'SuperAdmin') && (
+              <>
+                {hasPermission('canManageEvents') && (
+                  <li><Link href="/admin/events" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Events</Link></li>
+                )}
+                
+                {hasPermission('canManageForms') && (
+                  <li><Link href="/admin/forms" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Forms</Link></li>
+                )}
+                
+                <li><Link href="/admin/registration" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Registration</Link></li>
+                <li><Link href="/admin/datasets" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">DataHub Admin</Link></li>
+              </>
             )}
-            
-            <li><Link href="/admin/registration" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Registration</Link></li>
-            <li><Link href="/admin/datasets" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">DataHub Admin</Link></li>
-            <li><Link href="/admin/grants" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Grants</Link></li>
-            <li><Link href="/admin/ai-chat" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">AI Chat</Link></li>
             
             {hasPermission('canManageContent') && (
               <>

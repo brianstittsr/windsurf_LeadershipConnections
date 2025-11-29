@@ -10,7 +10,7 @@ import { auth } from "@/lib/firebase";
 import { isAdminUser } from "@/lib/adminUsers";
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
   const router = useRouter();
   
   // Navbar toggle
@@ -188,7 +188,8 @@ const Header = () => {
                     
                     {userDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-                        {isAdminUser(user.email) ? (
+                        {/* SuperAdmin and SuperUser */}
+                        {(userRole === 'SuperAdmin' || userRole === 'SuperUser') && (
                           <Link
                             href="/admin/dashboard"
                             onClick={() => setUserDropdownOpen(false)}
@@ -196,15 +197,28 @@ const Header = () => {
                           >
                             Admin Dashboard
                           </Link>
-                        ) : (
-                          <Link
-                            href="/profile"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          >
-                            Profile
-                          </Link>
                         )}
+                        
+                        {/* Regular User */}
+                        {userRole === 'User' && (
+                          <>
+                            <Link
+                              href="/member-directory"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              Member Directory
+                            </Link>
+                            <Link
+                              href="/admin/lc-profile"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            >
+                              My Profile
+                            </Link>
+                          </>
+                        )}
+                        
                         <button
                           onClick={() => {
                             setUserDropdownOpen(false);

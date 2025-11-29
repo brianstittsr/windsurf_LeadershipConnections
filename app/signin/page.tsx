@@ -20,10 +20,17 @@ const SigninPage = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      // Redirect admin users to dashboard, regular users to home
-      if (isAdminUser(userCredential.user.email)) {
+      // Get user role from Firestore
+      const { getUserRoleFromFirestore } = await import('@/lib/userRoles');
+      const role = await getUserRoleFromFirestore(userCredential.user.uid);
+      
+      // Redirect based on role
+      if (role === 'SuperAdmin' || role === 'SuperUser') {
         router.push('/admin/dashboard');
+      } else if (role === 'User') {
+        router.push('/member-directory');
       } else {
+        // Fallback for users without a role
         router.push('/');
       }
     } catch (error: any) {

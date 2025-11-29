@@ -249,7 +249,7 @@ export default function MemberProfileWizardModal({ isOpen, onClose }: MemberProf
       setSuccess(true);
       setTimeout(() => {
         window.location.href = '/member-directory';
-      }, 2000);
+      }, 3000);
 
     } catch (error: any) {
       console.error('Error creating profile:', error);
