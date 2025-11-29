@@ -179,14 +179,22 @@ export default function UsersManagementPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {userRole === 'SuperAdmin' && (
+                  <div className="flex items-center gap-3">
                     <button
-                      onClick={() => handleEditRole(user)}
-                      className="text-primary hover:text-primary/80"
+                      onClick={() => router.push(`/member-profile/${user.uid}`)}
+                      className="text-blue-600 hover:text-blue-800"
                     >
-                      Change Role
+                      View Profile
                     </button>
-                  )}
+                    {userRole === 'SuperAdmin' && (
+                      <button
+                        onClick={() => handleEditRole(user)}
+                        className="text-primary hover:text-primary/80"
+                      >
+                        Change Role
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
