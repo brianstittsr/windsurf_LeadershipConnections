@@ -49,10 +49,8 @@ const LCPastClassesPage = () => {
     fetchClasses();
   }, []);
 
-  // Combine Firestore classes with static classes, removing duplicates
-  const firestoreSlugs = new Set(firestoreClasses.map(c => c.slug));
-  const uniqueStaticClasses = classesData.filter(c => !firestoreSlugs.has(c.slug));
-  const allClasses = [...firestoreClasses, ...uniqueStaticClasses];
+  // Only use Firebase classes
+  const allClasses = firestoreClasses;
 
   return (
     <div className="bg-white min-h-screen">
