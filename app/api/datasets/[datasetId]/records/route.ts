@@ -6,10 +6,10 @@ import { DatasetRecord, DATASET_COLLECTIONS, validateDataAgainstSchema } from '@
 // GET /api/datasets/[datasetId]/records - List records with pagination and filtering
 export async function GET(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
   try {
-    const { datasetId } = params;
+    const { datasetId } = await params;
     const searchParams = request.nextUrl.searchParams;
     
     const page = parseInt(searchParams.get('page') || '1');
@@ -99,10 +99,10 @@ export async function GET(
 // POST /api/datasets/[datasetId]/records - Create new record
 export async function POST(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
   try {
-    const { datasetId } = params;
+    const { datasetId } = await params;
     const body = await request.json();
     const { data, metadata } = body;
 

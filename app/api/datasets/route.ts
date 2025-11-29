@@ -82,6 +82,16 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date();
+    
+    // Build schema object, only including primaryKey if it exists
+    const schemaData: any = {
+      fields: schema.fields,
+      version: schema.version || '1.0.0',
+    };
+    if (schema.primaryKey) {
+      schemaData.primaryKey = schema.primaryKey;
+    }
+    
     const datasetData = {
       name,
       description: description || '',
@@ -90,11 +100,7 @@ export async function POST(request: NextRequest) {
       createdBy,
       createdAt: Timestamp.fromDate(now),
       updatedAt: Timestamp.fromDate(now),
-      schema: {
-        fields: schema.fields,
-        version: schema.version || '1.0.0',
-        primaryKey: schema.primaryKey,
-      },
+      schema: schemaData,
       metadata: {
         recordCount: 0,
         tags: metadata?.tags || [],
