@@ -20,7 +20,7 @@ const class1998Data = {
   title: 'Leadership North Carolina Class of 1998-1999',
   graduationDate: 'May 1999',
   paragraph: 'The inaugural class of Leadership North Carolina, establishing the foundation for future leaders across the state.',
-  image: '/images/classes/class-1998-1999.jpg',
+  image: '/images/LC_Classes/leadersoftomorrow.png',
   tags: ['Leadership', 'Inaugural Class', 'Statewide'],
   content: `
     <div class="space-y-6">

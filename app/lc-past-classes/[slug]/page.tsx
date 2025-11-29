@@ -58,7 +58,7 @@ export default async function ClassDetailPage({ params }: Props) {
                           <Image
                             src="/images/logo/LeadershipConnectionsLogo.webp"
                             alt="Leadership C.O.N.N.E.C.T.I.O.N.S."
-                            width={40}
+                            width={80}
                             height={40}
                             className="object-cover"
                           />
