@@ -42,22 +42,36 @@ export function generateSchemaFromFormFields(fields: FormField[]): DatasetSchema
         break;
     }
 
-    return {
+    const schemaField: DatasetField = {
       name: field.id,
       label: field.label,
       type: dataType,
       required: field.required || false,
-      validation: field.validation ? {
-        min: field.validation.min,
-        max: field.validation.max,
-        pattern: field.validation.pattern,
-      } : undefined,
       metadata: {
         description: field.placeholder || `${field.label} field`,
-        placeholder: field.placeholder,
       },
-      options: field.options,
     };
+
+    // Only add validation if it exists
+    if (field.validation) {
+      schemaField.validation = {
+        ...(field.validation.min !== undefined && { min: field.validation.min }),
+        ...(field.validation.max !== undefined && { max: field.validation.max }),
+        ...(field.validation.pattern !== undefined && { pattern: field.validation.pattern }),
+      };
+    }
+
+    // Only add placeholder if it exists
+    if (field.placeholder) {
+      schemaField.metadata!.placeholder = field.placeholder;
+    }
+
+    // Only add options if they exist
+    if (field.options && field.options.length > 0) {
+      schemaField.options = field.options;
+    }
+
+    return schemaField;
   });
 
   return {
