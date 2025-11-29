@@ -36,7 +36,7 @@ const MemberRegistration = () => {
         {/* Header */}
         <div className="mb-12 text-center wow fadeInUp" data-wow-delay=".1s">
           <h2 className="mb-4 text-3xl font-bold leading-tight text-white sm:text-4xl sm:leading-tight md:text-[45px] md:leading-tight">
-            Join Our Alumni Network
+            Join the C.O.N.N.E.C.T.IO.N.S. Alumni Network
           </h2>
           <p className="mx-auto max-w-3xl text-base leading-relaxed text-white md:text-lg md:leading-relaxed">
             Are you a Leadership C.O.N.N.E.C.T.I.O.N.S. graduate? Register your profile to connect with fellow alumni, current members, and faculty. Share your expertise, find mentorship opportunities, and stay engaged with our growing community.

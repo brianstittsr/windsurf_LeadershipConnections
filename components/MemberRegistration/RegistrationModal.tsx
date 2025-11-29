@@ -293,7 +293,7 @@ export default function RegistrationModal({ isOpen, onClose }: RegistrationModal
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <h2 className="text-2xl font-bold mb-2">Join Our Alumni Network</h2>
+          <h2 className="text-2xl font-bold mb-2">Join the C.O.N.N.E.C.T.IO.N.S. Alumni Network</h2>
           <p className="text-white/90">Step {currentStep} of 4</p>
         </div>
 
