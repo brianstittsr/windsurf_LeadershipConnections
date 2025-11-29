@@ -28,6 +28,8 @@ const FormsPage = () => {
   const [showQRModal, setShowQRModal] = useState(false);
   const [currentQRCode, setCurrentQRCode] = useState<string>('');
   const [currentFormTitle, setCurrentFormTitle] = useState<string>('');
+  const [currentFormId, setCurrentFormId] = useState<string>('');
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -340,6 +342,8 @@ const FormsPage = () => {
       // Show the QR code in a modal
       setCurrentQRCode(qrCode);
       setCurrentFormTitle(form.title);
+      setCurrentFormId(formId);
+      setLinkCopied(false);
       setShowQRModal(true);
       
       fetchForms();
@@ -359,6 +363,17 @@ const FormsPage = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const copyFormLink = () => {
+    const formUrl = generateFormPublicUrl(currentFormId);
+    navigator.clipboard.writeText(formUrl).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    }).catch(err => {
+      console.error('Failed to copy link:', err);
+      alert('Failed to copy link to clipboard');
+    });
   };
 
   const resetForm = () => {
@@ -803,9 +818,28 @@ const FormsPage = () => {
                 <img src={currentQRCode} alt="QR Code" className="w-64 h-64" />
               </div>
               
-              <p className="text-sm text-gray-600 text-center mb-6">
+              <p className="text-sm text-gray-600 text-center mb-4">
                 Scan this QR code to access the form directly
               </p>
+              
+              {/* Form Link Display */}
+              <div className="w-full bg-gray-50 rounded-lg p-3 mb-6 border border-gray-200">
+                <p className="text-xs text-gray-500 mb-1">Form Link:</p>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={generateFormPublicUrl(currentFormId)}
+                    readOnly
+                    className="flex-1 text-sm bg-white border border-gray-300 rounded px-3 py-2 text-gray-700"
+                  />
+                  <button
+                    onClick={copyFormLink}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium whitespace-nowrap"
+                  >
+                    {linkCopied ? '✓ Copied!' : 'Copy Link'}
+                  </button>
+                </div>
+              </div>
               
               <div className="flex gap-3 w-full">
                 <button
