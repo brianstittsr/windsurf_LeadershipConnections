@@ -242,5 +242,26 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
       allow list: if isAdmin();
     }
+    
+    // LC Past Events - public read, admin write
+    match /lcPastEvents/{eventId} {
+      allow read: if resource.data.published == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+      allow list: if true;
+    }
+    
+    // Payment Transactions - users can read their own, admins can manage all
+    match /paymentTransactions/{transactionId} {
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow create, update, delete: if isAdmin();
+      allow list: if isAdmin();
+    }
+    
+    // Auto-Renewal Settings - users can manage their own, admins can manage all
+    match /autoRenewalSettings/{settingId} {
+      allow read, update: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow create, delete: if isAdmin();
+      allow list: if isAdmin();
+    }
   }
 }

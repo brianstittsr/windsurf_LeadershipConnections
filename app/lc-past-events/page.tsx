@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { collection, query, where, orderBy, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import SingleEvent from "@/components/Events/SingleEvent";
-import eventsData from "@/components/Events/eventsData";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from 'next/link';
 import { Event } from "@/types/event";
@@ -175,28 +174,31 @@ const LCPastEventsPage = () => {
             </div>
           )}
 
-          {/* Legacy Events Section */}
+          {/* Past Events Gallery Section */}
           <div>
             <h2 className="mb-8 text-center text-3xl font-bold text-black sm:text-4xl">
               Event Gallery
             </h2>
-            <div className="-mx-4 flex flex-wrap justify-center">
-              {/* Combine Firestore events with static events, removing duplicates */}
-              {(() => {
-                const firestoreSlugs = new Set(firestorePastEvents.map(e => e.slug));
-                const uniqueStaticEvents = eventsData.filter(e => !firestoreSlugs.has(e.slug));
-                const allEvents = [...firestorePastEvents, ...uniqueStaticEvents];
-                
-                return allEvents.map((event) => (
+            {loading ? (
+              <div className="text-center">
+                <p className="text-body-color dark:text-gray-300">Loading event gallery...</p>
+              </div>
+            ) : firestorePastEvents.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-body-color dark:text-gray-300">No past events available at this time.</p>
+              </div>
+            ) : (
+              <div className="-mx-4 flex flex-wrap justify-center">
+                {firestorePastEvents.map((event) => (
                   <div
-                    key={event.id}
+                    key={event.slug}
                     className="w-full px-4 md:w-2/3 lg:w-1/2 xl:w-1/3"
                   >
                     <SingleEvent event={event} />
                   </div>
-                ));
-              })()}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

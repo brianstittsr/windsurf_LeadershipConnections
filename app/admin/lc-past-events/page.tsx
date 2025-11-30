@@ -330,9 +330,51 @@ const EventForm = ({ initialData, onSave, onCancel, saving }: {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Full Article Content (HTML)
-        </label>
+        <div className="flex justify-between items-center mb-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Full Article Content (HTML)
+          </label>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!formData.title || !formData.paragraph) {
+                alert('Please fill in title and description first');
+                return;
+              }
+              
+              const generating = confirm('Generate a full article using AI? This will overwrite any existing content.');
+              if (!generating) return;
+              
+              try {
+                const response = await fetch('/api/generate-article', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    title: formData.title,
+                    paragraph: formData.paragraph,
+                    date: formData.date,
+                    location: formData.location,
+                    tags: formData.tags,
+                  }),
+                });
+                
+                const data = await response.json();
+                if (data.content) {
+                  setFormData({ ...formData, content: data.content });
+                  alert('Article generated successfully!');
+                } else {
+                  alert('Failed to generate article: ' + (data.error || 'Unknown error'));
+                }
+              } catch (error) {
+                console.error('Error generating article:', error);
+                alert('Failed to generate article. Please try again.');
+              }
+            }}
+            className="text-sm bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 transition-colors"
+          >
+            🤖 Generate with AI
+          </button>
+        </div>
         <textarea
           value={formData.content || ''}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
