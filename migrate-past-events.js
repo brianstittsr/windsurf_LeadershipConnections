@@ -3,29 +3,45 @@
 
 require('dotenv').config({ path: '.env.local' });
 
-const { initializeApp, getApps } = require('firebase/app');
-const { getFirestore, collection, addDoc } = require('firebase/firestore');
-
-// Firebase configuration from environment variables
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-};
+const admin = require('firebase-admin');
 
 // Validate configuration
-if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-  console.error('❌ ERROR: Firebase configuration is missing!');
-  console.log('Make sure .env.local file exists with Firebase credentials.');
+if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+  console.error('❌ ERROR: Firebase project ID is missing!');
+  console.log('Make sure .env.local file exists with NEXT_PUBLIC_FIREBASE_PROJECT_ID.');
   process.exit(1);
 }
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getFirestore(app);
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  try {
+    // Try to initialize with service account if available
+    if (process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        }),
+      });
+      console.log('✅ Using Firebase Admin SDK with service account\n');
+    } else {
+      // Use application default credentials (works if you're logged in with Firebase CLI)
+      admin.initializeApp({
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      });
+      console.log('✅ Using Firebase Admin SDK with default credentials\n');
+    }
+  } catch (error) {
+    console.error('❌ ERROR: Failed to initialize Firebase Admin SDK');
+    console.error(error.message);
+    console.log('\n💡 TIP: Make sure you are logged in with Firebase CLI:');
+    console.log('   firebase login');
+    process.exit(1);
+  }
+}
+
+const db = admin.firestore();
 
 // Past Events Data
 const pastEvents = [
@@ -324,7 +340,7 @@ async function migratePastEvents() {
       const eventWithContent = { ...event, content };
       
       console.log(`   💾 Saving to Firebase...`);
-      const docRef = await addDoc(collection(db, 'lcPastEvents'), eventWithContent);
+      const docRef = await db.collection('lcPastEvents').add(eventWithContent);
       console.log(`   ✅ Added with ID: ${docRef.id}\n`);
       
       // Small delay to avoid rate limiting
