@@ -5,11 +5,23 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, updateDoc, doc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import { SUBSCRIPTION_PACKAGES } from '@/types/subscription.types';
 
-const stripe = new Stripe(stripeConfig.secretKey, {
-  apiVersion: '2025-08-27.basil',
-});
+// Initialize Stripe only if configured
+let stripe: Stripe | null = null;
+if (stripeConfig.secretKey) {
+  stripe = new Stripe(stripeConfig.secretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+}
 
 export async function POST(request: NextRequest) {
+  // Check if Stripe is configured
+  if (!stripe || !stripeConfig.webhookSecret) {
+    return NextResponse.json(
+      { error: 'Stripe is not configured' },
+      { status: 503 }
+    );
+  }
+
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
 

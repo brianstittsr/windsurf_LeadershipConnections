@@ -2,12 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { stripeConfig } from '@/lib/payment-config';
 
-const stripe = new Stripe(stripeConfig.secretKey, {
-  apiVersion: '2025-08-27.basil',
-});
+// Initialize Stripe only if configured
+let stripe: Stripe | null = null;
+if (stripeConfig.secretKey) {
+  stripe = new Stripe(stripeConfig.secretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe || !stripeConfig.publishableKey) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured' },
+        { status: 503 }
+      );
+    }
+
     const { packageId, userId, userEmail } = await request.json();
 
     if (!packageId || !userId || !userEmail) {
