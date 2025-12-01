@@ -210,22 +210,132 @@ const pastEvents = [
   }
 ];
 
+// Generate AI article content for events without content
+async function generateArticleContent(event) {
+  if (event.content) {
+    console.log('   ℹ️  Event already has content, skipping AI generation');
+    return event.content;
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.log('   ⚠️  OpenAI API key not configured, using basic template');
+    return `
+      <div class="event-content">
+        <h3 class="text-2xl font-bold mb-6 text-primary-600 dark:text-primary-400">${event.title}</h3>
+        
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          ${event.paragraph}
+        </p>
+
+        <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Event Overview</h4>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          This event took place at ${event.location} in ${event.date}. It was part of Leadership C.O.N.N.E.C.T.I.O.N.S.' ongoing commitment to providing meaningful educational and community experiences.
+        </p>
+
+        <h4 class="text-xl font-semibold mb-4 text-primary-600 dark:text-primary-400">Community Impact</h4>
+        <p class="mb-6 text-base leading-relaxed text-body-color">
+          This program made a lasting impact on participants and the broader community, creating opportunities for learning, growth, and connection.
+        </p>
+
+        <div class="mt-8 p-6 bg-primary bg-opacity-10 rounded-lg">
+          <p class="text-base font-medium text-primary mb-2">Our Commitment</p>
+          <p class="text-base text-body-color">
+            Leadership C.O.N.N.E.C.T.I.O.N.S. continues to create impactful programs that serve our community and empower participants to reach their full potential.
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  console.log('   🤖 Generating AI article content...');
+  
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional content writer creating engaging articles about educational and community programs. Write in an inspirational, informative tone that highlights the impact and significance of each event.',
+          },
+          {
+            role: 'user',
+            content: `Generate a comprehensive, engaging article about this past event from Leadership C.O.N.N.E.C.T.I.O.N.S.:
+
+Title: ${event.title}
+Description: ${event.paragraph}
+Date: ${event.date}
+Location: ${event.location}
+Tags: ${event.tags.join(', ')}
+
+Create a detailed HTML article with:
+- A main h3 heading with the title
+- Multiple sections with h4 headings (5-7 sections recommended)
+- Rich paragraphs describing the event, its impact, and significance
+- Use Tailwind CSS classes for styling
+- Include sections about: program overview, activities, community impact, participant experiences, and lasting legacy
+- Make it inspirational and informative
+- Use classes like: text-2xl, font-bold, mb-6, text-primary-600, dark:text-primary-400, text-base, leading-relaxed, text-body-color
+- Wrap everything in a div with class="event-content"
+- Add a highlighted callout box at the end with bg-primary bg-opacity-10 rounded-lg
+
+Return only the HTML content, no markdown code blocks.`,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 2000,
+      }),
+    });
+
+    const data = await response.json();
+    
+    if (data.error) {
+      console.log(`   ⚠️  AI generation failed: ${data.error.message}`);
+      return generateArticleContent({ ...event, content: null }); // Fallback to template
+    }
+    
+    let content = data.choices[0].message.content.trim();
+    // Remove markdown code blocks if present
+    content = content.replace(/```html\n?/g, '').replace(/```\n?/g, '');
+    
+    console.log('   ✅ AI article generated successfully');
+    return content;
+  } catch (error) {
+    console.log(`   ⚠️  AI generation error: ${error.message}`);
+    return generateArticleContent({ ...event, content: null }); // Fallback to template
+  }
+}
+
 // Migrate past events to Firestore
 async function migratePastEvents() {
   console.log('🚀 Migrating past events to Firebase...\n');
   
   try {
     for (const event of pastEvents) {
-      console.log(`📝 Adding: ${event.title}...`);
-      const docRef = await addDoc(collection(db, 'lcPastEvents'), event);
-      console.log(`✅ Added with ID: ${docRef.id}\n`);
+      console.log(`📝 Processing: ${event.title}`);
+      
+      // Generate article content if needed
+      const content = await generateArticleContent(event);
+      const eventWithContent = { ...event, content };
+      
+      console.log(`   💾 Saving to Firebase...`);
+      const docRef = await addDoc(collection(db, 'lcPastEvents'), eventWithContent);
+      console.log(`   ✅ Added with ID: ${docRef.id}\n`);
+      
+      // Small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
     console.log('🎉 SUCCESS! All past events migrated to Firebase!');
     console.log('\n🌐 View past events at:');
     console.log('   http://localhost:3000/lc-past-events');
-    console.log('\n⚙️  Manage in admin panel (once created):');
-    console.log('   http://localhost:3000/admin/past-events');
+    console.log('\n⚙️  Manage in admin panel:');
+    console.log('   http://localhost:3000/admin/lc-past-events');
     console.log('\n✨ Done!');
     
     process.exit(0);
@@ -235,6 +345,7 @@ async function migratePastEvents() {
     console.log('1. Make sure Firestore rules are deployed');
     console.log('2. Check your Firebase configuration in .env.local');
     console.log('3. Ensure you have the correct permissions');
+    console.log('4. If using AI generation, check your OpenAI API key');
     process.exit(1);
   }
 }
