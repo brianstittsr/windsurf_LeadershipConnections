@@ -13,7 +13,14 @@
     "add-blog": "node add-blog-to-firebase.js",
     "migrate-blogs": "node migrate-remaining-blogs.js",
     "migrate-past-events": "node migrate-past-events.js",
-    "migrate-past-classes": "node migrate-past-classes.js"
+    "migrate-past-classes": "node migrate-past-classes.js",
+    "vercel:login": "vercel login",
+    "vercel:deploy": "vercel --prod",
+    "vercel:preview": "vercel",
+    "vercel:status": "vercel ls",
+    "vercel:logs": "vercel logs",
+    "vercel:env": "vercel env ls",
+    "vercel:pull": "vercel pull"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^4.0.2",
@@ -54,6 +61,7 @@
     "prettier-plugin-tailwindcss": "^0.5.6",
     "sharp": "^0.34.4",
     "tailwindcss": "^3.3.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vercel": "^48.12.0"
   }
 }
