@@ -6,10 +6,10 @@ import { Dataset, DATASET_COLLECTIONS } from '@/lib/dataset-schema';
 // GET /api/datasets/[datasetId] - Get dataset details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
   try {
-    const { datasetId } = params;
+    const { datasetId } = await params;
 
     const docRef = doc(db, DATASET_COLLECTIONS.datasets, datasetId);
     const docSnap = await getDoc(docRef);
@@ -45,10 +45,10 @@ export async function GET(
 // PUT /api/datasets/[datasetId] - Update dataset
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
   try {
-    const { datasetId } = params;
+    const { datasetId } = await params;
     const body = await request.json();
 
     const docRef = doc(db, DATASET_COLLECTIONS.datasets, datasetId);
@@ -101,10 +101,10 @@ export async function PUT(
 // DELETE /api/datasets/[datasetId] - Delete dataset
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { datasetId: string } }
+  { params }: { params: Promise<{ datasetId: string }> }
 ) {
   try {
-    const { datasetId } = params;
+    const { datasetId } = await params;
 
     const docRef = doc(db, DATASET_COLLECTIONS.datasets, datasetId);
     const docSnap = await getDoc(docRef);
