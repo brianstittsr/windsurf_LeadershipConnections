@@ -8,6 +8,7 @@ import { FormField, FormTemplate, formTemplates } from '@/types/form';
 import Link from 'next/link';
 import { generateFormQRCode, generateFormPublicUrl } from '@/lib/qrcode-utils';
 import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats, ensureDatasetForForm } from '@/lib/datahub-service';
+import { downloadPaperFormPDF } from '@/lib/paper-form-generator';
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -364,6 +365,22 @@ const FormsPage = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleDownloadPaperForm = (form: CustomForm) => {
+    try {
+      downloadPaperFormPDF({
+        formId: form.id,
+        title: form.title,
+        description: form.description,
+        fields: form.fields as FormField[],
+        publicUrl: form.publicUrl,
+        qrCode: form.qrCode
+      });
+    } catch (error) {
+      console.error('Error generating paper form:', error);
+      alert('Error generating paper form. Please try again.');
+    }
   };
 
   const copyFormLink = () => {
@@ -800,6 +817,9 @@ const FormsPage = () => {
                     <button onClick={() => handleDuplicate(form)} className="text-blue-600 hover:text-blue-800">Duplicate</button>
                     <button onClick={() => handleGenerateQR(form.id)} className="text-green-600 hover:text-green-800" disabled={generatingQR && selectedFormForQR === form.id}>
                       {generatingQR && selectedFormForQR === form.id ? 'Generating...' : 'QR Code'}
+                    </button>
+                    <button onClick={() => handleDownloadPaperForm(form)} className="text-purple-600 hover:text-purple-800">
+                      Paper Form
                     </button>
                     <button onClick={() => handleDelete(form.id)} className="text-red-600 hover:text-red-800">Delete</button>
                   </td>

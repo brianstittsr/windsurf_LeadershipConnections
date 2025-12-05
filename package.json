@@ -25,6 +25,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^4.0.2",
     "@stripe/stripe-js": "^7.9.0",
+    "@types/jspdf": "^1.3.3",
     "@types/nodemailer": "^7.0.3",
     "@types/qrcode": "^1.5.6",
     "date-fns": "^4.1.0",
@@ -33,6 +34,7 @@
     "eslint-config-next": "13.1.6",
     "firebase": "^12.5.0",
     "firebase-admin": "^13.5.0",
+    "jspdf": "^3.0.4",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.263.1",
     "next": "^15.5.3",
