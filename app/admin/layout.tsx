@@ -115,6 +115,29 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 <li><Link href="/admin/jobs" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Job Postings</Link></li>
               </>
             )}
+
+            {/* Tools Section */}
+            {(userRole === 'SuperUser' || userRole === 'SuperAdmin') && (
+              <>
+                <li className="pt-4 mt-4 border-t border-gray-200">
+                  <span className="block py-2 px-4 text-gray-500 font-semibold text-xs uppercase tracking-wider">Tools</span>
+                </li>
+                <li><Link href="/admin/tools" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">All Tools</Link></li>
+                <li><Link href="/admin/tools/table-tent" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Table Tent Creator</Link></li>
+                <li><Link href="/admin/tools/event-wizard" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Event Planning Wizard</Link></li>
+              </>
+            )}
+
+            {/* API Integrations Section */}
+            {(userRole === 'SuperUser' || userRole === 'SuperAdmin') && (
+              <>
+                <li className="pt-4 mt-4 border-t border-gray-200">
+                  <span className="block py-2 px-4 text-gray-500 font-semibold text-xs uppercase tracking-wider">API Integrations</span>
+                </li>
+                <li><Link href="/admin/integrations" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">All Integrations</Link></li>
+                <li><Link href="/admin/integrations/google" className="block py-2 px-4 rounded-lg text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors">Google Services</Link></li>
+              </>
+            )}
           </ul>
         </nav>
       </aside>

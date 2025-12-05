@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload, FaArchive, FaRobot, FaMagic, FaChartLine, FaLock } from 'react-icons/fa';
+import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload, FaArchive, FaRobot, FaMagic, FaChartLine, FaLock, FaGoogle, FaExternalLinkAlt } from 'react-icons/fa';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -54,6 +54,8 @@ export default function DatasetViewPage() {
   const [exporting, setExporting] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [aiFeature, setAIFeature] = useState<'merge' | 'reporting' | 'analysis' | null>(null);
+  const [publishingToSheets, setPublishingToSheets] = useState(false);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState<string | null>(null);
   const { hasFeature, hasAnyFeature } = useSubscription();
   
   // Check if user has AI data features
@@ -86,6 +88,10 @@ export default function DatasetViewPage() {
           updatedAt: data.updatedAt?.toDate() || new Date(),
           createdBy: data.createdBy,
         });
+        // Check if published to Google Sheets
+        if (data.googleSheetUrl) {
+          setGoogleSheetUrl(data.googleSheetUrl);
+        }
       } else {
         setError('Dataset not found');
       }
@@ -189,6 +195,49 @@ export default function DatasetViewPage() {
       feature === 'reporting' ? 'generate comprehensive reports' :
       'analyze data patterns and insights'
     }.`);
+  };
+
+  const handlePublishToGoogleSheets = async () => {
+    if (googleSheetUrl) {
+      // Already published, open the sheet
+      window.open(googleSheetUrl, '_blank');
+      return;
+    }
+
+    const confirmed = window.confirm(
+      'This will create a Google Sheet for this dataset and sync all records. ' +
+      'A backup copy will also be created in your Google Drive that cannot be deleted. ' +
+      'Continue?'
+    );
+
+    if (!confirmed) return;
+
+    setPublishingToSheets(true);
+    try {
+      const response = await fetch(`/api/datasets/${datasetId}/publish-to-sheets`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to publish to Google Sheets');
+      }
+
+      setGoogleSheetUrl(data.spreadsheetUrl);
+      alert(
+        `Successfully published to Google Sheets!\n\n` +
+        `Main Sheet: ${data.spreadsheetUrl}\n` +
+        `Backup Sheet: ${data.backupSpreadsheetUrl}\n\n` +
+        `${data.recordsSynced} records synced.`
+      );
+    } catch (err: any) {
+      console.error('Error publishing to Google Sheets:', err);
+      alert(err.message || 'Failed to publish to Google Sheets. Please check your Google integration settings.');
+    } finally {
+      setPublishingToSheets(false);
+    }
   };
 
   if (loading) {
@@ -452,6 +501,23 @@ export default function DatasetViewPage() {
                 >
                   <FaArchive />
                   {archiving ? 'Archiving...' : 'Archive Dataset'}
+                </button>
+              )}
+
+              {/* Google Sheets - SuperAdmin & SuperUser */}
+              {(userRole === 'SuperAdmin' || userRole === 'SuperUser') && (
+                <button
+                  onClick={handlePublishToGoogleSheets}
+                  disabled={publishingToSheets}
+                  className={`w-full ${googleSheetUrl ? 'bg-green-600 hover:bg-green-700' : 'bg-red-500 hover:bg-red-600'} text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <FaGoogle />
+                  {publishingToSheets 
+                    ? 'Publishing...' 
+                    : googleSheetUrl 
+                      ? <>Open Google Sheet <FaExternalLinkAlt className="text-xs" /></>
+                      : 'Publish to Google Sheets'
+                  }
                 </button>
               )}
             </div>

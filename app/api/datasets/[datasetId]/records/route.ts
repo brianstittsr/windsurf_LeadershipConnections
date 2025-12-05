@@ -157,6 +157,37 @@ export async function POST(
       updatedAt: Timestamp.fromDate(now),
     });
 
+    // Sync to Google Sheets if enabled
+    if (dataset.googleSheetSyncEnabled && dataset.googleSheetId) {
+      try {
+        const { getSheetSyncConfig, appendToSpreadsheet } = await import('@/lib/google-sheets-service');
+        const syncConfig = await getSheetSyncConfig(datasetId);
+        
+        if (syncConfig) {
+          // Prepare row data
+          const schemaFields = schema.fields || [];
+          const rowData = [
+            docRef.id,
+            now.toISOString(),
+            ...schemaFields.map((f: any) => data[f.name] || '')
+          ];
+
+          // Append to main sheet
+          await appendToSpreadsheet(syncConfig.spreadsheetId, 'Data', [rowData]);
+          
+          // Append to backup sheet
+          if (syncConfig.backupSpreadsheetId) {
+            await appendToSpreadsheet(syncConfig.backupSpreadsheetId, 'Sheet1', [rowData]);
+          }
+          
+          console.log('✅ Record synced to Google Sheets');
+        }
+      } catch (sheetError) {
+        console.error('⚠️ Error syncing to Google Sheets:', sheetError);
+        // Don't fail the record creation if sheet sync fails
+      }
+    }
+
     const record: DatasetRecord = {
       id: docRef.id,
       ...recordData,

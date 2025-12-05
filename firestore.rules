@@ -135,9 +135,15 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
-    // DataHub - Datasets
+    // DataHub - Datasets (lcDatasets collection)
     match /lcDatasets/{datasetId} {
       allow read: if isAdmin() || resource.data.metadata.isPublic == true;
+      allow write: if isAdmin();
+    }
+    
+    // DataHub - Datasets (datasets collection - used by admin pages)
+    match /datasets/{datasetId} {
+      allow read: if isAdmin();
       allow write: if isAdmin();
     }
     
