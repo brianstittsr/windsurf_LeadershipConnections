@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, Timestamp, collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { FaArrowLeft, FaDatabase, FaCalendar, FaTag, FaTable, FaDownload, FaArchive, FaRobot, FaMagic, FaChartLine, FaLock, FaGoogle, FaExternalLinkAlt } from 'react-icons/fa';
 import Link from 'next/link';
@@ -56,6 +56,9 @@ export default function DatasetViewPage() {
   const [aiFeature, setAIFeature] = useState<'merge' | 'reporting' | 'analysis' | null>(null);
   const [publishingToSheets, setPublishingToSheets] = useState(false);
   const [googleSheetUrl, setGoogleSheetUrl] = useState<string | null>(null);
+  const [records, setRecords] = useState<any[]>([]);
+  const [recordCount, setRecordCount] = useState(0);
+  const [loadingRecords, setLoadingRecords] = useState(false);
   const { hasFeature, hasAnyFeature } = useSubscription();
   
   // Check if user has AI data features
@@ -67,13 +70,21 @@ export default function DatasetViewPage() {
   useEffect(() => {
     if (datasetId) {
       fetchDataset();
+      fetchRecords();
     }
   }, [datasetId]);
 
   const fetchDataset = async () => {
     try {
-      const datasetRef = doc(db, 'datasets', datasetId);
-      const datasetSnap = await getDoc(datasetRef);
+      // Try lcDatasets first (main collection), then fall back to datasets
+      let datasetRef = doc(db, 'lcDatasets', datasetId);
+      let datasetSnap = await getDoc(datasetRef);
+      
+      if (!datasetSnap.exists()) {
+        // Fall back to datasets collection
+        datasetRef = doc(db, 'datasets', datasetId);
+      datasetSnap = await getDoc(datasetRef);
+      }
 
       if (datasetSnap.exists()) {
         const data = datasetSnap.data();
@@ -100,6 +111,45 @@ export default function DatasetViewPage() {
       setError('Failed to load dataset');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecords = async () => {
+    setLoadingRecords(true);
+    try {
+      // Fetch records from lcDatasetRecords collection where datasetId matches
+      const { collection, query, where, getDocs, orderBy, limit } = await import('firebase/firestore');
+      
+      const recordsQuery = query(
+        collection(db, 'lcDatasetRecords'),
+        where('datasetId', '==', datasetId),
+        orderBy('createdAt', 'desc'),
+        limit(100) // Limit to 100 records for performance
+      );
+      
+      const snapshot = await getDocs(recordsQuery);
+      const recordsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+      }));
+      
+      setRecords(recordsData);
+      setRecordCount(snapshot.size);
+      
+      // Also try to get total count if there are more than 100
+      if (snapshot.size === 100) {
+        const countQuery = query(
+          collection(db, 'lcDatasetRecords'),
+          where('datasetId', '==', datasetId)
+        );
+        const countSnapshot = await getDocs(countQuery);
+        setRecordCount(countSnapshot.size);
+      }
+    } catch (err) {
+      console.error('Error fetching records:', err);
+    } finally {
+      setLoadingRecords(false);
     }
   };
 
@@ -304,7 +354,7 @@ export default function DatasetViewPage() {
             <div>
               <p className="text-sm text-gray-600">Records</p>
               <p className="text-2xl font-bold text-gray-900">
-                {(dataset.metadata?.recordCount || 0).toLocaleString()}
+                {loadingRecords ? '...' : recordCount.toLocaleString()}
               </p>
             </div>
           </div>
@@ -403,6 +453,69 @@ export default function DatasetViewPage() {
                 </div>
               ) : (
                 <p className="text-gray-500 text-center py-8">No schema fields defined</p>
+              )}
+            </div>
+          </div>
+
+          {/* Records Table Section */}
+          <div className="bg-white rounded-lg shadow border border-gray-200">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <FaDatabase />
+                Records ({recordCount})
+              </h2>
+              {loadingRecords && (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+              )}
+            </div>
+            <div className="p-6">
+              {loadingRecords ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                  <p className="text-gray-500">Loading records...</p>
+                </div>
+              ) : records.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 bg-gray-50">
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700">#</th>
+                        {dataset.schema?.fields?.slice(0, 5).map((field, idx) => (
+                          <th key={idx} className="text-left py-3 px-4 font-semibold text-gray-700">
+                            {field.name}
+                          </th>
+                        ))}
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700">Created</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {records.map((record, index) => (
+                        <tr key={record.id} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="py-3 px-4 text-gray-500">{index + 1}</td>
+                          {dataset.schema?.fields?.slice(0, 5).map((field, idx) => (
+                            <td key={idx} className="py-3 px-4 text-gray-900 max-w-[200px] truncate">
+                              {record.data?.[field.name] || record[field.name] || '-'}
+                            </td>
+                          ))}
+                          <td className="py-3 px-4 text-gray-500 text-xs">
+                            {record.createdAt?.toLocaleDateString?.() || 'N/A'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {recordCount > 100 && (
+                    <p className="text-center text-sm text-gray-500 mt-4">
+                      Showing 100 of {recordCount} records
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <FaTable className="text-4xl text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500">No records yet</p>
+                  <p className="text-sm text-gray-400 mt-1">Records will appear here when form submissions are received</p>
+                </div>
               )}
             </div>
           </div>

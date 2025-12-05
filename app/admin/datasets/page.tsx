@@ -37,7 +37,7 @@ export default function DatasetsPage() {
       setLoading(true);
       
       // Fetch directly from Firestore using user's auth context
-      const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
+      const { collection, getDocs, query, orderBy, where } = await import('firebase/firestore');
       const { db } = await import('@/lib/firebase');
       
       const q = query(
@@ -55,8 +55,31 @@ export default function DatasetsPage() {
         }))
         .filter((dataset: any) => !dataset.metadata?.archived); // Filter out archived datasets
       
-      console.log(`✅ Fetched ${datasetsData.length} dataset(s)`);
-      setDatasets(datasetsData as any[]);
+      // Fetch actual record counts for each dataset
+      const datasetsWithCounts = await Promise.all(
+        datasetsData.map(async (dataset: any) => {
+          try {
+            const recordsQuery = query(
+              collection(db, 'lcDatasetRecords'),
+              where('datasetId', '==', dataset.id)
+            );
+            const recordsSnapshot = await getDocs(recordsQuery);
+            return {
+              ...dataset,
+              metadata: {
+                ...dataset.metadata,
+                recordCount: recordsSnapshot.size
+              }
+            };
+          } catch (err) {
+            console.error(`Error fetching record count for dataset ${dataset.id}:`, err);
+            return dataset;
+          }
+        })
+      );
+      
+      console.log(`✅ Fetched ${datasetsWithCounts.length} dataset(s)`);
+      setDatasets(datasetsWithCounts as any[]);
     } catch (error: any) {
       console.error('Error fetching datasets:', error);
       if (error.code === 'permission-denied') {
