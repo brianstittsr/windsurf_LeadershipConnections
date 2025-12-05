@@ -48,13 +48,13 @@ const COLUMN_GAP = 6;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
 const COLUMN_WIDTH = (CONTENT_WIDTH - COLUMN_GAP) / 2;
 
-// Field sizing - compact for 2-column
-const LABEL_HEIGHT = 4;
-const FIELD_HEIGHT = 7;
-const FIELD_SPACING = 2.5;
-const CHECKBOX_SIZE = 3.5;
-const CHARACTER_BOX_WIDTH = 4.5;
-const CHARACTER_BOX_HEIGHT = 6;
+// Field sizing - properly spaced for readability
+const LABEL_HEIGHT = 5;
+const FIELD_HEIGHT = 8;
+const FIELD_SPACING = 4;
+const CHECKBOX_SIZE = 4;
+const CHARACTER_BOX_WIDTH = 5;
+const CHARACTER_BOX_HEIGHT = 7;
 
 // Font sizes (10pt base)
 const FONT_SIZE_TITLE = 12;
@@ -71,16 +71,30 @@ const CORNER_MARKER_SIZE = 6;
  * Get field height based on type
  */
 function getFieldHeight(field: FormField): number {
+  const options = field.options || [];
+  // Estimate label lines (roughly 50 chars per line in column width)
+  const labelLines = Math.ceil(field.label.length / 45);
+  const labelExtraHeight = (labelLines - 1) * 4;
+  
   switch (field.type) {
     case 'textarea':
-      return 18; // Larger for multi-line
+      return 24 + labelExtraHeight; // Larger for multi-line
     case 'checkbox':
     case 'radio':
     case 'select':
-      // Horizontal layout - single row height
-      return 10;
+      // Calculate based on number of options and label length
+      const baseHeight = LABEL_HEIGHT + 4 + labelExtraHeight;
+      // Estimate if options will wrap to multiple rows
+      const optionCount = options.length;
+      if (optionCount <= 2) {
+        return baseHeight + 10; // Single row
+      } else if (optionCount <= 4) {
+        return baseHeight + 16; // May need 2 rows
+      } else {
+        return baseHeight + 24; // Multiple rows
+      }
     default:
-      return FIELD_HEIGHT + LABEL_HEIGHT + 2;
+      return LABEL_HEIGHT + FIELD_HEIGHT + 5 + labelExtraHeight;
   }
 }
 
@@ -275,12 +289,36 @@ function drawOptionsFieldHorizontal(
   width: number,
   isRadio: boolean = false
 ): void {
-  // Label
+  // Label - handle long labels by wrapping
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(FONT_SIZE_LABEL);
   const labelText = field.required ? `${field.label} *` : field.label;
-  doc.text(labelText, x, y);
-  y += LABEL_HEIGHT + 1;
+  
+  // Check if label needs to wrap
+  const labelWidth = doc.getTextWidth(labelText);
+  if (labelWidth > width) {
+    // Split label into multiple lines
+    const words = labelText.split(' ');
+    let line = '';
+    let lineY = y;
+    for (const word of words) {
+      const testLine = line ? `${line} ${word}` : word;
+      if (doc.getTextWidth(testLine) > width && line) {
+        doc.text(line, x, lineY);
+        line = word;
+        lineY += 4;
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) {
+      doc.text(line, x, lineY);
+      y = lineY + LABEL_HEIGHT;
+    }
+  } else {
+    doc.text(labelText, x, y);
+    y += LABEL_HEIGHT + 1;
+  }
 
   const options = field.options || ['Option 1', 'Option 2'];
   
@@ -290,13 +328,14 @@ function drawOptionsFieldHorizontal(
 
   // Calculate option widths to fit horizontally
   let currentX = x;
-  const optionSpacing = 3;
+  const optionSpacing = 4;
+  const rowHeight = 6; // Increased row height for better spacing
   
   // Estimate text widths and see if they fit
-  const optionWidths = options.map(opt => doc.getTextWidth(opt) + CHECKBOX_SIZE + 4);
+  const optionWidths = options.map(opt => doc.getTextWidth(opt) + CHECKBOX_SIZE + 5);
   const totalWidth = optionWidths.reduce((a, b) => a + b, 0) + (options.length - 1) * optionSpacing;
   
-  // If total width exceeds available, use 2 rows
+  // If total width exceeds available, use multiple rows
   const useMultiRow = totalWidth > width;
   const optionsPerRow = useMultiRow ? Math.ceil(options.length / 2) : options.length;
   
@@ -305,7 +344,7 @@ function drawOptionsFieldHorizontal(
     const colIndex = useMultiRow ? index % optionsPerRow : index;
     
     let optX: number;
-    let optY = y + (row * 5);
+    let optY = y + (row * rowHeight);
     
     if (useMultiRow) {
       // Distribute evenly in multi-row
@@ -326,10 +365,10 @@ function drawOptionsFieldHorizontal(
       doc.rect(optX, optY, CHECKBOX_SIZE, CHECKBOX_SIZE);
     }
     
-    doc.text(option, optX + CHECKBOX_SIZE + 1.5, optY + CHECKBOX_SIZE - 0.5);
+    doc.text(option, optX + CHECKBOX_SIZE + 2, optY + CHECKBOX_SIZE - 0.5);
     
     if (!useMultiRow) {
-      currentX = optX + CHECKBOX_SIZE + doc.getTextWidth(option) + optionSpacing + 2;
+      currentX = optX + CHECKBOX_SIZE + doc.getTextWidth(option) + optionSpacing + 3;
     }
   });
 }
