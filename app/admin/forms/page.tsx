@@ -30,6 +30,7 @@ const FormsPage = () => {
   const [currentFormTitle, setCurrentFormTitle] = useState<string>('');
   const [currentFormId, setCurrentFormId] = useState<string>('');
   const [linkCopied, setLinkCopied] = useState(false);
+  const [optionsText, setOptionsText] = useState<Record<number, string>>({});
 
   const [formData, setFormData] = useState({
     title: '',
@@ -392,6 +393,7 @@ const FormsPage = () => {
     });
     setEditingForm(null);
     setShowForm(false);
+    setOptionsText({});
   };
 
   const addField = () => {
@@ -574,10 +576,19 @@ const FormsPage = () => {
                         </label>
                         <input
                           type="text"
-                          value={field.options?.join(', ') || ''}
-                          onChange={(e) => updateField(index, { 
-                            options: e.target.value.split(',').map(o => o.trim()).filter(o => o) 
-                          })}
+                          value={optionsText[index] !== undefined ? optionsText[index] : (field.options?.join(', ') || '')}
+                          onChange={(e) => {
+                            setOptionsText(prev => ({ ...prev, [index]: e.target.value }));
+                          }}
+                          onBlur={(e) => {
+                            const options = e.target.value.split(',').map(o => o.trim()).filter(o => o);
+                            updateField(index, { options });
+                            setOptionsText(prev => {
+                              const newState = { ...prev };
+                              delete newState[index];
+                              return newState;
+                            });
+                          }}
                           className="w-full border border-gray-300 rounded px-2 py-1 text-sm text-gray-900"
                           placeholder="Option 1, Option 2, Option 3"
                         />
