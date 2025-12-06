@@ -194,22 +194,42 @@ export default function TentCardCreator() {
     const logoWidth = 8;
     const logoHeight = 5.6;
     
-    let contentY: number;
+    // Calculate total content height first
+    const validItems = card.lineItems.filter(item => item.trim());
+    let totalContentHeight = logoHeight + 2; // logo + gap
+    
+    // Add title height
+    if (card.title) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
+      totalContentHeight += titleLines.length * 4.5 + 2;
+    }
+    
+    // Add line items height
+    if (validItems.length > 0) {
+      totalContentHeight += validItems.length * 3.5 + 2;
+    }
+    
+    // Calculate starting Y to center content vertically
+    const centerY = y + height / 2;
     
     if (upsideDown) {
-      // For upside down, we draw from bottom to top
-      contentY = y + height - 4;
+      // For upside down content, we need to position from the center
+      // Content will be drawn upside down, so we start from bottom of content area
+      let contentY = centerY + totalContentHeight / 2;
       
-      // Logo at bottom (which appears at top when upside down)
+      // Logo at top (appears at top when card is flipped)
       if (logoBase64) {
         doc.addImage(
           logoBase64, 
           'PNG', 
           centerX - logoWidth / 2, 
-          y + height - logoHeight - 2, 
+          contentY - logoHeight, 
           logoWidth, 
           logoHeight
         );
+        contentY -= logoHeight + 3;
       }
       
       // Title
@@ -218,27 +238,25 @@ export default function TentCardCreator() {
         doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
         const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
-        doc.text(titleLines, centerX, contentY - logoHeight - 1, { align: 'center', angle: 180 });
-        contentY -= logoHeight + 1 + (titleLines.length * 5);
+        doc.text(titleLines, centerX, contentY, { align: 'center', angle: 180 });
+        contentY -= titleLines.length * 4.5 + 2;
       }
       
       // Line items
-      const validItems = card.lineItems.filter(item => item.trim());
       if (validItems.length > 0) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
         
         validItems.forEach((item) => {
-          contentY -= 4;
           const itemLines = doc.splitTextToSize(`• ${item}`, width - padding * 2);
           doc.text(itemLines, centerX, contentY, { align: 'center', angle: 180 });
-          contentY -= (itemLines.length - 1) * 3;
+          contentY -= 3.5;
         });
       }
     } else {
-      // Normal orientation
-      contentY = y + 3;
+      // Normal orientation - start from top of centered content
+      let contentY = centerY - totalContentHeight / 2;
       
       // Logo at top (small)
       if (logoBase64) {
@@ -250,7 +268,7 @@ export default function TentCardCreator() {
           logoWidth, 
           logoHeight
         );
-        contentY += logoHeight + 2;
+        contentY += logoHeight + 3;
       }
       
       // Title
@@ -260,11 +278,10 @@ export default function TentCardCreator() {
         doc.setTextColor(30, 41, 59);
         const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
         doc.text(titleLines, centerX, contentY + 3, { align: 'center' });
-        contentY += 3 + (titleLines.length * 5);
+        contentY += titleLines.length * 4.5 + 2;
       }
       
       // Line items
-      const validItems = card.lineItems.filter(item => item.trim());
       if (validItems.length > 0) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
@@ -274,7 +291,7 @@ export default function TentCardCreator() {
         validItems.forEach((item) => {
           const itemLines = doc.splitTextToSize(`• ${item}`, width - padding * 2);
           doc.text(itemLines, centerX, contentY, { align: 'center' });
-          contentY += itemLines.length * 3.5;
+          contentY += 3.5;
         });
       }
     }
