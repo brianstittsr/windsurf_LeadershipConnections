@@ -265,6 +265,11 @@ const blogData: (Blog & { slug: string; content: string })[] = [
 
 // Fetch blogs from Firestore and combine with static data
 async function fetchFirestoreBlogs(): Promise<(Blog & { slug: string; content: string })[]> {
+  // Skip Firestore fetch if db is not available (e.g., during build)
+  if (!db) {
+    return [];
+  }
+
   try {
     const blogsRef = collection(db, 'blogEntries');
     const querySnapshot = await getDocs(blogsRef);
@@ -312,6 +317,11 @@ export async function getAllBlogs() {
 
 // Get blog by slug (check Firestore first, then static)
 export async function getBlogBySlug(slug: string) {
+  // Skip Firestore fetch if db is not available (e.g., during build)
+  if (!db) {
+    return blogData.find((blog) => blog.slug === slug);
+  }
+
   // First check Firestore
   try {
     const blogsRef = collection(db, 'blogEntries');
