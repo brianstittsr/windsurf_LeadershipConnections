@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaPrint, FaCalendarAlt, FaTools, FaIdBadge, FaIdCard } from 'react-icons/fa';
+import { FaPrint, FaCalendarAlt, FaTools, FaIdBadge, FaIdCard, FaBook } from 'react-icons/fa';
 
 const tools = [
   {
@@ -43,6 +43,24 @@ const tools = [
       'LC Logo branding',
       'Duplicate cards easily',
       'Print to edge'
+    ]
+  },
+  {
+    id: 'program-booklet',
+    name: 'Program Booklet Creator',
+    description: 'Create professional multi-page event program booklets with cover pages, speaker bios, agendas, and acknowledgements.',
+    icon: FaBook,
+    href: '/admin/tools/program-booklet',
+    color: 'bg-indigo-500',
+    features: [
+      'Multi-page PDF booklet',
+      'Cover page design',
+      'Speaker/Facilitator bios',
+      'Session overviews',
+      'Agenda formatting',
+      'Acknowledgements page',
+      'LC Logo branding',
+      'Editable content'
     ]
   },
   {
