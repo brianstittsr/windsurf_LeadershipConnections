@@ -216,36 +216,34 @@ export default function TentCardCreator() {
     const startY = halfCenterY - totalHeight / 2;
     
     if (upsideDown) {
-      // For upside down: we need to draw everything rotated 180 degrees
-      // The "top" of the upside-down content should be near the fold line (bottom of this section)
-      // So we mirror the positions
+      // For upside down: content should be centered and appear right-side-up when card is flipped
+      // We draw from bottom to top (visually top to bottom when flipped)
       
-      let contentY = startY;
+      // Start from the bottom of the centered content area
+      let drawY = halfCenterY + totalHeight / 2;
       
-      // Logo (at visual top when flipped = near bottom of this section in PDF coordinates)
-      // For 180-degree rotation, we position from where the bottom of the logo should be
-      const logoY = y + height - (contentY - y) - logoHeight;
+      // Logo at visual top (drawn at bottom position, will appear at top when flipped)
       if (logoBase64) {
+        drawY -= logoHeight;
         doc.addImage(
           logoBase64, 
           'PNG', 
           centerX - logoWidth / 2, 
-          logoY, 
+          drawY, 
           logoWidth, 
           logoHeight
         );
+        drawY -= 2; // gap after logo
       }
-      contentY += logoHeight + 2;
       
-      // Title (upside down)
+      // Title (upside down text)
       if (card.title) {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
-        // Mirror Y position within this half
-        const titleY = y + height - (contentY - y) + 1;
-        doc.text(titleLines, centerX, titleY, { align: 'center', angle: 180 });
-        contentY += titleLines.length * 4.5;
+        drawY -= 3; // small gap
+        doc.text(titleLines, centerX, drawY, { align: 'center', angle: 180 });
+        drawY -= titleLines.length * 4.5;
       }
       
       // Line items (upside down)
@@ -253,14 +251,12 @@ export default function TentCardCreator() {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
-        contentY += 3;
+        drawY -= 2; // gap before items
         
         validItems.forEach((item) => {
           const itemText = `• ${item}`;
-          // Mirror Y position within this half
-          const itemY = y + height - (contentY - y);
-          doc.text(itemText, centerX, itemY, { align: 'center', angle: 180 });
-          contentY += 3.5;
+          doc.text(itemText, centerX, drawY, { align: 'center', angle: 180 });
+          drawY -= 3.5;
         });
       }
     } else {
