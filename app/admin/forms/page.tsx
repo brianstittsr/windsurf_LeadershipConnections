@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { generateFormQRCode, generateFormPublicUrl } from '@/lib/qrcode-utils';
 import { getDatasetForForm, deleteDataset, unlinkFormFromDataset, getDatasetStats, ensureDatasetForForm } from '@/lib/datahub-service';
 import { downloadPaperFormPDF } from '@/lib/paper-form-generator';
+import { downloadSurveyPoster } from '@/lib/survey-poster-generator';
 
 // Helper function to generate slug from title
 const generateSlug = (title: string): string => {
@@ -380,6 +381,15 @@ const FormsPage = () => {
     } catch (error) {
       console.error('Error generating paper form:', error);
       alert('Error generating paper form. Please try again.');
+    }
+  };
+
+  const handleDownloadSurveyPoster = async (form: CustomForm) => {
+    try {
+      await downloadSurveyPoster(form.id, form.title, form.qrCode);
+    } catch (error) {
+      console.error('Error generating survey poster:', error);
+      alert('Error generating survey poster. Please try again.');
     }
   };
 
@@ -820,6 +830,9 @@ const FormsPage = () => {
                     </button>
                     <button onClick={() => handleDownloadPaperForm(form)} className="text-purple-600 hover:text-purple-800">
                       Paper Form
+                    </button>
+                    <button onClick={() => handleDownloadSurveyPoster(form)} className="text-orange-600 hover:text-orange-800">
+                      Survey Poster
                     </button>
                     <button onClick={() => handleDelete(form.id)} className="text-red-600 hover:text-red-800">Delete</button>
                   </td>
