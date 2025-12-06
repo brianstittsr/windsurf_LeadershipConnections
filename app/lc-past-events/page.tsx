@@ -26,6 +26,13 @@ const LCPastEventsPage = () => {
 
   useEffect(() => {
     const fetchAllPastEvents = async () => {
+      // Skip Firestore fetch if db is not available (e.g., during build)
+      if (!db) {
+        console.log('Firestore not available, skipping past events fetch');
+        setLoading(false);
+        return;
+      }
+
       try {
         // Fetch calendar events
         const now = new Date();

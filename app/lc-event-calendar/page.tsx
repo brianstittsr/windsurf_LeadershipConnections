@@ -27,6 +27,13 @@ const LCEventCalendar = () => {
 
   useEffect(() => {
     const fetchUpcomingEvents = async () => {
+      // Skip Firestore fetch if db is not available (e.g., during build)
+      if (!db) {
+        console.log('Firestore not available, skipping events fetch');
+        setLoading(false);
+        return;
+      }
+
       try {
         const now = new Date();
         const eventsRef = collection(db, 'calendarEvents');

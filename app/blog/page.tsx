@@ -16,6 +16,13 @@ const Blog = () => {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      // Skip Firestore fetch if db is not available (e.g., during build)
+      if (!db) {
+        console.log('Firestore not available, using static blog data only');
+        setLoading(false);
+        return;
+      }
+
       try {
         const blogsRef = collection(db, 'blogEntries');
         const q = query(blogsRef, orderBy('publishDate', 'desc'));

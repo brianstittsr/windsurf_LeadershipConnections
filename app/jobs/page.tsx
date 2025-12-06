@@ -36,6 +36,13 @@ export default function JobsPage() {
   }, [jobs, filters]);
 
   const fetchJobs = async () => {
+    // Skip Firestore fetch if db is not available (e.g., during build)
+    if (!db) {
+      console.log('Firestore not available, skipping jobs fetch');
+      setLoading(false);
+      return;
+    }
+
     try {
       const q = query(
         collection(db, 'jobPostings'),

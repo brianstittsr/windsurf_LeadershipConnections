@@ -13,6 +13,13 @@ const LCPastClassesPage = () => {
 
   useEffect(() => {
     const fetchClasses = async () => {
+      // Skip Firestore fetch if db is not available (e.g., during build)
+      if (!db) {
+        console.log('Firestore not available, skipping classes fetch');
+        setLoading(false);
+        return;
+      }
+
       try {
         const classesRef = collection(db, 'lcPastClasses');
         const classesQuery = query(

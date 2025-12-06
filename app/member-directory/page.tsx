@@ -17,6 +17,13 @@ export default function MemberDirectoryPage() {
   }, []);
 
   const fetchMembers = async () => {
+    // Skip Firestore fetch if db is not available (e.g., during build)
+    if (!db) {
+      console.log('Firestore not available, skipping members fetch');
+      setLoading(false);
+      return;
+    }
+
     try {
       const membersRef = collection(db, 'memberProfiles');
       const q = query(
