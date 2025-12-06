@@ -194,6 +194,9 @@ export default function TentCardCreator() {
     const logoWidth = 8;
     const logoHeight = 5.6;
     
+    // Recalculate centerX to ensure it's correct for this card
+    const cardCenterX = x + width / 2;
+    
     const validItems = card.lineItems.filter(item => item.trim());
     
     // Calculate total content height first for centering
@@ -239,8 +242,7 @@ export default function TentCardCreator() {
     
     if (upsideDown) {
       // PERFECT MIRROR: For each element, calculate its mirrored position
-      // Mirror formula: mirroredY = y + height - (startY + relY - y) = 2*y + height - startY - relY
-      // Simplified: mirroredY = y + height - startY - relY + y - y = y + height - (startY - y) - relY
+      // Mirror formula: mirroredY = y + height - (startY + relY - y)
       
       positions.forEach((pos) => {
         // Calculate the absolute Y in normal orientation
@@ -255,7 +257,7 @@ export default function TentCardCreator() {
           doc.addImage(
             logoBase64, 
             'PNG', 
-            centerX - logoWidth / 2, 
+            cardCenterX - logoWidth / 2, 
             mirroredY - logoHeight, 
             logoWidth, 
             logoHeight
@@ -264,13 +266,17 @@ export default function TentCardCreator() {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12);
           doc.setTextColor(30, 41, 59);
-          doc.text(titleLines, centerX, mirroredY, { align: 'center', angle: 180 });
+          // For 180-degree rotated text, draw each line centered
+          titleLines.forEach((line: string, idx: number) => {
+            const lineY = mirroredY - (idx * 4.5);
+            doc.text(line, cardCenterX, lineY, { align: 'center', angle: 180 });
+          });
         } else if (pos.type === 'item' && pos.data) {
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9);
           doc.setTextColor(60, 60, 60);
           const itemText = `• ${pos.data}`;
-          doc.text(itemText, centerX, mirroredY, { align: 'center', angle: 180 });
+          doc.text(itemText, cardCenterX, mirroredY, { align: 'center', angle: 180 });
         }
       });
     } else {
@@ -282,7 +288,7 @@ export default function TentCardCreator() {
           doc.addImage(
             logoBase64, 
             'PNG', 
-            centerX - logoWidth / 2, 
+            cardCenterX - logoWidth / 2, 
             absY, 
             logoWidth, 
             logoHeight
@@ -291,13 +297,13 @@ export default function TentCardCreator() {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12);
           doc.setTextColor(30, 41, 59);
-          doc.text(titleLines, centerX, absY, { align: 'center' });
+          doc.text(titleLines, cardCenterX, absY, { align: 'center' });
         } else if (pos.type === 'item' && pos.data) {
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9);
           doc.setTextColor(60, 60, 60);
           const itemText = `• ${pos.data}`;
-          doc.text(itemText, centerX, absY, { align: 'center' });
+          doc.text(itemText, cardCenterX, absY, { align: 'center' });
         }
       });
     }
