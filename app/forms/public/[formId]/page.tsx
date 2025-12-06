@@ -103,45 +103,97 @@ export default function PublicFormPage() {
     if (!validateForm()) return;
 
     setSubmitting(true);
-    try {
-      // Capture tracking data
-      const rawTrackingData = await captureFormTrackingData();
-      
-      // Clean tracking data to remove undefined values (Firestore doesn't allow them)
-      const cleanTrackingData = JSON.parse(JSON.stringify(rawTrackingData, (key, value) => {
-        return value === undefined ? null : value;
-      }));
-      
-      // Remove null values from approximateLocation if it exists
-      if (cleanTrackingData.approximateLocation) {
-        const cleanLocation: any = {};
-        Object.keys(cleanTrackingData.approximateLocation).forEach(key => {
-          const value = cleanTrackingData.approximateLocation[key];
-          if (value !== null && value !== undefined) {
-            cleanLocation[key] = value;
+    
+    // Helper function to safely clean tracking data
+    const cleanTrackingDataSafe = (data: any): any => {
+      try {
+        const cleaned = JSON.parse(JSON.stringify(data, (key, value) => {
+          return value === undefined ? null : value;
+        }));
+        
+        // Remove null values from approximateLocation if it exists
+        if (cleaned.approximateLocation) {
+          const cleanLocation: any = {};
+          Object.keys(cleaned.approximateLocation).forEach(key => {
+            const value = cleaned.approximateLocation[key];
+            if (value !== null && value !== undefined) {
+              cleanLocation[key] = value;
+            }
+          });
+          // Only include approximateLocation if it has at least one property
+          if (Object.keys(cleanLocation).length > 0) {
+            cleaned.approximateLocation = cleanLocation;
+          } else {
+            delete cleaned.approximateLocation;
           }
-        });
-        // Only include approximateLocation if it has at least one property
-        if (Object.keys(cleanLocation).length > 0) {
-          cleanTrackingData.approximateLocation = cleanLocation;
-        } else {
-          delete cleanTrackingData.approximateLocation;
         }
+        
+        return cleaned;
+      } catch (e) {
+        console.error('Error cleaning tracking data:', e);
+        // Return minimal tracking data if cleaning fails
+        return {
+          deviceType: 'unknown',
+          browser: 'unknown',
+          browserVersion: 'unknown',
+          os: 'unknown',
+          screenResolution: 'unknown',
+          timezone: 'unknown',
+          timestamp: new Date(),
+          userAgent: 'unknown',
+          referrer: 'direct',
+          language: 'unknown',
+        };
+      }
+    };
+    
+    try {
+      // Capture tracking data with timeout protection
+      let cleanTrackingData: any;
+      try {
+        const trackingPromise = captureFormTrackingData();
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Tracking timeout')), 5000)
+        );
+        
+        const rawTrackingData = await Promise.race([trackingPromise, timeoutPromise]);
+        cleanTrackingData = cleanTrackingDataSafe(rawTrackingData);
+      } catch (trackingError) {
+        console.warn('Tracking data capture failed, using defaults:', trackingError);
+        // Use minimal tracking data if capture fails
+        cleanTrackingData = {
+          deviceType: 'unknown',
+          browser: 'unknown',
+          browserVersion: 'unknown',
+          os: 'unknown',
+          screenResolution: typeof window !== 'undefined' 
+            ? `${window.screen?.width || 0}x${window.screen?.height || 0}` 
+            : 'unknown',
+          timezone: 'unknown',
+          timestamp: new Date(),
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+          referrer: 'direct',
+          language: typeof navigator !== 'undefined' ? navigator.language : 'unknown',
+        };
       }
       
       // Ensure dataset exists for this form (auto-create if needed)
+      // Run this in parallel with form submission prep, but don't block on it
       let datasetId: string | null = null;
-      try {
-        datasetId = await ensureDatasetForForm(
-          form!.id,
-          form!.title,
-          form!.fields as FormField[]
-        );
-        console.log('✅ Dataset ensured:', datasetId);
-      } catch (datasetError) {
-        console.error('⚠️ Error ensuring dataset:', datasetError);
-        // Continue with form submission even if dataset creation fails
-      }
+      const datasetPromise = (async () => {
+        try {
+          datasetId = await ensureDatasetForForm(
+            form!.id,
+            form!.title,
+            form!.fields as FormField[]
+          );
+          console.log('✅ Dataset ensured:', datasetId);
+          return datasetId;
+        } catch (datasetError) {
+          console.error('⚠️ Error ensuring dataset:', datasetError);
+          return null;
+        }
+      })();
       
       // Create submission with tracking data
       const submission: Omit<FormSubmission, 'id'> = {
@@ -149,7 +201,7 @@ export default function PublicFormPage() {
         formTitle: form!.title,
         data: formData,
         submittedAt: new Date(),
-        trackingData: cleanTrackingData as any, // Add cleaned tracking data
+        trackingData: cleanTrackingData as any,
       };
 
       const submissionDoc = await addDoc(collection(db, 'formSubmissions'), {
@@ -157,39 +209,53 @@ export default function PublicFormPage() {
         submittedAt: Timestamp.fromDate(submission.submittedAt)
       });
 
-      // Update submission count
-      const formRef = doc(db, 'customForms', form!.id);
-      const formDoc = await getDoc(formRef);
-      const currentCount = formDoc.data()?.submissionCount || 0;
-      
-      await updateDoc(formRef, {
-        submissionCount: currentCount + 1
-      });
+      // Update submission count - use try/catch to not fail the whole submission
+      try {
+        const formRef = doc(db, 'customForms', form!.id);
+        const formDoc = await getDoc(formRef);
+        const currentCount = formDoc.data()?.submissionCount || 0;
+        
+        await updateDoc(formRef, {
+          submissionCount: currentCount + 1
+        });
+      } catch (countError) {
+        console.error('⚠️ Error updating submission count:', countError);
+        // Don't fail the submission if count update fails
+      }
 
-      // Send to dataset if we have a datasetId
-      if (datasetId) {
-        try {
-          await fetch(`/api/datasets/${datasetId}/records`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              data: formData,
-              metadata: {
-                sourceFormSubmissionId: submissionDoc.id,
-                sourceApplication: 'LeadershipConnections',
-                submittedBy: submission.submittedBy,
-                submittedAt: new Date(),
-                deviceType: cleanTrackingData.deviceType,
-                userAgent: cleanTrackingData.userAgent,
-                location: cleanTrackingData.approximateLocation,
-              }
-            })
-          });
-          console.log('✅ Data sent to dataset:', datasetId);
-        } catch (datasetError) {
-          console.error('⚠️ Error sending to dataset:', datasetError);
-          // Don't fail the form submission if dataset sync fails
+      // Wait for dataset creation and send data if available
+      try {
+        const resolvedDatasetId = await Promise.race([
+          datasetPromise,
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000))
+        ]);
+        
+        if (resolvedDatasetId) {
+          try {
+            await fetch(`/api/datasets/${resolvedDatasetId}/records`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                data: formData,
+                metadata: {
+                  sourceFormSubmissionId: submissionDoc.id,
+                  sourceApplication: 'LeadershipConnections',
+                  submittedBy: submission.submittedBy,
+                  submittedAt: new Date(),
+                  deviceType: cleanTrackingData.deviceType,
+                  userAgent: cleanTrackingData.userAgent,
+                  location: cleanTrackingData.approximateLocation,
+                }
+              })
+            });
+            console.log('✅ Data sent to dataset:', resolvedDatasetId);
+          } catch (datasetError) {
+            console.error('⚠️ Error sending to dataset:', datasetError);
+            // Don't fail the form submission if dataset sync fails
+          }
         }
+      } catch (datasetWaitError) {
+        console.error('⚠️ Dataset sync skipped:', datasetWaitError);
       }
 
       setSubmitted(true);

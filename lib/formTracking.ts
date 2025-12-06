@@ -119,8 +119,29 @@ function detectOS(): string {
 }
 
 /**
+ * Fetch with timeout helper for mobile networks
+ */
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs: number = 3000): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw error;
+  }
+}
+
+/**
  * Get approximate location using browser's geolocation API
  * Returns a promise that resolves with location data or null
+ * Optimized for mobile devices with shorter timeouts and better error handling
  */
 async function getApproximateLocation(): Promise<{
   city?: string;
@@ -129,22 +150,50 @@ async function getApproximateLocation(): Promise<{
   latitude?: number;
   longitude?: number;
 } | null> {
-  // Try to get location from browser geolocation API
-  if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+  // Skip location tracking entirely if on server-side
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  // Try to get location from browser geolocation API with a shorter timeout for mobile
+  if ('geolocation' in navigator) {
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          timeout: 5000,
-          maximumAge: 300000, // Cache for 5 minutes
-        });
+        // Use shorter timeout for mobile (3 seconds instead of 5)
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Geolocation timeout'));
+        }, 3000);
+        
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            clearTimeout(timeoutId);
+            resolve(pos);
+          },
+          (err) => {
+            clearTimeout(timeoutId);
+            reject(err);
+          },
+          {
+            timeout: 3000,
+            maximumAge: 300000, // Cache for 5 minutes
+            enableHighAccuracy: false, // Use low accuracy for faster response on mobile
+          }
+        );
       });
       
       // Use reverse geocoding API to get city/region/country
-      // You can use services like OpenStreetMap Nominatim (free) or Google Maps Geocoding API
+      // Use a shorter timeout for the API call
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+        const response = await fetchWithTimeout(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`,
+          {},
+          3000
         );
+        
+        if (!response.ok) {
+          throw new Error('Geocoding API error');
+        }
+        
         const data = await response.json();
         
         return {
@@ -162,24 +211,34 @@ async function getApproximateLocation(): Promise<{
         };
       }
     } catch (error) {
-      // Geolocation denied or failed
+      // Geolocation denied or failed - this is expected on mobile
       console.log('Geolocation not available:', error);
     }
   }
   
   // Fallback: Try to get approximate location from IP using a free service
+  // Use a very short timeout since this often fails on mobile networks
   try {
-    const response = await fetch('https://ipapi.co/json/');
+    const response = await fetchWithTimeout('https://ipapi.co/json/', {}, 2000);
+    
+    if (!response.ok) {
+      throw new Error('IP API error');
+    }
+    
     const data = await response.json();
     
-    return {
-      city: data.city,
-      region: data.region,
-      country: data.country_name,
-      latitude: data.latitude,
-      longitude: data.longitude,
-    };
+    // Validate the response has expected fields
+    if (data && (data.city || data.country_name)) {
+      return {
+        city: data.city,
+        region: data.region,
+        country: data.country_name,
+        latitude: data.latitude,
+        longitude: data.longitude,
+      };
+    }
   } catch (error) {
+    // IP-based location often fails on mobile - this is expected
     console.log('IP-based location not available:', error);
   }
   
@@ -188,11 +247,12 @@ async function getApproximateLocation(): Promise<{
 
 /**
  * Capture all tracking data for a form submission
+ * Optimized for mobile devices with better error handling and timeouts
  */
 export async function captureFormTrackingData(): Promise<FormTrackingData> {
   const browser = detectBrowser();
-  const location = await getApproximateLocation();
   
+  // Build basic tracking data first (synchronous, always works)
   const trackingData: FormTrackingData = {
     deviceType: detectDeviceType(),
     browser: browser.name,
@@ -201,15 +261,34 @@ export async function captureFormTrackingData(): Promise<FormTrackingData> {
     screenResolution: typeof window !== 'undefined' 
       ? `${window.screen.width}x${window.screen.height}` 
       : 'unknown',
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezone: 'unknown',
     timestamp: new Date(),
     userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
-    referrer: typeof document !== 'undefined' ? document.referrer : 'direct',
+    referrer: typeof document !== 'undefined' ? (document.referrer || 'direct') : 'direct',
     language: typeof navigator !== 'undefined' ? navigator.language : 'unknown',
   };
   
-  if (location) {
-    trackingData.approximateLocation = location;
+  // Safely get timezone (can fail on some mobile browsers)
+  try {
+    trackingData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'unknown';
+  } catch (e) {
+    trackingData.timezone = 'unknown';
+  }
+  
+  // Try to get location data, but don't let it block form submission
+  // Use Promise.race with a timeout to ensure we don't wait too long
+  try {
+    const locationPromise = getApproximateLocation();
+    const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 4000));
+    
+    const location = await Promise.race([locationPromise, timeoutPromise]);
+    
+    if (location) {
+      trackingData.approximateLocation = location;
+    }
+  } catch (error) {
+    // Location tracking failed - this is fine, continue without it
+    console.log('Location tracking skipped:', error);
   }
   
   return trackingData;
