@@ -194,71 +194,80 @@ export default function TentCardCreator() {
     const logoWidth = 8;
     const logoHeight = 5.6;
     
-    // Calculate total content height first
     const validItems = card.lineItems.filter(item => item.trim());
-    let totalContentHeight = logoHeight + 2; // logo + gap
     
-    // Add title height
-    if (card.title) {
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
-      totalContentHeight += titleLines.length * 4.5 + 2;
+    // Calculate total content height first for centering
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    const titleLines = card.title ? doc.splitTextToSize(card.title, width - padding * 2) : [];
+    
+    let totalHeight = logoHeight + 2; // logo + gap after logo
+    if (titleLines.length > 0) {
+      totalHeight += titleLines.length * 4.5;
     }
-    
-    // Add line items height
     if (validItems.length > 0) {
-      totalContentHeight += validItems.length * 3.5 + 2;
+      totalHeight += 3 + (validItems.length * 3.5); // gap + items
     }
     
-    // Calculate starting Y to center content vertically
-    const centerY = y + height / 2;
+    // Calculate vertical center of this half
+    const halfCenterY = y + height / 2;
+    
+    // Starting position for content (top of content block, centered in half)
+    const startY = halfCenterY - totalHeight / 2;
     
     if (upsideDown) {
-      // For upside down content, we need to position from the center
-      // Content will be drawn upside down, so we start from bottom of content area
-      let contentY = centerY + totalContentHeight / 2;
+      // For upside down: we need to draw everything rotated 180 degrees
+      // The "top" of the upside-down content should be near the fold line (bottom of this section)
+      // So we mirror the positions
       
-      // Logo at top (appears at top when card is flipped)
+      let contentY = startY;
+      
+      // Logo (at visual top when flipped = near bottom of this section in PDF coordinates)
+      // For 180-degree rotation, we position from where the bottom of the logo should be
+      const logoY = y + height - (contentY - y) - logoHeight;
       if (logoBase64) {
         doc.addImage(
           logoBase64, 
           'PNG', 
           centerX - logoWidth / 2, 
-          contentY - logoHeight, 
+          logoY, 
           logoWidth, 
           logoHeight
         );
-        contentY -= logoHeight + 3;
       }
+      contentY += logoHeight + 2;
       
-      // Title
+      // Title (upside down)
       if (card.title) {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
-        const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
-        doc.text(titleLines, centerX, contentY, { align: 'center', angle: 180 });
-        contentY -= titleLines.length * 4.5 + 2;
+        // Mirror Y position within this half
+        const titleY = y + height - (contentY - y) + 1;
+        doc.text(titleLines, centerX, titleY, { align: 'center', angle: 180 });
+        contentY += titleLines.length * 4.5;
       }
       
-      // Line items
+      // Line items (upside down)
       if (validItems.length > 0) {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
+        contentY += 3;
         
         validItems.forEach((item) => {
-          const itemLines = doc.splitTextToSize(`• ${item}`, width - padding * 2);
-          doc.text(itemLines, centerX, contentY, { align: 'center', angle: 180 });
-          contentY -= 3.5;
+          const itemText = `• ${item}`;
+          // Mirror Y position within this half
+          const itemY = y + height - (contentY - y);
+          doc.text(itemText, centerX, itemY, { align: 'center', angle: 180 });
+          contentY += 3.5;
         });
       }
     } else {
-      // Normal orientation - start from top of centered content
-      let contentY = centerY - totalContentHeight / 2;
+      // Normal orientation
+      let contentY = startY;
       
-      // Logo at top (small)
+      // Logo at top
       if (logoBase64) {
         doc.addImage(
           logoBase64, 
@@ -268,17 +277,16 @@ export default function TentCardCreator() {
           logoWidth, 
           logoHeight
         );
-        contentY += logoHeight + 3;
       }
+      contentY += logoHeight + 2;
       
       // Title
       if (card.title) {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
-        const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
         doc.text(titleLines, centerX, contentY + 3, { align: 'center' });
-        contentY += titleLines.length * 4.5 + 2;
+        contentY += titleLines.length * 4.5;
       }
       
       // Line items
@@ -286,11 +294,11 @@ export default function TentCardCreator() {
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
+        contentY += 3;
         
-        contentY += 2;
         validItems.forEach((item) => {
-          const itemLines = doc.splitTextToSize(`• ${item}`, width - padding * 2);
-          doc.text(itemLines, centerX, contentY, { align: 'center' });
+          const itemText = `• ${item}`;
+          doc.text(itemText, centerX, contentY, { align: 'center' });
           contentY += 3.5;
         });
       }
