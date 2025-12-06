@@ -203,10 +203,10 @@ export default function TentCardCreator() {
     
     let totalHeight = logoHeight + 2; // logo + gap after logo
     if (titleLines.length > 0) {
-      totalHeight += titleLines.length * 4.5;
+      totalHeight += titleLines.length * 4.5 + 2;
     }
     if (validItems.length > 0) {
-      totalHeight += 3 + (validItems.length * 3.5); // gap + items
+      totalHeight += validItems.length * 3.5;
     }
     
     // Calculate vertical center of this half
@@ -215,89 +215,91 @@ export default function TentCardCreator() {
     // Starting position for content (top of content block, centered in half)
     const startY = halfCenterY - totalHeight / 2;
     
+    // Store all element positions relative to startY
+    const positions: { type: string; relY: number; data?: string }[] = [];
+    let relY = 0;
+    
+    // Logo position
+    positions.push({ type: 'logo', relY: relY });
+    relY += logoHeight + 2;
+    
+    // Title position
+    if (card.title) {
+      positions.push({ type: 'title', relY: relY + 3 });
+      relY += titleLines.length * 4.5 + 2;
+    }
+    
+    // Line items positions
+    if (validItems.length > 0) {
+      validItems.forEach((item, i) => {
+        positions.push({ type: 'item', relY: relY, data: item });
+        relY += 3.5;
+      });
+    }
+    
     if (upsideDown) {
-      // For upside down: when the card is flipped 180 degrees, content should read correctly
-      // We need to draw in REVERSE order (items first, then title, then logo)
-      // and position from top of this half, going downward
-      // The 180-degree rotation will flip everything
+      // PERFECT MIRROR: For each element, calculate its mirrored position
+      // Mirror formula: mirroredY = y + height - (startY + relY - y) = 2*y + height - startY - relY
+      // Simplified: mirroredY = y + height - startY - relY + y - y = y + height - (startY - y) - relY
       
-      let drawY = halfCenterY - totalHeight / 2;
-      
-      // Line items FIRST (will appear at bottom when flipped)
-      if (validItems.length > 0) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(60, 60, 60);
+      positions.forEach((pos) => {
+        // Calculate the absolute Y in normal orientation
+        const normalAbsY = startY + pos.relY;
+        // Mirror it within this half: distance from bottom = distance from top in normal
+        const distanceFromTop = normalAbsY - y;
+        const mirroredY = y + height - distanceFromTop;
         
-        // Draw items in reverse order
-        for (let i = validItems.length - 1; i >= 0; i--) {
-          const itemText = `• ${validItems[i]}`;
-          doc.text(itemText, centerX, drawY + 3, { align: 'center', angle: 180 });
-          drawY += 3.5;
+        if (pos.type === 'logo' && logoBase64) {
+          // Logo needs special handling - position is top-left corner
+          // In mirrored version, we need to account for logo height
+          doc.addImage(
+            logoBase64, 
+            'PNG', 
+            centerX - logoWidth / 2, 
+            mirroredY - logoHeight, 
+            logoWidth, 
+            logoHeight
+          );
+        } else if (pos.type === 'title' && card.title) {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(30, 41, 59);
+          doc.text(titleLines, centerX, mirroredY, { align: 'center', angle: 180 });
+        } else if (pos.type === 'item' && pos.data) {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(60, 60, 60);
+          const itemText = `• ${pos.data}`;
+          doc.text(itemText, centerX, mirroredY, { align: 'center', angle: 180 });
         }
-        drawY += 2; // gap after items
-      }
-      
-      // Title (will appear in middle when flipped)
-      if (card.title) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.setTextColor(30, 41, 59);
-        drawY += 1;
-        doc.text(titleLines, centerX, drawY + 3, { align: 'center', angle: 180 });
-        drawY += titleLines.length * 4.5 + 2;
-      }
-      
-      // Logo LAST (will appear at top when flipped)
-      if (logoBase64) {
-        doc.addImage(
-          logoBase64, 
-          'PNG', 
-          centerX - logoWidth / 2, 
-          drawY, 
-          logoWidth, 
-          logoHeight
-        );
-      }
+      });
     } else {
-      // Normal orientation
-      let contentY = startY;
-      
-      // Logo at top
-      if (logoBase64) {
-        doc.addImage(
-          logoBase64, 
-          'PNG', 
-          centerX - logoWidth / 2, 
-          contentY, 
-          logoWidth, 
-          logoHeight
-        );
-      }
-      contentY += logoHeight + 2;
-      
-      // Title
-      if (card.title) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.setTextColor(30, 41, 59);
-        doc.text(titleLines, centerX, contentY + 3, { align: 'center' });
-        contentY += titleLines.length * 4.5;
-      }
-      
-      // Line items
-      if (validItems.length > 0) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(60, 60, 60);
-        contentY += 3;
+      // Normal orientation - draw at calculated positions
+      positions.forEach((pos) => {
+        const absY = startY + pos.relY;
         
-        validItems.forEach((item) => {
-          const itemText = `• ${item}`;
-          doc.text(itemText, centerX, contentY, { align: 'center' });
-          contentY += 3.5;
-        });
-      }
+        if (pos.type === 'logo' && logoBase64) {
+          doc.addImage(
+            logoBase64, 
+            'PNG', 
+            centerX - logoWidth / 2, 
+            absY, 
+            logoWidth, 
+            logoHeight
+          );
+        } else if (pos.type === 'title' && card.title) {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(30, 41, 59);
+          doc.text(titleLines, centerX, absY, { align: 'center' });
+        } else if (pos.type === 'item' && pos.data) {
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(60, 60, 60);
+          const itemText = `• ${pos.data}`;
+          doc.text(itemText, centerX, absY, { align: 'center' });
+        }
+      });
     }
   };
 
