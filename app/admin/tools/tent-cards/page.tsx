@@ -216,15 +216,40 @@ export default function TentCardCreator() {
     const startY = halfCenterY - totalHeight / 2;
     
     if (upsideDown) {
-      // For upside down: content should be centered and appear right-side-up when card is flipped
-      // We draw from bottom to top (visually top to bottom when flipped)
+      // For upside down: when the card is flipped 180 degrees, content should read correctly
+      // We need to draw in REVERSE order (items first, then title, then logo)
+      // and position from top of this half, going downward
+      // The 180-degree rotation will flip everything
       
-      // Start from the bottom of the centered content area
-      let drawY = halfCenterY + totalHeight / 2;
+      let drawY = halfCenterY - totalHeight / 2;
       
-      // Logo at visual top (drawn at bottom position, will appear at top when flipped)
+      // Line items FIRST (will appear at bottom when flipped)
+      if (validItems.length > 0) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(60, 60, 60);
+        
+        // Draw items in reverse order
+        for (let i = validItems.length - 1; i >= 0; i--) {
+          const itemText = `• ${validItems[i]}`;
+          doc.text(itemText, centerX, drawY + 3, { align: 'center', angle: 180 });
+          drawY += 3.5;
+        }
+        drawY += 2; // gap after items
+      }
+      
+      // Title (will appear in middle when flipped)
+      if (card.title) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(30, 41, 59);
+        drawY += 1;
+        doc.text(titleLines, centerX, drawY + 3, { align: 'center', angle: 180 });
+        drawY += titleLines.length * 4.5 + 2;
+      }
+      
+      // Logo LAST (will appear at top when flipped)
       if (logoBase64) {
-        drawY -= logoHeight;
         doc.addImage(
           logoBase64, 
           'PNG', 
@@ -233,31 +258,6 @@ export default function TentCardCreator() {
           logoWidth, 
           logoHeight
         );
-        drawY -= 2; // gap after logo
-      }
-      
-      // Title (upside down text)
-      if (card.title) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(12);
-        doc.setTextColor(30, 41, 59);
-        drawY -= 3; // small gap
-        doc.text(titleLines, centerX, drawY, { align: 'center', angle: 180 });
-        drawY -= titleLines.length * 4.5;
-      }
-      
-      // Line items (upside down)
-      if (validItems.length > 0) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(60, 60, 60);
-        drawY -= 2; // gap before items
-        
-        validItems.forEach((item) => {
-          const itemText = `• ${item}`;
-          doc.text(itemText, centerX, drawY, { align: 'center', angle: 180 });
-          drawY -= 3.5;
-        });
       }
     } else {
       // Normal orientation
