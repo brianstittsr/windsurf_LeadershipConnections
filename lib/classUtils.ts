@@ -200,6 +200,11 @@ export function getAllClasses(): Class[] {
 }
 
 export async function getClassBySlug(slug: string): Promise<(Class & { content: string }) | undefined> {
+  // Skip Firestore fetch if db is not available (e.g., during build)
+  if (!db) {
+    return classesWithContent.find((classItem) => classItem.slug === slug);
+  }
+
   try {
     // First try to fetch from Firebase
     const classesQuery = query(
