@@ -741,6 +741,279 @@ export default function EventWizardPage() {
     doc.save(`${eventData.name.replace(/\s+/g, '_')}_Project_Plan.pdf`);
   };
 
+  const generatePermissionSlip = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = 215.9;
+    const margin = 20;
+    const contentWidth = pageWidth - margin * 2;
+
+    // Header with logo
+    if (logoBase64) {
+      doc.addImage(logoBase64, 'PNG', margin, 15, 25, 17.5);
+    }
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(79, 70, 229);
+    doc.text('PERMISSION SLIP', pageWidth / 2, 25, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(60, 60, 60);
+    doc.text(eventData.name, pageWidth / 2, 33, { align: 'center' });
+
+    let y = 50;
+
+    // Event Details Box
+    doc.setFillColor(245, 245, 250);
+    doc.roundedRect(margin, y, contentWidth, 35, 3, 3, 'F');
+    y += 8;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(30, 41, 59);
+    doc.text('EVENT DETAILS', margin + 5, y);
+    y += 7;
+    doc.setFont('helvetica', 'normal');
+    const eventDate = new Date(eventData.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    doc.text(`Date: ${eventDate}`, margin + 5, y);
+    y += 5;
+    doc.text(`Time: ${eventData.startTime} - ${eventData.endTime}`, margin + 5, y);
+    y += 5;
+    if (eventData.venues[0]) {
+      doc.text(`Location: ${eventData.venues[0].name}, ${eventData.venues[0].address}`, margin + 5, y);
+    }
+    y += 20;
+
+    // Student Information
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('STUDENT INFORMATION', margin, y);
+    y += 8;
+    
+    const drawLine = (label: string, width: number) => {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(label, margin, y);
+      doc.setDrawColor(180, 180, 180);
+      doc.line(margin + 35, y, margin + 35 + width, y);
+      return width + 40;
+    };
+
+    drawLine('Student Name:', contentWidth - 40);
+    y += 10;
+    doc.text('Grade/Age:', margin, y);
+    doc.line(margin + 25, y, margin + 60, y);
+    doc.text('School:', margin + 70, y);
+    doc.line(margin + 85, y, margin + contentWidth - 5, y);
+    y += 15;
+
+    // Parent/Guardian Information
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('PARENT/GUARDIAN INFORMATION', margin, y);
+    y += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('Parent/Guardian Name:', margin, y);
+    doc.line(margin + 45, y, margin + contentWidth - 5, y);
+    y += 10;
+    doc.text('Phone:', margin, y);
+    doc.line(margin + 15, y, margin + 60, y);
+    doc.text('Email:', margin + 70, y);
+    doc.line(margin + 82, y, margin + contentWidth - 5, y);
+    y += 10;
+    doc.text('Emergency Contact:', margin, y);
+    doc.line(margin + 38, y, margin + 90, y);
+    doc.text('Phone:', margin + 95, y);
+    doc.line(margin + 110, y, margin + contentWidth - 5, y);
+    y += 15;
+
+    // Medical Information
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('MEDICAL INFORMATION', margin, y);
+    y += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('Allergies or Medical Conditions:', margin, y);
+    y += 5;
+    doc.setDrawColor(180, 180, 180);
+    doc.rect(margin, y, contentWidth, 15);
+    y += 22;
+
+    // Permission Statement
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('PERMISSION & CONSENT', margin, y);
+    y += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    const permissionText = `I, the undersigned parent/guardian, hereby grant permission for my child to participate in the ${eventData.name} event. I understand that this event will include various educational activities and workshops. I agree to release and hold harmless Leadership C.O.N.N.E.C.T.I.O.N.S. and its volunteers from any liability arising from my child's participation.`;
+    const permLines = doc.splitTextToSize(permissionText, contentWidth);
+    doc.text(permLines, margin, y);
+    y += permLines.length * 4 + 5;
+
+    // Photo Release
+    doc.setFontSize(9);
+    doc.text('Photo/Video Release: I grant permission for photos/videos of my child to be used for', margin, y);
+    y += 4;
+    doc.text('promotional and educational purposes.', margin, y);
+    y += 6;
+    doc.rect(margin, y, 4, 4);
+    doc.text('Yes, I grant permission', margin + 7, y + 3.5);
+    doc.rect(margin + 55, y, 4, 4);
+    doc.text('No, I do not grant permission', margin + 62, y + 3.5);
+    y += 15;
+
+    // Signature Section
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('SIGNATURES', margin, y);
+    y += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Parent/Guardian Signature:', margin, y);
+    doc.line(margin + 50, y, margin + 120, y);
+    doc.text('Date:', margin + 125, y);
+    doc.line(margin + 138, y, margin + contentWidth - 5, y);
+    y += 12;
+    doc.text('Student Signature (if 18+):', margin, y);
+    doc.line(margin + 48, y, margin + 120, y);
+    doc.text('Date:', margin + 125, y);
+    doc.line(margin + 138, y, margin + contentWidth - 5, y);
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Please return this completed form before the event date.', pageWidth / 2, 270, { align: 'center' });
+    doc.text('Questions? Contact Leadership C.O.N.N.E.C.T.I.O.N.S.', pageWidth / 2, 275, { align: 'center' });
+
+    doc.save(`${eventData.name.replace(/\s+/g, '_')}_Permission_Slip.pdf`);
+  };
+
+  const generateAgenda = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const pageWidth = 215.9;
+    const pageHeight = 279.4;
+    const margin = 15;
+
+    // Purple header background with curved bottom
+    doc.setFillColor(88, 28, 135); // Purple
+    doc.rect(0, 0, pageWidth, 75, 'F');
+    
+    // Gold accent curve (simplified as a line)
+    doc.setDrawColor(218, 165, 32);
+    doc.setLineWidth(2);
+    doc.line(0, 73, pageWidth, 68);
+
+    // Logo placeholder (white circle area)
+    if (logoBase64) {
+      doc.addImage(logoBase64, 'PNG', (pageWidth - 30) / 2, 8, 30, 21);
+    }
+
+    // Header text
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(173, 216, 230); // Light blue
+    doc.text('LEADERSHIP', pageWidth / 2, 38, { align: 'center' });
+    doc.text('CONNECTIONS', pageWidth / 2, 46, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text('EST. 1991', pageWidth / 2, 54, { align: 'center' });
+
+    // Tagline
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(218, 165, 32); // Gold
+    doc.text('Learning Options, Creating Future Leaders', pageWidth - margin, 15, { align: 'right' });
+
+    // Agenda Title
+    let y = 95;
+    doc.setFont('times', 'bold');
+    doc.setFontSize(36);
+    doc.setTextColor(88, 28, 135); // Purple
+    doc.text('Agenda', pageWidth / 2, y, { align: 'center' });
+    
+    // Underline
+    doc.setDrawColor(88, 28, 135);
+    doc.setLineWidth(0.5);
+    doc.line(pageWidth / 2 - 30, y + 3, pageWidth / 2 + 30, y + 3);
+
+    y += 25;
+
+    // Agenda items
+    const timeColWidth = 50;
+    
+    eventData.activities.sort((a, b) => a.startTime.localeCompare(b.startTime)).forEach((activity) => {
+      // Time
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(14);
+      doc.setTextColor(88, 28, 135);
+      const timeText = `${activity.startTime} - ${activity.endTime}`;
+      doc.text(timeText, margin, y);
+
+      // Activity name
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(88, 28, 135);
+      doc.text(activity.name, margin + timeColWidth + 10, y);
+
+      // Description/facilitator if available
+      if (activity.description || activity.facilitator) {
+        y += 6;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 100);
+        if (activity.facilitator && activity.facilitator !== 'Multiple' && activity.facilitator !== 'Staff') {
+          doc.text(`Facilitator: ${activity.facilitator}`, margin + timeColWidth + 10, y);
+          y += 5;
+        }
+        if (activity.description) {
+          doc.text(activity.description, margin + timeColWidth + 10, y);
+        }
+      }
+
+      y += 15;
+    });
+
+    // Add session details for breakouts
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(88, 28, 135);
+    doc.text('SESSION TRACKS:', margin, y);
+    y += 8;
+
+    const tracks = [
+      { name: 'Trades Exploration', facilitators: 'Gloria Bass' },
+      { name: 'AI & Technology', facilitators: 'Brian Stitt / Donald Sweeper' },
+      { name: 'Health, Wellness & Nutrition', facilitators: 'Ty G / India Warner' },
+      { name: 'Peer-to-Peer Training', facilitators: 'Thea Monet' },
+    ];
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    tracks.forEach((track, i) => {
+      doc.setTextColor(88, 28, 135);
+      doc.text(`${i + 1}. ${track.name}`, margin + 10, y);
+      doc.setTextColor(100, 100, 100);
+      doc.text(` – ${track.facilitators}`, margin + 10 + doc.getTextWidth(`${i + 1}. ${track.name}`), y);
+      y += 6;
+    });
+
+    // Footer note
+    y = pageHeight - 25;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(220, 20, 60); // Red
+    doc.text('Spanish Interpreter will be available on-site', pageWidth / 2, y, { align: 'center' });
+
+    // Page number
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Page 1', pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+    doc.save(`${eventData.name.replace(/\s+/g, '_')}_Agenda.pdf`);
+  };
+
   const totalEstimated = eventData.budget.reduce((sum, item) => sum + item.estimated, 0);
   const totalActual = eventData.budget.reduce((sum, item) => sum + item.actual, 0);
 
@@ -1598,6 +1871,57 @@ export default function EventWizardPage() {
                     className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     <FaDownload /> Generate Form
+                  </button>
+                </div>
+
+                {/* Permission Slip */}
+                <div className="bg-gradient-to-br from-rose-50 to-red-50 rounded-xl p-6 border border-rose-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-rose-100 p-3 rounded-lg">
+                      <FaFileAlt className="text-2xl text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Permission Slip</h3>
+                      <p className="text-sm text-gray-600">Parent/guardian consent</p>
+                    </div>
+                  </div>
+                  <ul className="text-sm text-gray-600 mb-4 space-y-1">
+                    <li>• Student information</li>
+                    <li>• Parent/guardian details</li>
+                    <li>• Medical information</li>
+                    <li>• Photo release consent</li>
+                    <li>• Signature lines</li>
+                  </ul>
+                  <button
+                    onClick={generatePermissionSlip}
+                    className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white px-4 py-2 rounded-lg hover:bg-rose-700 transition-colors"
+                  >
+                    <FaDownload /> Generate Slip
+                  </button>
+                </div>
+
+                {/* Agenda */}
+                <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-violet-100 p-3 rounded-lg">
+                      <FaClipboardList className="text-2xl text-violet-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Event Agenda</h3>
+                      <p className="text-sm text-gray-600">Styled schedule PDF</p>
+                    </div>
+                  </div>
+                  <ul className="text-sm text-gray-600 mb-4 space-y-1">
+                    <li>• Purple branded header</li>
+                    <li>• {eventData.activities.length} scheduled activities</li>
+                    <li>• Session tracks listed</li>
+                    <li>• Facilitator names</li>
+                  </ul>
+                  <button
+                    onClick={generateAgenda}
+                    className="w-full flex items-center justify-center gap-2 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors"
+                  >
+                    <FaDownload /> Generate Agenda
                   </button>
                 </div>
 
