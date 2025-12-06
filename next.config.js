@@ -50,7 +50,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Webpack configuration for Firebase compatibility
+  // Empty turbopack config to acknowledge Turbopack is enabled in Next.js 16
+  turbopack: {},
+  // Webpack configuration for Firebase compatibility (fallback when not using Turbopack)
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
