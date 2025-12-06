@@ -69,32 +69,28 @@ const CORNER_MARKER_SIZE = 6;
 
 /**
  * Get field height based on type
+ * Uses conservative estimates for label wrapping (25 chars per line for column width ~90mm)
  */
 function getFieldHeight(field: FormField): number {
   const options = field.options || [];
-  // Estimate label lines (roughly 50 chars per line in column width)
-  const labelLines = Math.ceil(field.label.length / 45);
-  const labelExtraHeight = (labelLines - 1) * 4;
+  // Conservative estimate: ~25 chars per line in column width (accounts for bold font)
+  const labelLines = Math.ceil(field.label.length / 25);
+  const labelHeight = labelLines * 4 + 2; // 4mm per line + gap
   
   switch (field.type) {
     case 'textarea':
-      return 24 + labelExtraHeight; // Larger for multi-line
+      return labelHeight + 18; // Label + textarea box
     case 'checkbox':
     case 'radio':
     case 'select':
-      // Calculate based on number of options and label length
-      const baseHeight = LABEL_HEIGHT + 4 + labelExtraHeight;
-      // Estimate if options will wrap to multiple rows
-      const optionCount = options.length;
-      if (optionCount <= 2) {
-        return baseHeight + 10; // Single row
-      } else if (optionCount <= 4) {
-        return baseHeight + 16; // May need 2 rows
-      } else {
-        return baseHeight + 24; // Multiple rows
-      }
+      // Calculate based on number of options
+      const totalOptionChars = options.reduce((sum, opt) => sum + opt.length + 10, 0);
+      // ~35 chars per row in column for options (smaller font)
+      const estimatedRows = Math.max(1, Math.ceil(totalOptionChars / 35));
+      const optionHeight = estimatedRows * 7;
+      return labelHeight + optionHeight + 2;
     default:
-      return LABEL_HEIGHT + FIELD_HEIGHT + 5 + labelExtraHeight;
+      return labelHeight + FIELD_HEIGHT + 2;
   }
 }
 
@@ -207,7 +203,14 @@ function drawHeader(doc: jsPDF, config: PaperFormConfig): number {
 }
 
 /**
- * Draw text input field
+ * Wrap text to fit within a given width using jsPDF's splitTextToSize
+ */
+function wrapText(doc: jsPDF, text: string, maxWidth: number): string[] {
+  return doc.splitTextToSize(text, maxWidth);
+}
+
+/**
+ * Draw text input field with label wrapping
  */
 function drawTextField(
   doc: jsPDF, 
@@ -217,18 +220,27 @@ function drawTextField(
   width: number,
   useCharacterBoxes: boolean = false
 ): void {
-  // Label
+  // Label with wrapping support using jsPDF's built-in method
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(FONT_SIZE_LABEL);
   const labelText = field.required ? `${field.label} *` : field.label;
-  doc.text(labelText, x, y);
-  y += LABEL_HEIGHT;
+  
+  // Use jsPDF's splitTextToSize for reliable wrapping
+  const wrappedLines = wrapText(doc, labelText, width - 2);
+  
+  for (let i = 0; i < wrappedLines.length; i++) {
+    doc.text(wrappedLines[i], x, y);
+    y += 4;
+  }
+  y += 1; // Small gap after label
 
   doc.setLineWidth(BORDER_WIDTH);
   doc.setDrawColor(0, 0, 0);
 
   if (useCharacterBoxes && (field.type === 'email' || field.type === 'phone')) {
-    const boxCount = field.type === 'email' ? Math.floor(width / CHARACTER_BOX_WIDTH) : 12;
+    // Limit character boxes to fit within width
+    const maxBoxes = Math.floor(width / CHARACTER_BOX_WIDTH);
+    const boxCount = field.type === 'email' ? Math.min(maxBoxes, 30) : Math.min(maxBoxes, 12);
     const actualBoxWidth = Math.min(CHARACTER_BOX_WIDTH, width / boxCount);
     
     for (let i = 0; i < boxCount; i++) {
@@ -279,7 +291,20 @@ function drawTextareaField(
 }
 
 /**
- * Draw checkbox/radio options HORIZONTALLY
+ * Truncate text to fit within a given width
+ */
+function truncateText(doc: jsPDF, text: string, maxWidth: number): string {
+  if (doc.getTextWidth(text) <= maxWidth) return text;
+  
+  let truncated = text;
+  while (doc.getTextWidth(truncated + '...') > maxWidth && truncated.length > 0) {
+    truncated = truncated.slice(0, -1);
+  }
+  return truncated + '...';
+}
+
+/**
+ * Draw checkbox/radio options HORIZONTALLY with proper wrapping
  */
 function drawOptionsFieldHorizontal(
   doc: jsPDF,
@@ -289,36 +314,22 @@ function drawOptionsFieldHorizontal(
   width: number,
   isRadio: boolean = false
 ): void {
-  // Label - handle long labels by wrapping
+  // Ensure we don't exceed the column boundary
+  const maxX = x + width;
+  
+  // Label - use jsPDF's splitTextToSize for reliable wrapping
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(FONT_SIZE_LABEL);
   const labelText = field.required ? `${field.label} *` : field.label;
   
-  // Check if label needs to wrap
-  const labelWidth = doc.getTextWidth(labelText);
-  if (labelWidth > width) {
-    // Split label into multiple lines
-    const words = labelText.split(' ');
-    let line = '';
-    let lineY = y;
-    for (const word of words) {
-      const testLine = line ? `${line} ${word}` : word;
-      if (doc.getTextWidth(testLine) > width && line) {
-        doc.text(line, x, lineY);
-        line = word;
-        lineY += 4;
-      } else {
-        line = testLine;
-      }
-    }
-    if (line) {
-      doc.text(line, x, lineY);
-      y = lineY + LABEL_HEIGHT;
-    }
-  } else {
-    doc.text(labelText, x, y);
-    y += LABEL_HEIGHT + 1;
+  // Use jsPDF's splitTextToSize for reliable wrapping
+  const wrappedLines = wrapText(doc, labelText, width - 2);
+  
+  for (let i = 0; i < wrappedLines.length; i++) {
+    doc.text(wrappedLines[i], x, y);
+    y += 4;
   }
+  y += 1; // Small gap after label
 
   const options = field.options || ['Option 1', 'Option 2'];
   
@@ -326,50 +337,49 @@ function drawOptionsFieldHorizontal(
   doc.setFontSize(FONT_SIZE_OPTION);
   doc.setLineWidth(BORDER_WIDTH);
 
-  // Calculate option widths to fit horizontally
+  const optionSpacing = 3;
+  const rowHeight = 6;
+  const checkboxPadding = CHECKBOX_SIZE + 2; // Space for checkbox + gap
+  
+  // Calculate how many options can fit per row
   let currentX = x;
-  const optionSpacing = 4;
-  const rowHeight = 6; // Increased row height for better spacing
+  let currentRow = 0;
+  const optionPositions: { x: number; y: number; text: string }[] = [];
   
-  // Estimate text widths and see if they fit
-  const optionWidths = options.map(opt => doc.getTextWidth(opt) + CHECKBOX_SIZE + 5);
-  const totalWidth = optionWidths.reduce((a, b) => a + b, 0) + (options.length - 1) * optionSpacing;
-  
-  // If total width exceeds available, use multiple rows
-  const useMultiRow = totalWidth > width;
-  const optionsPerRow = useMultiRow ? Math.ceil(options.length / 2) : options.length;
-  
-  options.forEach((option, index) => {
-    const row = useMultiRow ? Math.floor(index / optionsPerRow) : 0;
-    const colIndex = useMultiRow ? index % optionsPerRow : index;
+  for (let i = 0; i < options.length; i++) {
+    const option = options[i];
+    const optionTextWidth = doc.getTextWidth(option);
+    const totalOptionWidth = checkboxPadding + optionTextWidth + optionSpacing;
     
-    let optX: number;
-    let optY = y + (row * rowHeight);
-    
-    if (useMultiRow) {
-      // Distribute evenly in multi-row
-      optX = x + (colIndex * (width / optionsPerRow));
-    } else {
-      // Sequential placement
-      if (colIndex === 0) {
-        optX = x;
-        currentX = x;
-      } else {
-        optX = currentX;
-      }
+    // Check if this option fits on current row
+    if (currentX + totalOptionWidth > maxX && currentX > x) {
+      // Move to next row
+      currentRow++;
+      currentX = x;
     }
-
+    
+    // Calculate max text width available for this option
+    const availableWidth = maxX - currentX - checkboxPadding - 2;
+    const displayText = truncateText(doc, option, availableWidth);
+    
+    optionPositions.push({
+      x: currentX,
+      y: y + (currentRow * rowHeight),
+      text: displayText
+    });
+    
+    currentX += checkboxPadding + doc.getTextWidth(displayText) + optionSpacing;
+  }
+  
+  // Draw all options
+  optionPositions.forEach((pos) => {
     if (isRadio) {
-      doc.circle(optX + CHECKBOX_SIZE / 2, optY + CHECKBOX_SIZE / 2, CHECKBOX_SIZE / 2);
+      doc.circle(pos.x + CHECKBOX_SIZE / 2, pos.y + CHECKBOX_SIZE / 2, CHECKBOX_SIZE / 2);
     } else {
-      doc.rect(optX, optY, CHECKBOX_SIZE, CHECKBOX_SIZE);
+      doc.rect(pos.x, pos.y, CHECKBOX_SIZE, CHECKBOX_SIZE);
     }
     
-    doc.text(option, optX + CHECKBOX_SIZE + 2, optY + CHECKBOX_SIZE - 0.5);
-    
-    if (!useMultiRow) {
-      currentX = optX + CHECKBOX_SIZE + doc.getTextWidth(option) + optionSpacing + 3;
-    }
+    doc.text(pos.text, pos.x + checkboxPadding, pos.y + CHECKBOX_SIZE - 0.5);
   });
 }
 

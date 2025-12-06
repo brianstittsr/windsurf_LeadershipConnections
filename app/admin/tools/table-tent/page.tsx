@@ -1,15 +1,35 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import { FaPrint, FaDownload, FaArrowLeft, FaEye } from 'react-icons/fa';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function TableTentCreator() {
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [logoBase64, setLogoBase64] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Load logo as base64 for PDF embedding
+  useEffect(() => {
+    const loadLogo = async () => {
+      try {
+        const response = await fetch('/images/logo/LeadershipConnectionsLogo.png');
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setLogoBase64(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error('Error loading logo:', error);
+      }
+    };
+    loadLogo();
+  }, []);
 
   const generatePDF = async () => {
     setGenerating(true);
@@ -24,10 +44,11 @@ export default function TableTentCreator() {
       const pageWidth = 279.4;
       const pageHeight = 215.9;
       const halfHeight = pageHeight / 2;
+      const centerX = pageWidth / 2;
 
       // Colors
-      const primaryColor = [74, 108, 247]; // #4A6CF7
       const darkColor = [30, 41, 59]; // Slate-800
+      const subtitleColor = [100, 100, 100];
 
       // Draw fold line (dashed)
       doc.setDrawColor(200, 200, 200);
@@ -35,96 +56,72 @@ export default function TableTentCreator() {
       doc.line(0, halfHeight, pageWidth, halfHeight);
       doc.setLineDashPattern([], 0);
 
+      // Logo dimensions
+      const logoWidth = 50;
+      const logoHeight = 35;
+
       // ===== TOP HALF (will be back when folded) =====
-      // This shows when tent is standing, facing away
+      const topLogoY = 15;
+      const topTitleY = topLogoY + logoHeight + 12;
+      const textMaxWidth = pageWidth - 40;
 
-      // Draw LC Logo placeholder area (left side of top half)
-      const logoX = 20;
-      const logoY = 20;
-      const logoWidth = 60;
-      const logoHeight = 40;
+      // Add logo centered at top
+      if (logoBase64) {
+        doc.addImage(logoBase64, 'PNG', centerX - logoWidth / 2, topLogoY, logoWidth, logoHeight);
+      }
 
-      // Logo background
-      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.roundedRect(logoX, logoY, logoWidth, logoHeight, 5, 5, 'F');
-
-      // Logo text
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text('LEADERSHIP', logoX + logoWidth / 2, logoY + 15, { align: 'center' });
-      doc.setFontSize(10);
-      doc.text('C.O.N.N.E.C.T.I.O.N.S.', logoX + logoWidth / 2, logoY + 25, { align: 'center' });
-
-      // Title and subtitle on right side (top half)
-      const textX = logoX + logoWidth + 30;
-      const textMaxWidth = pageWidth - textX - 20;
-
+      // Title - large and centered
       doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(28);
+      doc.setFontSize(36);
       
-      // Word wrap title
       const titleLines = doc.splitTextToSize(title || 'Your Title Here', textMaxWidth);
-      doc.text(titleLines, textX, logoY + 15);
+      doc.text(titleLines, centerX, topTitleY, { align: 'center' });
 
-      // Subtitle
+      // Subtitle - smaller, centered below title
       if (subtitle) {
+        const titleHeight = titleLines.length * 12;
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(16);
-        doc.setTextColor(100, 100, 100);
+        doc.setFontSize(20);
+        doc.setTextColor(subtitleColor[0], subtitleColor[1], subtitleColor[2]);
         const subtitleLines = doc.splitTextToSize(subtitle, textMaxWidth);
-        const titleHeight = titleLines.length * 10;
-        doc.text(subtitleLines, textX, logoY + 15 + titleHeight + 5);
+        doc.text(subtitleLines, centerX, topTitleY + titleHeight + 5, { align: 'center' });
       }
 
       // ===== BOTTOM HALF (will be front when folded) =====
       // This is upside down so it reads correctly when tent is standing
+      const bottomLogoY = pageHeight - topLogoY - logoHeight;
+      const bottomTitleY = bottomLogoY - 12;
 
-      // Save state and rotate for upside-down text
-      const bottomY = halfHeight + 10;
-
-      // Draw LC Logo (left side of bottom half, upside down)
-      const bottomLogoX = pageWidth - logoX - logoWidth;
-      const bottomLogoY = pageHeight - logoY - logoHeight;
-
-      doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.roundedRect(bottomLogoX, bottomLogoY, logoWidth, logoHeight, 5, 5, 'F');
-
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      
-      // For upside down text, we need to position from bottom-right
-      doc.text('LEADERSHIP', bottomLogoX + logoWidth / 2, bottomLogoY + logoHeight - 15, { align: 'center', angle: 180 });
-      doc.setFontSize(10);
-      doc.text('C.O.N.N.E.C.T.I.O.N.S.', bottomLogoX + logoWidth / 2, bottomLogoY + logoHeight - 25, { align: 'center', angle: 180 });
-
-      // Title and subtitle (bottom half, upside down)
-      const bottomTextX = bottomLogoX - 30;
-
-      doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(28);
-      
-      // For upside down, position from right side
-      const bottomTitleLines = doc.splitTextToSize(title || 'Your Title Here', textMaxWidth);
-      doc.text(bottomTitleLines, bottomTextX, bottomLogoY + logoHeight - 15, { align: 'right', angle: 180 });
-
-      if (subtitle) {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(16);
-        doc.setTextColor(100, 100, 100);
-        const bottomSubtitleLines = doc.splitTextToSize(subtitle, textMaxWidth);
-        const titleHeight = bottomTitleLines.length * 10;
-        doc.text(bottomSubtitleLines, bottomTextX, bottomLogoY + logoHeight - 15 - titleHeight - 5, { align: 'right', angle: 180 });
+      // Add logo centered (upside down position)
+      if (logoBase64) {
+        // For upside down, we position from the rotated perspective
+        doc.addImage(logoBase64, 'PNG', centerX - logoWidth / 2, bottomLogoY, logoWidth, logoHeight);
       }
 
-      // Add fold instructions at the bottom
+      // Title - upside down
+      doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(36);
+      
+      const bottomTitleLines = doc.splitTextToSize(title || 'Your Title Here', textMaxWidth);
+      doc.text(bottomTitleLines, centerX, bottomTitleY, { align: 'center', angle: 180 });
+
+      // Subtitle - upside down
+      if (subtitle) {
+        const titleHeight = bottomTitleLines.length * 12;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(20);
+        doc.setTextColor(subtitleColor[0], subtitleColor[1], subtitleColor[2]);
+        const bottomSubtitleLines = doc.splitTextToSize(subtitle, textMaxWidth);
+        doc.text(bottomSubtitleLines, centerX, bottomTitleY - titleHeight - 5, { align: 'center', angle: 180 });
+      }
+
+      // Add fold instructions
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
-      doc.text('Fold along dashed line. Both sides will display when tent is standing.', pageWidth / 2, halfHeight - 3, { align: 'center' });
-      doc.text('Print on cardstock for best results.', pageWidth / 2, halfHeight + 5, { align: 'center', angle: 180 });
+      doc.text('Fold along dashed line. Both sides will display when tent is standing.', centerX, halfHeight - 3, { align: 'center' });
+      doc.text('Print on cardstock for best results.', centerX, halfHeight + 5, { align: 'center', angle: 180 });
 
       // Save the PDF
       const filename = `table_tent_${(title || 'untitled').replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`;
@@ -226,26 +223,28 @@ export default function TableTentCreator() {
           
           <div 
             ref={previewRef}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 aspect-[11/8.5]"
+            className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 aspect-[11/8.5] flex flex-col items-center justify-center"
           >
-            {/* Preview of one side of the tent */}
-            <div className="h-full flex items-center">
-              {/* Logo */}
-              <div className="bg-primary rounded-lg p-4 text-white text-center mr-6 flex-shrink-0">
-                <div className="font-bold text-sm">LEADERSHIP</div>
-                <div className="text-xs">C.O.N.N.E.C.T.I.O.N.S.</div>
-              </div>
-              
-              {/* Text content */}
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-1">
-                  {title || 'Your Title Here'}
-                </h3>
-                {subtitle && (
-                  <p className="text-gray-600">{subtitle}</p>
-                )}
-              </div>
+            {/* Logo centered at top */}
+            <div className="mb-4">
+              <Image
+                src="/images/logo/LeadershipConnectionsLogo.png"
+                alt="Leadership Connections Logo"
+                width={120}
+                height={80}
+                className="object-contain"
+              />
             </div>
+            
+            {/* Title - large and centered */}
+            <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+              {title || 'Your Title Here'}
+            </h3>
+            
+            {/* Subtitle - optional */}
+            {subtitle && (
+              <p className="text-lg text-gray-600 text-center">{subtitle}</p>
+            )}
           </div>
           
           <p className="text-xs text-gray-500 mt-3 text-center">

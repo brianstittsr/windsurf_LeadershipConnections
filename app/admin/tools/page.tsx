@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FaPrint, FaCalendarAlt, FaTools } from 'react-icons/fa';
+import { FaPrint, FaCalendarAlt, FaTools, FaIdBadge, FaIdCard } from 'react-icons/fa';
 
 const tools = [
   {
@@ -12,6 +12,38 @@ const tools = [
     href: '/admin/tools/table-tent',
     color: 'bg-purple-500',
     features: ['LC Logo branding', 'Custom title & subtitle', 'Print-ready PDF', 'Professional design']
+  },
+  {
+    id: 'name-badges',
+    name: 'Name Badge Creator',
+    description: 'Create professional name badges using Avery 5395 template. Import names from datasets or enter manually.',
+    icon: FaIdBadge,
+    href: '/admin/tools/name-badges',
+    color: 'bg-green-500',
+    features: [
+      'Avery 5395 template (8 per sheet)',
+      'Import from datasets',
+      'Manual name entry',
+      'LC Logo branding',
+      'Optional title & organization',
+      'Print-ready PDF'
+    ]
+  },
+  {
+    id: 'tent-cards',
+    name: 'Small Tent Card Creator',
+    description: 'Create small tent cards using Avery 5302 template. Perfect for table labels, station signs, and event markers.',
+    icon: FaIdCard,
+    href: '/admin/tools/tent-cards',
+    color: 'bg-orange-500',
+    features: [
+      'Avery 5302 template (4 per sheet)',
+      'Custom title per card',
+      'Multiple line items',
+      'LC Logo branding',
+      'Duplicate cards easily',
+      'Print to edge'
+    ]
   },
   {
     id: 'event-wizard',
