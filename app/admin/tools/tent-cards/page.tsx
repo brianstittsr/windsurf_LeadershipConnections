@@ -266,17 +266,21 @@ export default function TentCardCreator() {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(12);
           doc.setTextColor(30, 41, 59);
-          // For 180-degree rotated text, draw each line centered
+          // For 180-degree rotated text, manually center by calculating text width
           titleLines.forEach((line: string, idx: number) => {
             const lineY = mirroredY - (idx * 4.5);
-            doc.text(line, cardCenterX, lineY, { align: 'center', angle: 180 });
+            const textWidth = doc.getTextWidth(line);
+            // For 180-degree rotation, text draws from right to left, so add half width
+            doc.text(line, cardCenterX + textWidth / 2, lineY, { angle: 180 });
           });
         } else if (pos.type === 'item' && pos.data) {
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(9);
           doc.setTextColor(60, 60, 60);
           const itemText = `• ${pos.data}`;
-          doc.text(itemText, cardCenterX, mirroredY, { align: 'center', angle: 180 });
+          const textWidth = doc.getTextWidth(itemText);
+          // For 180-degree rotation, text draws from right to left, so add half width
+          doc.text(itemText, cardCenterX + textWidth / 2, mirroredY, { angle: 180 });
         }
       });
     } else {
