@@ -190,9 +190,9 @@ export default function TentCardCreator() {
     padding: number,
     upsideDown: boolean
   ) => {
-    // Logo dimensions
-    const logoWidth = 20;
-    const logoHeight = 14;
+    // Logo dimensions (reduced by 80% - now 20% of original size)
+    const logoWidth = 8;
+    const logoHeight = 5.6;
     
     let contentY: number;
     
@@ -206,7 +206,7 @@ export default function TentCardCreator() {
           logoBase64, 
           'PNG', 
           centerX - logoWidth / 2, 
-          y + height - logoHeight - 3, 
+          y + height - logoHeight - 2, 
           logoWidth, 
           logoHeight
         );
@@ -215,11 +215,11 @@ export default function TentCardCreator() {
       // Title
       if (card.title) {
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
+        doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
         const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
-        doc.text(titleLines, centerX, contentY - logoHeight - 2, { align: 'center', angle: 180 });
-        contentY -= logoHeight + 2 + (titleLines.length * 4);
+        doc.text(titleLines, centerX, contentY - logoHeight - 1, { align: 'center', angle: 180 });
+        contentY -= logoHeight + 1 + (titleLines.length * 5);
       }
       
       // Line items
@@ -238,9 +238,9 @@ export default function TentCardCreator() {
       }
     } else {
       // Normal orientation
-      contentY = y + 4;
+      contentY = y + 3;
       
-      // Logo at top
+      // Logo at top (small)
       if (logoBase64) {
         doc.addImage(
           logoBase64, 
@@ -250,17 +250,17 @@ export default function TentCardCreator() {
           logoWidth, 
           logoHeight
         );
-        contentY += logoHeight + 3;
+        contentY += logoHeight + 2;
       }
       
       // Title
       if (card.title) {
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
+        doc.setFontSize(12);
         doc.setTextColor(30, 41, 59);
         const titleLines = doc.splitTextToSize(card.title, width - padding * 2);
         doc.text(titleLines, centerX, contentY + 3, { align: 'center' });
-        contentY += 3 + (titleLines.length * 4);
+        contentY += 3 + (titleLines.length * 5);
       }
       
       // Line items
@@ -433,29 +433,29 @@ export default function TentCardCreator() {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 mb-4">
             <p className="text-xs text-gray-500 mb-2 text-center">Card Preview (one side shown)</p>
             <div 
-              className="mx-auto bg-white border border-gray-200 rounded shadow-sm flex flex-col items-center p-3"
+              className="mx-auto bg-white border border-gray-200 rounded shadow-sm flex flex-col items-center p-2"
               style={{ width: '180px', height: '110px' }}
             >
-              {/* Logo */}
-              <div className="mb-1">
+              {/* Logo (small - 20% of original) */}
+              <div className="mb-0.5">
                 <Image
                   src="/images/logo/LeadershipConnectionsLogo.png"
                   alt="Logo"
-                  width={50}
-                  height={35}
+                  width={20}
+                  height={14}
                   className="object-contain"
                 />
               </div>
               
               {/* Title */}
-              <p className="text-sm font-bold text-gray-900 text-center">
+              <p className="text-sm font-bold text-gray-900 text-center leading-tight">
                 {cards[0]?.title || 'Card Title'}
               </p>
               
               {/* Line Items */}
-              <div className="text-xs text-gray-600 text-center mt-1">
-                {cards[0]?.lineItems.filter(i => i.trim()).slice(0, 3).map((item, i) => (
-                  <p key={i}>• {item}</p>
+              <div className="text-xs text-gray-600 text-center mt-0.5 leading-tight overflow-hidden">
+                {cards[0]?.lineItems.filter(i => i.trim()).slice(0, 4).map((item, i) => (
+                  <p key={i} className="truncate">• {item}</p>
                 ))}
                 {cards[0]?.lineItems.filter(i => i.trim()).length === 0 && (
                   <>
