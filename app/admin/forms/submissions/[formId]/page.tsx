@@ -63,27 +63,50 @@ export default function FormSubmissionsPage() {
   const exportToCSV = () => {
     if (!form || submissions.length === 0) return;
 
+    // Create a map of field IDs to labels from form fields
+    const fieldIdToLabel: Record<string, string> = {};
+    (form.fields as any[]).forEach(field => {
+      fieldIdToLabel[field.id] = field.label;
+    });
+
     // Get all unique field keys
     const fieldKeys = new Set<string>();
     submissions.forEach(sub => {
       Object.keys(sub.data).forEach(key => fieldKeys.add(key));
     });
 
-    // Create CSV header
-    const headers = ['Submission ID', 'Submitted At', ...Array.from(fieldKeys)];
-    const csvRows = [headers.join(',')];
+    // Convert field keys to array and map to labels for headers
+    const fieldKeysArray = Array.from(fieldKeys);
+    
+    // Helper function to sanitize column headers
+    const sanitizeHeader = (header: string): string => {
+      return header
+        .toLowerCase()                    // Convert to lowercase
+        .replace(/['"]/g, '')             // Remove quotes
+        .replace(/[.?!]/g, '')            // Remove periods, question marks, exclamation points
+        .replace(/\s+/g, '-')             // Replace spaces with dashes
+        .replace(/-+/g, '-')              // Replace multiple dashes with single dash
+        .replace(/^-|-$/g, '');           // Remove leading/trailing dashes
+    };
+    
+    const fieldLabels = fieldKeysArray.map(key => sanitizeHeader(fieldIdToLabel[key] || key));
+
+    // Create CSV header with sanitized field labels
+    const headers = ['submission-id', 'submitted-at', ...fieldLabels];
+    const escapedHeaders = headers.map(h => `"${h}"`);
+    const csvRows = [escapedHeaders.join(',')];
 
     // Add data rows
     submissions.forEach(sub => {
       const row = [
-        sub.id,
-        format(new Date(sub.submittedAt), 'yyyy-MM-dd HH:mm:ss'),
-        ...Array.from(fieldKeys).map(key => {
+        `"${sub.id}"`,
+        `"${format(new Date(sub.submittedAt), 'yyyy-MM-dd HH:mm:ss')}"`,
+        ...fieldKeysArray.map(key => {
           const value = sub.data[key];
           if (Array.isArray(value)) {
-            return `"${value.join(', ')}"`;
+            return `"${value.join(', ').replace(/"/g, '""')}"`;
           }
-          return `"${value || ''}"`;
+          return `"${(value || '').toString().replace(/"/g, '""')}"`;
         })
       ];
       csvRows.push(row.join(','));
