@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where, getCountFromServer } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { CustomForm } from '@/lib/firestore-schema';
 import { FormField, FormTemplate, formTemplates } from '@/types/form';
@@ -55,15 +55,25 @@ const FormsPage = () => {
   const fetchForms = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'customForms'));
-      const formsData = querySnapshot.docs.map(doc => {
-        const data = doc.data();
+      const formsData = await Promise.all(querySnapshot.docs.map(async (docSnapshot) => {
+        const data = docSnapshot.data();
+        
+        // Get actual submission count from formSubmissions collection
+        const submissionsQuery = query(
+          collection(db, 'formSubmissions'),
+          where('formId', '==', docSnapshot.id)
+        );
+        const countSnapshot = await getCountFromServer(submissionsQuery);
+        const actualSubmissionCount = countSnapshot.data().count;
+        
         return {
-          id: doc.id,
+          id: docSnapshot.id,
           ...data,
+          submissionCount: actualSubmissionCount,
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date(),
         };
-      }) as CustomForm[];
+      })) as CustomForm[];
       
       formsData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       setForms(formsData);
